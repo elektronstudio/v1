@@ -79,7 +79,9 @@
     <script type="module">
       import {
         format,
-        compareAsc,
+        compareDesc,
+        differenceInHours,
+        formatDistanceToNowStrict,
       } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
 
       const a = new Date("2020-09-28T19:30:00+03:00");
@@ -91,6 +93,13 @@
         } else {
           return format(new Date(str), "d. MMM y");
         }
+      };
+
+      const formatAgo = (str) => {
+        const diff = differenceInHours(new Date(str), new Date());
+        return `${diff >= 0 ? "In " : ""} ${formatDistanceToNowStrict(
+          new Date(str)
+        )} ${diff < 0 ? "ago" : ""}`;
       };
 
       const render = (id, content) =>
@@ -125,6 +134,11 @@
         const description = event.description
           ? marked(turndown.turndown(event.description))
           : "";
+
+        const teaser = event.description
+          ? marked(turndown.turndown(event.description).split("\n\n")[0])
+          : "";
+
         const ids = description.match(/(id:\s?)(.*)/g);
         const id =
           ids && ids[0]
@@ -133,19 +147,30 @@
                 .split(":")[1]
                 .trim()
             : "";
-        return { summary, description, id, start, end };
+        return { summary, description, teaser, id, start, end };
       };
 
-      const Event = (event) => `
+      const Event = (event) => {
+        const diff = differenceInHours(new Date(event.start), new Date());
+        return `
+        <div style="opacity: ${diff < 0 ? 0.3 : 1}">
         <div style="display: grid; grid-template-columns: 1fr auto; align-items: flex-start;">
           <h2>${event.summary}</h2>
-          <a target="_blank" href="http://${
-            event.id
-          }.elektron.live"><div class="pill">${event.id}.elektron.live</div></a>
+          ${
+            event.id && diff >= 0
+              ? `<a target="_blank" href="http://${event.id}.elektron.live"><div class="pill">${event.id}.elektron.live</div></a>`
+              : ""
+          }
         </div>
-        <h3>${formatDate(event.start)} → ${formatDate(event.end)}</h3>
-        <!--div>${event.description}</div-->
+        <br />
+        <h4>⏰ ${formatAgo(event.start)} <span style="opacity:0.7">${formatDate(
+          event.start
+        )} → ${formatDate(event.end)} </span></h4>
+        <br />
+        <div style="opacity: 0.8">${event.teaser}</div>
+      </div>
       `;
+      };
 
       const url =
         "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
@@ -157,12 +182,12 @@
             "schedule",
             items
               .map(parseEvent)
-              .sort((a, b) => compareAsc(new Date(a.start), new Date(b.start)))
+              .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
               .map(Event)
           )
         );
     </script>
-    <h1>eˉlektron.live</h1>
+    <h1>eˉlektron<span style="color: red">.</span>live</h1>
     <br /><br />
     <main>
       <div id="schedule" style="display: grid; gap: 24px"></div>
