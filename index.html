@@ -76,7 +76,23 @@
     </style>
     <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
     <script src="https://unpkg.com/marked/lib/marked.js"></script>
-    <script>
+    <script type="module">
+      import {
+        format,
+        compareAsc,
+      } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
+
+      const a = new Date("2020-09-28T19:30:00+03:00");
+      console.log(a);
+
+      const formatDate = (str) => {
+        if (str.match(/:/g)) {
+          return format(new Date(str), "d. MMM y HH:mm");
+        } else {
+          return format(new Date(str), "d. MMM y");
+        }
+      };
+
       const render = (id, content) =>
         (document.getElementById(id).innerHTML = Array.isArray(content)
           ? content.join("")
@@ -123,10 +139,12 @@
       const Event = (event) => `
         <div style="display: grid; grid-template-columns: 1fr auto; align-items: flex-start;">
           <h2>${event.summary}</h2>
-          <a target="_blank" href="http://${event.id}.elektron.live"><div class="pill">${event.id}.elektron.live</div></a>
+          <a target="_blank" href="http://${
+            event.id
+          }.elektron.live"><div class="pill">${event.id}.elektron.live</div></a>
         </div>
-        <h3>${event.start} → ${event.end}</h3>
-        <div>${event.description}</div>
+        <h3>${formatDate(event.start)} → ${formatDate(event.end)}</h3>
+        <!--div>${event.description}</div-->
       `;
 
       const url =
@@ -137,7 +155,10 @@
         .then(({ items }) =>
           render(
             "schedule",
-            items.slice(1, 10).reverse().map(parseEvent).map(Event)
+            items
+              .map(parseEvent)
+              .sort((a, b) => compareAsc(new Date(a.start), new Date(b.start)))
+              .map(Event)
           )
         );
     </script>
