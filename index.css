@@ -7,6 +7,7 @@
   font-weight: normal;
   font-style: normal;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -46,6 +47,9 @@ a:hover {
 p a {
   text-decoration: none !important;
 }
+
+/* Layout */
+
 main {
   display: grid;
   gap: 64px;
@@ -56,11 +60,33 @@ main {
     grid-template-columns: 1fr;
   }
 }
-.pill {
+
+header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: flex-start;
+}
+
+@media (max-width: 800px) {
+  header {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Components */
+
+.pill-red {
   border-radius: 100px;
   color: white;
-  background: red;
   padding: 8px 12px;
+  background: red;
+}
+
+.pill-gray {
+  border-radius: 100px;
+  color: white;
+  padding: 8px 12px;
+  background: gray;
 }
 
 video,

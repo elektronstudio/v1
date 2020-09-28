@@ -9,8 +9,10 @@ import TurndownService from "https://cdn.skypack.dev/pin/turndown@v6.0.0-qC3MfTp
 
 import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76Ped/min/marked.js";
 
+const isDatetime = (str) => String(str).match(/:/g);
+
 const formatDate = (str) => {
-  if (str.match(/:/g)) {
+  if (isDatetime(str)) {
     return format(new Date(str), "d. MMM y HH:mm");
   } else {
     return format(new Date(str), "d. MMM y");
@@ -58,18 +60,39 @@ const parseEvent = (event) => {
   return { summary, description, teaser, id, start, end };
 };
 
+const getDifference = (start, end) => {
+  const diffStart = differenceInHours(new Date(start), new Date());
+  const diffEnd = differenceInHours(new Date(end), new Date());
+  //return `${diffStart} ${diffEnd}`;
+  if (isDatetime(diffEnd) && diffEnd <= 0) {
+    return "past";
+  } else if (!isDatetime(diffEnd) && diffStart <= 0) {
+    return "past";
+  } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
+    return "now";
+  } else if (diffStart <= 12) {
+    return "soon";
+  } else {
+    return "future";
+  }
+};
+
 const Event = (event) => {
-  const diff = differenceInHours(new Date(event.start), new Date());
+  const diff = getDifference(event.start, event.end);
   return `
-  <div style="opacity: ${diff < 0 ? 0.3 : 1}">
-  <div style="display: grid; grid-template-columns: 1fr auto; align-items: flex-start;">
+  <div style="opacity: ${diff == "past" ? 0.5 : 1}">
+  <header>
     <h2>${event.summary}</h2>
     ${
-      event.id && diff >= 0
-        ? `<a target="_blank" href="http://${event.id}.elektron.live"><div class="pill">${event.id}.elektron.live</div></a>`
+      event.id
+        ? `<a target="_blank" style="display: block" href="http://${
+            event.id
+          }.elektron.live"><div class="${
+            diff == "past" ? "pill-gray" : "pill-red"
+          }">${event.id}.elektron.live</div></a>`
         : ""
     }
-  </div>
+  </header>
   <br />
   <h4>⏰ ${formatAgo(event.start)} <span style="opacity:0.7">${formatDate(
     event.start
@@ -81,21 +104,50 @@ const Event = (event) => {
 };
 
 const render = (id, content) =>
-  (document.getElementById(id).innerHTML = Array.isArray(content)
+  (document.getElementById(id.replace("#", "")).innerHTML = Array.isArray(
+    content
+  )
     ? content.join("")
     : content);
 
-const url =
-  "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
+const fetchEvents = () => {
+  const url =
+    "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
 
-// fetch(url)
-//   .then((res) => res.json())
-//   .then(({ items }) =>
-//     render(
-//       "schedule",
-//       items
-//         .map(parseEvent)
-//         .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
-//         .map(Event)
-//     )
-//   );
+  return fetch(url)
+    .then((res) => res.json())
+    .then(({ items }) =>
+      items
+        .map(parseEvent)
+        .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
+    );
+};
+
+export const renderEvents = () => {
+  const url =
+    "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
+
+  fetch(url)
+    .then((res) => res.json())
+    .then(({ items }) =>
+      render(
+        "schedule",
+        items
+          .map(parseEvent)
+          .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
+          .map(Event)
+      )
+    );
+};
+
+export const renderEvent = (el, eventId) => {
+  fetchEvents().then((events) =>
+    render(
+      el,
+      events
+        .filter(({ id }) => id === eventId)
+        .slice(0, 1)
+        .map(Event)
+    )
+  );
+};
