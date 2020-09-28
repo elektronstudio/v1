@@ -26,6 +26,23 @@ const formatAgo = (str) => {
   )} ${diff < 0 ? "ago" : ""}`;
 };
 
+const getDifference = (start, end) => {
+  const diffStart = differenceInHours(new Date(start), new Date());
+  const diffEnd = differenceInHours(new Date(end), new Date());
+  //return `${diffStart} ${diffEnd}`;
+  if (isDatetime(diffEnd) && diffEnd <= 0) {
+    return "past";
+  } else if (!isDatetime(diffEnd) && diffStart <= 0) {
+    return "past";
+  } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
+    return "now";
+  } else if (diffStart <= 12) {
+    return "soon";
+  } else {
+    return "future";
+  }
+};
+
 const turndown = new TurndownService();
 
 const parseEvent = (event) => {
@@ -57,33 +74,16 @@ const parseEvent = (event) => {
           .split(":")[1]
           .trim()
       : "";
-  return { summary, description, teaser, id, start, end };
-};
-
-const getDifference = (start, end) => {
-  const diffStart = differenceInHours(new Date(start), new Date());
-  const diffEnd = differenceInHours(new Date(end), new Date());
-  //return `${diffStart} ${diffEnd}`;
-  if (isDatetime(diffEnd) && diffEnd <= 0) {
-    return "past";
-  } else if (!isDatetime(diffEnd) && diffStart <= 0) {
-    return "past";
-  } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
-    return "now";
-  } else if (diffStart <= 12) {
-    return "soon";
-  } else {
-    return "future";
-  }
+  const diff = getDifference(start, end);
+  return { summary, description, teaser, id, start, end, diff };
 };
 
 const Event = (event) => {
-  const diff = getDifference(event.start, event.end);
   return `
   <article style="padding-left: 24px; border-left: 3px solid ${
-    diff == "soon" || diff == "now" ? "red" : "none"
+    event.diff == "soon" || event.diff == "now" ? "red" : "none"
   }
-  ; opacity: ${diff == "past" ? 0.5 : 1}">
+  ; opacity: ${event.diff == "past" ? 0.5 : 1}">
     <header>
       <h2>${event.summary}</h2>
       ${
@@ -91,14 +91,14 @@ const Event = (event) => {
           ? `<a target="_blank" style="display: block" href="http://${
               event.id
             }.elektron.live"><div class="${
-              diff == "past" ? "pill-gray" : "pill-red"
+              event.diff == "past" ? "pill-gray" : "pill-red"
             }">${event.id}.elektron.live</div></a>`
           : ""
       }
     </header>
     <br />
     <h4>⏰ <span style="color: ${
-      diff == "soon" || diff == "now" ? "red" : "none"
+      event.diff == "soon" || event.diff == "now" ? "red" : "none"
     }">${formatAgo(event.start)}</span><span style="opacity:0.7">${formatDate(
     event.start
   )} → ${formatDate(event.end)} </span></h4>
