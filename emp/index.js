@@ -137,18 +137,18 @@ window.getCamera = () => {
 };
 
 window.onload = () => {
-  // const mainStream = videojs("main-stream", {
-  //   sources: [
-  //     {
-  //       src: mainStreamUrl,
-  //       type: "application/x-mpegURL",
-  //     },
-  //   ],
-  //   controls: true,
-  //   autoplay: true,
-  //   muted: true,
-  // });
-  // mainStream.ready(errorHandler);
+  const mainStream = videojs("main-stream", {
+    sources: [
+      {
+        src: mainStreamUrl,
+        type: "application/x-mpegURL",
+      },
+    ],
+    controls: true,
+    autoplay: true,
+    muted: true,
+  });
+  mainStream.ready(errorHandler);
 
   const spectatorStream = videojs("spectators-stream", {
     sources: [
