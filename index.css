@@ -65,6 +65,7 @@ header {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: flex-start;
+  gap: 12px;
 }
 
 @media (max-width: 800px) {
@@ -76,6 +77,7 @@ header {
 /* Components */
 
 .pill-red {
+  display: inline-block;
   border-radius: 100px;
   color: white;
   padding: 8px 12px;

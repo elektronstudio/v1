@@ -78,35 +78,37 @@ const parseEvent = (event) => {
   return { summary, description, teaser, id, start, end, diff };
 };
 
-const Event = (event) => {
-  return `
+const Pill = (event) =>
+  event.id
+    ? `<a target="_blank" style="display: block" href="http://${
+        event.id
+      }.elektron.live"><div class="${
+        event.diff == "past" ? "pill-gray" : "pill-red"
+      }">${event.id}.elektron.live</div></a>`
+    : "";
+
+const Datetime = (event) =>
+  `<h4>⏰ <span style="color: ${
+    event.diff == "soon" || event.diff == "now" ? "red" : "none"
+  }">${formatAgo(event.start)}</span><span style="opacity:0.7">${formatDate(
+    event.start
+  )} → ${formatDate(event.end)} </span></h4>`;
+
+const Event = (event) => `
   <article style="padding-left: 24px; border-left: 3px solid ${
     event.diff == "soon" || event.diff == "now" ? "red" : "none"
   }
   ; opacity: ${event.diff == "past" ? 0.5 : 1}">
     <header>
       <h2>${event.summary}</h2>
-      ${
-        event.id
-          ? `<a target="_blank" style="display: block" href="http://${
-              event.id
-            }.elektron.live"><div class="${
-              event.diff == "past" ? "pill-gray" : "pill-red"
-            }">${event.id}.elektron.live</div></a>`
-          : ""
-      }
+      ${Pill(event)}
     </header>
     <br />
-    <h4>⏰ <span style="color: ${
-      event.diff == "soon" || event.diff == "now" ? "red" : "none"
-    }">${formatAgo(event.start)}</span><span style="opacity:0.7">${formatDate(
-    event.start
-  )} → ${formatDate(event.end)} </span></h4>
+    ${Datetime(event)}
     <br />
     <div style="opacity: 0.8">${event.teaser}</div>
 </article>
 `;
-};
 
 const render = (id, content) =>
   (document.getElementById(id.replace("#", "")).innerHTML = Array.isArray(
