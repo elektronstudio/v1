@@ -108,10 +108,9 @@ function uuidv4() {
     return v.toString(16);
   });
 }
-
 const { Publisher, PUBLISHER_EVENTS, PLAYER_EVENTS } = window.FlussonicWebRTC;
 
-window.getCamera = () => {
+function getCamera() {
   const streamWSS =
     "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
   console.log(streamWSS);
@@ -124,7 +123,7 @@ window.getCamera = () => {
     },
     constraints: {
       video: true,
-      audio: false,
+      audio: true,
     },
     onWebsocketClose: () => console.log("websocket closed"),
   });
@@ -134,7 +133,7 @@ window.getCamera = () => {
   });
 
   publisher.start();
-};
+}
 
 window.onload = () => {
   // const mainStream = videojs("main-stream", {
