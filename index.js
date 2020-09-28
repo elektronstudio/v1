@@ -141,7 +141,6 @@ const Event = (event) => `
     ${Datetime(event)}
     <br />
     ${event.youtube && `<br />${Youtube(event.youtube)}<br />`}
-    <div>${event.teaser}</div>
 </article>
 `;
 
