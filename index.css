@@ -33,6 +33,15 @@ h1 {
   font-size: 3em;
   line-height: ;
 }
+h2 {
+  font-size: 1.2em;
+  text-transform: uppercase;
+  color: gray;
+}
+
+h3 {
+  font-size: 1.5em;
+}
 p {
   margin: 0 0 1em 0;
   line-height: 1.75em;
@@ -43,6 +52,9 @@ a {
 }
 a:hover {
   filter: brightness(95%);
+}
+p {
+  opacity: 0.9;
 }
 p a {
   text-decoration: none !important;
@@ -85,6 +97,7 @@ header {
 }
 
 .pill-gray {
+  display: inline-block;
   border-radius: 100px;
   color: white;
   padding: 8px 12px;

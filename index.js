@@ -1,5 +1,6 @@
 import {
   format,
+  compareAsc,
   compareDesc,
   differenceInHours,
   formatDistanceToNowStrict,
@@ -58,19 +59,17 @@ const parseEvent = (event) => {
     ? event.end.dateTime
     : "";
 
-  const description = event.description
-    ? marked(turndown.turndown(event.description))
-    : "";
+  const markdown = turndown.turndown(event.description);
+  const description = event.description ? marked(markdown) : "";
 
-  const teaser = event.description
-    ? marked(turndown.turndown(event.description).split("\n\n")[0])
-    : "";
+  const teaser = event.description ? marked(markdown.split("\n\n")[0]) : "";
 
-  const ids = description.match(/(id:\s?)(.*)/g);
+  const ids = markdown.match(/(id:\s?)(.*)/g);
+
   const id =
     ids && ids[0]
       ? ids[0]
-          .replace(/(<([^>]+)>)/gi, "")
+          //.replace(/(<([^>]+)>)/gi, "")
           .split(":")[1]
           .trim()
       : "";
@@ -90,23 +89,27 @@ const Pill = (event) =>
 const Datetime = (event) =>
   `<h4>⏰ <span style="color: ${
     event.diff == "soon" || event.diff == "now" ? "red" : "none"
-  }">${formatAgo(event.start)}</span><span style="opacity:0.7">${formatDate(
+  }">${formatAgo(
+    event.start
+  )}</span>&ensp;<span style="opacity:0.7">${formatDate(
     event.start
   )} → ${formatDate(event.end)} </span></h4>`;
 
 const Event = (event) => `
-  <article style="padding-left: 24px; border-left: 3px solid ${
-    event.diff == "soon" || event.diff == "now" ? "red" : "none"
-  }
+  <article style="padding-left: ${
+    event.diff == "soon" || event.diff == "now" ? "24px" : ""
+  }; border-left: 3px solid ${
+  event.diff == "soon" || event.diff == "now" ? "red" : "none"
+}
   ; opacity: ${event.diff == "past" ? 0.5 : 1}">
     <header>
-      <h2>${event.summary}</h2>
+      <h3>${event.summary}</h3>
       ${Pill(event)}
     </header>
     <br />
     ${Datetime(event)}
     <br />
-    <div style="opacity: 0.8">${event.teaser}</div>
+    <div style="opacity: 0.8">${event.description}</div>
 </article>
 `;
 
@@ -126,7 +129,7 @@ const fetchEvents = () => {
     .then(({ items }) =>
       items
         .map(parseEvent)
-        .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
+        .sort((a, b) => compareAsc(new Date(a.start), new Date(b.start)))
     );
 };
 
@@ -134,17 +137,19 @@ export const renderEvents = () => {
   const url =
     "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
 
-  fetch(url)
-    .then((res) => res.json())
-    .then(({ items }) =>
-      render(
-        "schedule",
-        items
-          .map(parseEvent)
-          .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
-          .map(Event)
-      )
+  fetchEvents().then((events) => {
+    render(
+      "events-current",
+      events.filter(({ diff }) => diff !== "past").map(Event)
     );
+    render(
+      "events-past",
+      events
+        .filter(({ diff }) => diff === "past")
+        .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
+        .map(Event)
+    );
+  });
 };
 
 export const renderEvent = (el, eventId) => {
