@@ -13,12 +13,16 @@
     </style>
   </head>
   <body>
+    <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@flussonic/flussonic-webrtc-player/dist/index.js"></script>
+    <script type="module" src="./index.js"></script>
     <header style="align-items: center">
       <div style="display: flex; align-items: center">
         <h1>eˉlektron<span style="color: red">.</span>live</h1>
         &emsp;
         <a href=".."><div class="pill-gray">← Back to schedule</div></a>
       </div>
+
       <h3><span id="stats"></span> live viewers</h3>
     </header>
     <br /><br />
@@ -26,7 +30,21 @@
       <div>
         <video-js id="main-stream" class="vjs-fluid"> </video-js>
         <br />
-        <br />
+        <p
+          style="
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 8px;
+            background: #222;
+            padding: 24px;
+          "
+        >
+          Please allow access to your camera. By saying YES you become a public
+          audience member in our venue!
+
+          <button onclick="getCamera()">Start video</button>
+        </p>
         <div style="height: 180px; overflow: auto" id="event"></div>
       </div>
       <div>
@@ -68,112 +86,5 @@
         </article>
       </div>
     </main>
-    <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
-    <script type="module">
-      import { renderEvent, render } from "../index.js";
-
-      // Getting event ID from URL
-
-      const id = window.location.pathname.replace(/\//g, "");
-
-      const mainStreamUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${id}/index.m3u8"`;
-
-      const spectactorsStreamUrl =
-        "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
-
-      // Utility functions
-
-      function safeJsonParse(str) {
-        try {
-          return JSON.parse(str);
-        } catch (err) {
-          return null;
-        }
-      }
-
-      // Rendering event info
-
-      renderEvent("event", id);
-
-      // Set up a websocket connection to our custom relay server
-      // https://github.com/elektronstudio/ws
-
-      const socket = new WebSocket("wss://ws-fggq5.ondigitalocean.app/");
-
-      socket.onmessage = ({ data }) => {
-        const message = safeJsonParse(data);
-        if (message && message.type === "statsResponse") {
-          render("stats", message.clientsCount);
-        }
-      };
-
-      let interval = null;
-
-      socket.onopen = () => {
-        socket.send(JSON.stringify({ type: "statsRequest" }));
-        interval = setInterval(
-          () => socket.send(JSON.stringify({ type: "statsRequest" })),
-          8000
-        );
-      };
-
-      socket.onclose = () => clearInterval(interval);
-
-      // Initializing video
-
-      function errorHandler() {
-        console.log("main-stream.ready() called");
-
-        this.player().on("error", function (e) {
-          //console.log(e);
-          e.stopImmediatePropagation();
-          var error = this.player().error();
-          console.log(
-            "main-stream reload triggered (error): ",
-            error.code,
-            error.type,
-            error.message
-          );
-
-          this.src(mainStreamUrl);
-        });
-
-        this.player()
-          .tech(true)
-          .on("retryplaylist", function (e) {
-            e.stopImmediatePropagation();
-
-            console.log("main-stream reload triggered (retryplaylist)");
-            this.src(MainStream);
-          });
-      }
-
-      window.onload = () => {
-        const mainStream = videojs("main-stream", {
-          sources: [
-            {
-              src: mainStreamUrl,
-              type: "application/x-mpegURL",
-            },
-          ],
-          controls: true,
-          autoplay: true,
-          muted: true,
-        });
-        mainStream.ready(errorHandler);
-
-        const spectatorStream = videojs("spectators-stream", {
-          sources: [
-            {
-              src: spectactorsStreamUrl,
-              type: "application/x-mpegURL",
-            },
-          ],
-          controls: true,
-          autoplay: true,
-          muted: true,
-        });
-      };
-    </script>
   </body>
 </html>
