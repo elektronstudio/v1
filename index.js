@@ -64,18 +64,49 @@ const parseEvent = (event) => {
 
   const teaser = event.description ? marked(markdown.split("\n\n")[0]) : "";
 
-  const ids = markdown.match(/(id:\s?)(.*)/g);
+  const ids = markdown.match(/(\n\r?id:\s?)(.*)/);
+  const id = ids && ids[2] ? ids[2] : "";
+  const youtubes = markdown.match(/(\n\r?youtube:\s?)(.*)/);
+  const youtube = youtubes && youtubes[2] ? youtubes[2] : "";
 
-  const id =
-    ids && ids[0]
-      ? ids[0]
-          //.replace(/(<([^>]+)>)/gi, "")
-          .split(":")[1]
-          .trim()
-      : "";
   const diff = getDifference(start, end);
-  return { summary, description, teaser, id, start, end, diff };
+  return { summary, description, teaser, id, start, end, diff, youtube };
 };
+
+const youtubeSrc = (src) => {
+  const { search } = new URL(src || "");
+  const params = new URLSearchParams(search);
+  const id = params.get("v");
+  const start = params.get("start");
+  return start
+    ? `//youtube.com/embed/${id}?start=${start}`
+    : `//youtube.com/embed/${id}`;
+};
+
+// Components
+
+const Youtube = (src) => `
+  <div style="
+    height: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding-bottom: calc(9 / 16 * 100%);
+    position: relative;
+  ">
+    <iframe
+      style="
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      "
+      src="${youtubeSrc(src)}"
+      frameborder="0"
+      allowfullscreen
+      ></iframe>
+  </div>
+`;
 
 const Pill = (event) =>
   event.id
@@ -109,6 +140,7 @@ const Event = (event) => `
     <br />
     ${Datetime(event)}
     <br />
+    ${event.youtube && `<br />${Youtube(event.youtube)}<br />`}
     <div style="opacity: 0.8">${event.description}</div>
 </article>
 `;
