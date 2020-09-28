@@ -80,26 +80,31 @@ const getDifference = (start, end) => {
 const Event = (event) => {
   const diff = getDifference(event.start, event.end);
   return `
-  <div style="opacity: ${diff == "past" ? 0.5 : 1}">
-  <header>
-    <h2>${event.summary}</h2>
-    ${
-      event.id
-        ? `<a target="_blank" style="display: block" href="http://${
-            event.id
-          }.elektron.live"><div class="${
-            diff == "past" ? "pill-gray" : "pill-red"
-          }">${event.id}.elektron.live</div></a>`
-        : ""
-    }
-  </header>
-  <br />
-  <h4>⏰ ${formatAgo(event.start)} <span style="opacity:0.7">${formatDate(
+  <article style="padding-left: 24px; border-left: 3px solid ${
+    diff == "soon" || diff == "now" ? "red" : "none"
+  }
+  ; opacity: ${diff == "past" ? 0.5 : 1}">
+    <header>
+      <h2>${event.summary}</h2>
+      ${
+        event.id
+          ? `<a target="_blank" style="display: block" href="http://${
+              event.id
+            }.elektron.live"><div class="${
+              diff == "past" ? "pill-gray" : "pill-red"
+            }">${event.id}.elektron.live</div></a>`
+          : ""
+      }
+    </header>
+    <br />
+    <h4>⏰ <span style="color: ${
+      diff == "soon" || diff == "now" ? "red" : "none"
+    }">${formatAgo(event.start)}</span><span style="opacity:0.7">${formatDate(
     event.start
   )} → ${formatDate(event.end)} </span></h4>
-  <br />
-  <div style="opacity: 0.8">${event.teaser}</div>
-</div>
+    <br />
+    <div style="opacity: 0.8">${event.teaser}</div>
+</article>
 `;
 };
 
