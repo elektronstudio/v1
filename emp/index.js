@@ -5,7 +5,7 @@ import { renderEvent, render } from "../index.js";
 const id = window.location.pathname.replace(/\//g, "");
 console.log(id);
 
-const mainStreamUrl = `https://elektron-live.babahhcdn.com/bb1150-le/test/index.m3u8"`;
+const mainStreamUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${id}/index.m3u8"`;
 
 const spectactorsStreamUrl =
   "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
