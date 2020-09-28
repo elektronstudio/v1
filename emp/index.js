@@ -150,16 +150,16 @@ window.onload = () => {
   });
   mainStream.ready(errorHandler);
 
-  const spectatorStream = videojs("spectators-stream", {
-    sources: [
-      {
-        src: spectactorsStreamUrl,
-        type: "application/x-mpegURL",
-      },
-    ],
-    controls: true,
-    autoplay: true,
-    muted: true,
-  });
-  mainStream.ready(errorHandler2);
+  // const spectatorStream = videojs("spectators-stream", {
+  //   sources: [
+  //     {
+  //       src: spectactorsStreamUrl,
+  //       type: "application/x-mpegURL",
+  //     },
+  //   ],
+  //   controls: true,
+  //   autoplay: true,
+  //   muted: true,
+  // });
+  // spectatorStream.ready(errorHandler2);
 };
