@@ -110,11 +110,11 @@ const Youtube = (src) => `
 
 const Pill = (event) =>
   event.id
-    ? `<a target="_blank" style="display: block" href="http://${
+    ? `<a target="_blank" style="display: block" href="./${
         event.id
-      }.elektron.live"><div class="${
-        event.diff == "past" ? "pill-gray" : "pill-red"
-      }">${event.id}.elektron.live</div></a>`
+      }"><div class="${event.diff == "past" ? "pill-gray" : "pill-red"}">${
+        event.id
+      }.elektron.live</div></a>`
     : "";
 
 const Datetime = (event) =>
@@ -126,7 +126,7 @@ const Datetime = (event) =>
     event.start
   )} → ${formatDate(event.end)} </span></h4>`;
 
-const Event = (event) => `
+const EventRow = (event) => `
   <article style="padding-left: ${
     event.diff == "soon" || event.diff == "now" ? "24px" : ""
   }; border-left: 3px solid ${
@@ -144,7 +144,17 @@ const Event = (event) => `
 </article>
 `;
 
-const render = (id, content) =>
+const EventFull = (event) => `
+  <article>
+    <h3>${event.summary}</h3>
+    <br />
+    ${Datetime(event)}
+    <br />
+    <div>${event.description}</div>
+</article>
+`;
+
+export const render = (id, content) =>
   (document.getElementById(id.replace("#", "")).innerHTML = Array.isArray(
     content
   )
@@ -171,14 +181,14 @@ export const renderEvents = () => {
   fetchEvents().then((events) => {
     render(
       "events-current",
-      events.filter(({ diff }) => diff !== "past").map(Event)
+      events.filter(({ diff }) => diff !== "past").map(EventRow)
     );
     render(
       "events-past",
       events
         .filter(({ diff }) => diff === "past")
         .sort((a, b) => compareDesc(new Date(a.start), new Date(b.start)))
-        .map(Event)
+        .map(EventRow)
     );
   });
 };
@@ -190,7 +200,7 @@ export const renderEvent = (el, eventId) => {
       events
         .filter(({ id }) => id === eventId)
         .slice(0, 1)
-        .map(Event)
+        .map(EventFull)
     )
   );
 };
