@@ -110,11 +110,11 @@ const Youtube = (src) => `
 
 const Pill = (event) =>
   event.id
-    ? `<a target="_blank" style="display: block" href="http://${
+    ? `<a target="_blank" style="display: block" href="./${
         event.id
-      }.elektron.live"><div class="${
-        event.diff == "past" ? "pill-gray" : "pill-red"
-      }">${event.id}.elektron.live</div></a>`
+      }"><div class="${event.diff == "past" ? "pill-gray" : "pill-red"}">${
+        event.id
+      }.elektron.live</div></a>`
     : "";
 
 const Datetime = (event) =>
@@ -182,7 +182,7 @@ export const renderEvents = () => {
   fetchEvents().then((events) => {
     render(
       "events-current",
-      events.filter(({ diff }) => diff !== "past").map(Event)
+      events.filter(({ diff }) => diff !== "past").map(EventRow)
     );
     render(
       "events-past",

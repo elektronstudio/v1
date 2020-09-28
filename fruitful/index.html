@@ -72,13 +72,14 @@
     <script type="module">
       import { renderEvent, render } from "../index.js";
 
-      const mainStreamUrl =
-        "https://elektron-live.babahhcdn.com/bb1150-le/test/index.m3u8";
+      // Getting event ID from URL
+
+      const id = window.location.pathname.replace(/\//g, "");
+
+      const mainStreamUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${id}/index.m3u8"`;
 
       const spectactorsStreamUrl =
         "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
-
-      //const mainStreamUrl = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
 
       // Utility functions
 
@@ -89,10 +90,6 @@
           return null;
         }
       }
-
-      // Getting event ID from URL
-
-      const id = window.location.pathname.replace(/\//g, "");
 
       // Rendering event info
 
