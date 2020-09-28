@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://vjs.zencdn.net/7.8.4/video-js.css" rel="stylesheet" />
+    <link href="../index.css" rel="stylesheet" />
+    <title>eˉlektron.live</title>
+    <style>
+      body {
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <header style="align-items: center">
+      <div style="display: flex; align-items: center">
+        <h1>eˉlektron<span style="color: red">.</span>live</h1>
+        &emsp;
+        <a href=".."><div class="pill-gray">← Back to schedule</div></a>
+      </div>
+      <h3><span id="stats"></span> live viewers</h3>
+    </header>
+    <br /><br />
+    <main>
+      <div>
+        <video-js id="main-stream" class="vjs-fluid"> </video-js>
+        <br />
+        <br />
+        <div style="height: 180px; overflow: auto" id="event"></div>
+      </div>
+      <div>
+        <video-js id="spectators-stream" class="vjs-fluid"></video-js>
+        <br />
+        <article class="chat">
+          <script
+            id="cid0020000246593815710"
+            data-cfasync="false"
+            async
+            src="//st.chatango.com/js/gz/emb.js"
+            style="width: 100%; height: 320px"
+          >
+            {
+              "handle":"elektronlivetest",
+              "arch":"js",
+              "styles":{
+                "a":"000000",
+                "b":100,
+                "c":"FFFFFF",
+                "d":"000000",
+                "e":"000000",
+                "g": "ffffff",
+                "h":"999999",
+                "k":"222222",
+                "l":"000000",
+                "m":"aaaaaa",
+                "n":"aaaaaa",
+                "p":"12",
+                "q":"000000",
+                "r":100,
+                "t":40,
+                "usricon":0,
+                "allowpm":0,
+                "cnrs":"0"
+              }
+            }
+          </script>
+        </article>
+      </div>
+    </main>
+    <script src="https://vjs.zencdn.net/7.8.4/video.js"></script>
+    <script type="module">
+      import { renderEvent, render } from "../index.js";
+
+      const mainStreamUrl =
+        "https://elektron-live.babahhcdn.com/bb1150-le/test/index.m3u8";
+
+      const spectactorsStreamUrl =
+        "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
+
+      //const mainStreamUrl = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
+
+      // Utility functions
+
+      function safeJsonParse(str) {
+        try {
+          return JSON.parse(str);
+        } catch (err) {
+          return null;
+        }
+      }
+
+      // Getting event ID from URL
+
+      const id = window.location.pathname.replace(/\//g, "");
+
+      // Rendering event info
+
+      renderEvent("event", id);
+
+      // Set up a websocket connection to our custom relay server
+      // https://github.com/elektronstudio/ws
+
+      const socket = new WebSocket("wss://ws-fggq5.ondigitalocean.app/");
+
+      socket.onmessage = ({ data }) => {
+        const message = safeJsonParse(data);
+        if (message && message.type === "statsResponse") {
+          render("stats", message.clientsCount);
+        }
+      };
+
+      let interval = null;
+
+      socket.onopen = () => {
+        socket.send(JSON.stringify({ type: "statsRequest" }));
+        interval = setInterval(
+          () => socket.send(JSON.stringify({ type: "statsRequest" })),
+          8000
+        );
+      };
+
+      socket.onclose = () => clearInterval(interval);
+
+      // Initializing video
+
+      function errorHandler() {
+        console.log("main-stream.ready() called");
+
+        this.player().on("error", function (e) {
+          //console.log(e);
+          e.stopImmediatePropagation();
+          var error = this.player().error();
+          console.log(
+            "main-stream reload triggered (error): ",
+            error.code,
+            error.type,
+            error.message
+          );
+
+          this.src(mainStreamUrl);
+        });
+
+        this.player()
+          .tech(true)
+          .on("retryplaylist", function (e) {
+            e.stopImmediatePropagation();
+
+            console.log("main-stream reload triggered (retryplaylist)");
+            this.src(MainStream);
+          });
+      }
+
+      window.onload = () => {
+        const mainStream = videojs("main-stream", {
+          sources: [
+            {
+              src: mainStreamUrl,
+              type: "application/x-mpegURL",
+            },
+          ],
+          controls: true,
+          autoplay: true,
+          muted: true,
+        });
+        mainStream.ready(errorHandler);
+
+        const spectatorStream = videojs("spectators-stream", {
+          sources: [
+            {
+              src: spectactorsStreamUrl,
+              type: "application/x-mpegURL",
+            },
+          ],
+          controls: true,
+          autoplay: true,
+          muted: true,
+        });
+      };
+    </script>
+  </body>
+</html>
