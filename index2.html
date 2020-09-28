@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/video.js/dist/video-js.min.css"
+      rel="stylesheet"
+    />
+    <link href="index.css" rel="stylesheet" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="module" src="index.js"></script>
+    <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+    <script src="index2.js"></script>
+    <h1>eˉlektron<span style="color: red">.</span>live</h1>
+    <br /><br />
+    <main>
+      <div>
+        <video-js class="vjs-fluid" id="test" controls autoplay muted>
+          <source
+            src="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"
+            type="application/x-mpegURL"
+          />
+        </video-js>
+      </div>
+      <div style="opacity: 0.7">
+        <div id="event"></div>
+      </div>
+    </main>
+    <script type="module">
+      import { renderEvent } from "./index.js";
+      renderEvent("event", "romeojulia");
+    </script>
+  </body>
+</html>
