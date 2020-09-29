@@ -57,9 +57,12 @@
           grid-area: count;
         "
       >
-        <h2><span id="stats"></span> live viewers</h2>
+        <h3 v-show="clientsCount > 0">
+          {{ clientsCount }} live viewer{{ clientsCounts > 1 ? 's' : ''}}
+        </h3>
       </div>
       <div
+        v-show="!videoStarted"
         style="
           grid-area: msg;
           display: grid;
@@ -73,9 +76,8 @@
         Please allow access to your camera. By saying YES you become a public
         audience member in our venue!
 
-        <button onclick="getCamera()">Start video</button>
+        <button @click="startVideo">Start video</button>
       </div>
-
       <div
         style="
           grid-area: main;
@@ -100,7 +102,7 @@
       </div>
 
       <div style="grid-area: title; overflow: auto; border: 3px solid green">
-        <h1>Event name</h1>
+        <h3>Event name</h3>
       </div>
       <div
         style="grid-area: desc; overflow: auto; border: 3px solid green"
@@ -167,10 +169,57 @@
     </main>
   </body>
   <script type="module">
-    import { createApp } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
-    const A = { template: "a" };
+    import {
+      createApp,
+      ref,
+    } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
 
-    const app = createApp().mount("#app");
-    app.component("A", A);
+    const App = {
+      setup() {
+        const videoStarted = ref(false);
+        const startVideo = () => {
+          videoStarted.value = !videoStarted.value;
+        };
+
+        // Clients count
+
+        const clientsCount = ref(false);
+
+        const socket = new WebSocket("wss://ws-fggq5.ondigitalocean.app/");
+
+        let interval = null;
+
+        socket.onopen = () => {
+          socket.send(JSON.stringify({ type: "statsRequest" }));
+          interval = setInterval(
+            () => socket.send(JSON.stringify({ type: "statsRequest" })),
+            8000
+          );
+        };
+
+        socket.onmessage = ({ data }) => {
+          const message = safeJsonParse(data);
+          if (message && message.type === "statsResponse") {
+            clientsCount.value = message.clientsCount;
+          }
+        };
+
+        socket.onclose = () => clearInterval(interval);
+
+        return { videoStarted, startVideo, clientsCount };
+      },
+    };
+
+    const app = createApp(App);
+    //app.component("test", Test);
+    app.mount("#app");
+
+    function safeJsonParse(str) {
+      try {
+        return JSON.parse(str);
+      } catch (err) {
+        return null;
+      }
+    }
   </script>
 </html>
