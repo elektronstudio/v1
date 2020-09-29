@@ -6,6 +6,8 @@ import {
 
 import postscribe from "https://cdn.skypack.dev/postscribe";
 
+import Hls from "https://cdn.skypack.dev/hls.js";
+
 const App = {
   setup() {
     const videoStarted = ref(false);
@@ -17,7 +19,7 @@ const App = {
 
     onMounted(() =>
       postscribe(
-        "#aaa",
+        "#chat",
         `<script
     id="cid0020000246593815710"
     data-cfasync="false"
@@ -77,6 +79,21 @@ const App = {
     };
 
     socket.onclose = () => clearInterval(interval);
+
+    const v = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
+    const v2 = `https://elektron-live.babahhcdn.com/bb1150-le/emp/index.m3u8`;
+    onMounted(() => {
+      if (Hls.isSupported()) {
+        var video = document.getElementById("main-stream");
+        const hls = new Hls({
+          manifestLoadingMaxRetry: Infinity,
+        });
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+          hls.loadSource(v2);
+        });
+      }
+    });
 
     return { videoStarted, startVideo, clientsCount };
   },
