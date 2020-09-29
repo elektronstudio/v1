@@ -86,6 +86,7 @@ const App = {
       if (Hls.isSupported()) {
         var video = document.getElementById("main-stream");
         const hls = new Hls({
+          manifestLoadingRetryDelay: 5000,
           manifestLoadingMaxRetry: Infinity,
         });
         hls.attachMedia(video);
