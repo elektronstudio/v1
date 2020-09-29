@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../index.css" rel="stylesheet" />
+    <title>eˉlektron.live</title>
+    <style>
+      body {
+        padding: 0;
+      }
+      main {
+        padding: 2vw;
+        border: 3px solid blue;
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1.25fr;
+        grid-template-rows: auto auto auto auto 1fr;
+        gap: 1.5vw;
+        grid-template-areas:
+          "logo   logo  count"
+          "msg    msg   msg"
+          "main   main  spec"
+          "main   main  chat"
+          "title  desc  chat";
+      }
+      @media (max-width: 800px) {
+        body {
+          height: 100%;
+          grid-template-columns: 1fr;
+          gap: 2vw 1.5vw;
+          grid-template-areas:
+            "logo"
+            "title"
+            "main"
+            "count"
+            "msg"
+            "spec"
+            "chat"
+            "desc";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app">
+      <div style="display: flex; align-items: center; grid-area: logo">
+        <h1>eˉlektron<span style="color: red">.</span>live</h1>
+        &emsp;
+        <a href=".."><div class="pill-white">← Back to schedule</div></a>
+      </div>
+      <div
+        style="
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          grid-area: count;
+        "
+      >
+        <h2><span id="stats"></span> live viewers</h2>
+      </div>
+      <div
+        style="
+          grid-area: msg;
+          display: grid;
+          grid-template-columns: 1fr auto;
+          align-items: center;
+          gap: 8px;
+          background: #222;
+          padding: 8px 16px;
+        "
+      >
+        Please allow access to your camera. By saying YES you become a public
+        audience member in our venue!
+
+        <button onclick="getCamera()">Start video</button>
+      </div>
+
+      <div
+        style="
+          grid-area: main;
+          height: 0;
+          max-width: 100%;
+          overflow: hidden;
+          padding-bottom: calc(9 / 16 * 100%);
+          position: relative;
+        "
+      >
+        <div
+          style="
+            border: 3px solid tomato;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+          "
+          id="main-stream"
+        ></div>
+      </div>
+
+      <div style="grid-area: title; overflow: auto; border: 3px solid green">
+        <h1>Event name</h1>
+      </div>
+      <div
+        style="grid-area: desc; overflow: auto; border: 3px solid green"
+        id="event"
+      >
+        ...
+      </div>
+      <div
+        style="
+          grid-area: spec;
+          height: 0;
+          max-width: 100%;
+          overflow: hidden;
+          padding-bottom: calc(3 / 4 * 100%);
+          position: relative;
+        "
+      >
+        <div
+          style="
+            border: 3px solid tomato;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+          "
+          id="spect-stream"
+        ></div>
+      </div>
+      <div style="grid-area: chat; border: 2px solid royalblue">
+        <script
+          id="cid0020000246593815710"
+          data-cfasync="false"
+          async
+          src="//st.chatango.com/js/gz/emb.js"
+          style="width: 100%; height: 200px"
+        >
+          {
+            "handle":"elektronlivetest",
+            "arch":"js",
+            "styles":{
+              "a":"000000",
+              "b":100,
+              "c":"FFFFFF",
+              "d":"000000",
+              "e":"000000",
+              "g": "ffffff",
+              "h":"999999",
+              "k":"222222",
+              "l":"000000",
+              "m":"aaaaaa",
+              "n":"aaaaaa",
+              "p":"12",
+              "q":"000000",
+              "r":100,
+              "t":40,
+              "usricon":0,
+              "allowpm":0,
+              "cnrs":"0"
+            }
+          }
+        </script>
+      </div>
+    </main>
+  </body>
+  <script type="module">
+    import { createApp } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
+    const A = { template: "a" };
+
+    const app = createApp().mount("#app");
+    app.component("A", A);
+  </script>
+</html>
