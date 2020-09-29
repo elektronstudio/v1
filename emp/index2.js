@@ -2,11 +2,29 @@ import {
   createApp,
   ref,
   onMounted,
+  watchEffect,
 } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
 
 import postscribe from "https://cdn.skypack.dev/postscribe";
 
 import Hls from "https://cdn.skypack.dev/hls.js";
+
+const useHls = (url) => {
+  const el = ref(null);
+  onMounted(() => {
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        manifestLoadingRetryDelay: 5000,
+        manifestLoadingMaxRetry: Infinity,
+      });
+      hls.attachMedia(el.value);
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+        hls.loadSource(url);
+      });
+    }
+  });
+  return el;
+};
 
 const App = {
   setup() {
@@ -80,23 +98,32 @@ const App = {
 
     socket.onclose = () => clearInterval(interval);
 
-    const v = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
-    const v2 = `https://elektron-live.babahhcdn.com/bb1150-le/emp/index.m3u8`;
-    onMounted(() => {
-      if (Hls.isSupported()) {
-        var video = document.getElementById("main-stream");
-        const hls = new Hls({
-          manifestLoadingRetryDelay: 5000,
-          manifestLoadingMaxRetry: Infinity,
-        });
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-          hls.loadSource(v2);
-        });
-      }
-    });
+    const testUrl = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
 
-    return { videoStarted, startVideo, clientsCount };
+    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/emp/index.m3u8`;
+    const specUrl =
+      "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
+
+    // const videoEl = ref(null);
+    // watchEffect(() => console.log(videoEl.value));
+
+    const mainVideo = useHls(mainUrl);
+    const specVideo = useHls(specUrl);
+
+    // onMounted(() => {
+    //   if (Hls.isSupported()) {
+    //     const hls = new Hls({
+    //       manifestLoadingRetryDelay: 5000,
+    //       manifestLoadingMaxRetry: Infinity,
+    //     });
+    //     hls.attachMedia(videoEl.value);
+    //     hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+    //       hls.loadSource(v2);
+    //     });
+    //   }
+    // });
+
+    return { videoStarted, startVideo, clientsCount, mainVideo, specVideo };
   },
 };
 

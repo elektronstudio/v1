@@ -12,7 +12,7 @@
       main {
         padding: 2vw;
         border: 3px solid blue;
-        height: 100vh;
+        min-height: 100vh;
         display: grid;
         grid-template-columns: 1fr 1fr 1.25fr;
         grid-template-rows: auto auto auto auto 1fr;
@@ -98,7 +98,7 @@
             bottom: 0;
           "
         >
-          <video id="main-stream" controls autoplay muted></video>
+          <video ref="mainVideo" controls autoplay muted></video>
         </div>
       </div>
 
@@ -130,8 +130,9 @@
             left: 0;
             bottom: 0;
           "
-          id="spect-stream"
-        ></div>
+        >
+          <video ref="specVideo" autoplay muted></video>
+        </div>
       </div>
       <div style="grid-area: chat; border: 2px solid royalblue">
         <div id="chat"></div>
