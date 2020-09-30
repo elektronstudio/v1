@@ -50,6 +50,7 @@ p {
 a {
   color: white;
   text-decoration: none !important;
+  font-weight: bold;
 }
 a:hover {
   filter: brightness(95%);
@@ -92,16 +93,18 @@ header {
   display: inline-block;
   border-radius: 100px;
   color: white;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: red;
 }
 
 .pill-gray {
   display: inline-block;
   border-radius: 100px;
-  color: white;
-  padding: 8px 12px;
-  background: gray;
+  color: gray;
+  padding: 6px 10px;
+  border: 2px solid gray;
+  font-weight: normal !important;
+  font-size: 0.9em;
 }
 
 video,

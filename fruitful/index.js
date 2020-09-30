@@ -11,7 +11,6 @@ import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76P
 import {
   format,
   compareAsc,
-  compareDesc,
   differenceInHours,
   formatDistanceToNowStrict,
 } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
@@ -117,7 +116,11 @@ const fetchEvents = () => {
 
   return fetch(url)
     .then((res) => res.json())
-    .then(({ items }) => items.map(parseEvent));
+    .then(({ items }) =>
+      items
+        .map(parseEvent)
+        .sort((a, b) => compareAsc(new Date(a.start), new Date(b.start)))
+    );
 };
 
 const useHls = (url) => {
@@ -167,6 +170,8 @@ const App = {
   components: { Datetime },
   setup() {
     const videoStarted = ref(false);
+
+    // Publisher
 
     const streamWSS =
       "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
@@ -262,8 +267,9 @@ const App = {
 
     socket.onclose = () => clearInterval(interval);
 
-    const testUrl = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
+    // Videos
 
+    const testUrl = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
     const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/emp/index.m3u8`;
     const specUrl =
       "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
@@ -271,9 +277,14 @@ const App = {
     const mainVideo = useHls(mainUrl);
     const specVideo = useHls(specUrl);
 
+    // Events
+
     const event = ref(null);
     fetchEvents().then((events) => {
-      event.value = events.filter(({ id }) => id === eventId)[0];
+      const e = events.filter(({ id, diff }) => {
+        return id === eventId && diff !== "past";
+      });
+      event.value = e[0];
     });
 
     return {

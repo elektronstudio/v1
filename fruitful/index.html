@@ -11,10 +11,9 @@
       }
       main {
         padding: 2vw;
-        border: 3px solid blue;
         height: 100vh;
         display: grid;
-        grid-template-columns: 1fr 1fr 1.1fr;
+        grid-template-columns: 1fr 1fr 1.3fr;
         grid-template-rows: auto auto auto 1fr;
         gap: 1.5vw;
         grid-template-areas:
@@ -51,7 +50,7 @@
       <div style="display: flex; align-items: center; grid-area: logo">
         <h1>eˉlektron<span style="color: red">.</span>live</h1>
         &emsp;
-        <a href=".."><div class="pill-white">← Back to schedule</div></a>
+        <a href=".."><div class="pill-gray">← Back to schedule</div></a>
       </div>
       <div
         style="
@@ -76,34 +75,18 @@
           position: relative;
         "
       >
-        <div
-          style="
-            border: 3px solid tomato;
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-          "
-        >
+        <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
           <video ref="mainVideo" controls autoplay muted></video>
         </div>
       </div>
 
-      <div
-        style="
-          grid-area: title;
-          overflow: auto;
-          padding-right: 16px;
-          border: 3px solid green;
-        "
-      >
+      <div style="grid-area: title; overflow: auto; padding-right: 16px">
         <datetime v-if="event" :event="event"></datetime>
         <p style="margin-bottom: 8px"></p>
         <h3>{{ event ? event.summary : '' }}</h3>
       </div>
       <div
-        style="grid-area: desc; overflow: auto; border: 3px solid green"
+        style="grid-area: desc; overflow: auto; opacity: 0.7"
         id="event"
         v-html="event ? event.description : ''"
       ></div>
@@ -117,16 +100,7 @@
           position: relative;
         "
       >
-        <div
-          style="
-            border: 3px solid tomato;
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-          "
-        >
+        <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
           <video ref="specVideo" autoplay muted></video>
         </div>
         <div
@@ -141,8 +115,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 0 16px;
-            background: rgba(20, 20, 20, 0.85);
+            padding: 0 32px;
+            background: rgba(20, 20, 20, 0.9);
           "
         >
           <div>
@@ -166,7 +140,7 @@
           <button @click="stopVideo">Stop my camera</button>
         </div>
       </div>
-      <div style="grid-area: chat; border: 2px solid royalblue">
+      <div style="grid-area: chat">
         <div id="chat"></div>
       </div>
     </main>
