@@ -13,7 +13,6 @@
   box-sizing: border-box;
 }
 body {
-  height: 100vh;
   margin: 0;
   background: black;
   color: white;
@@ -29,10 +28,11 @@ h5,
 h6 {
   margin: 0;
   font-family: gthaptik, sans-serif;
+  line-height: 1.5em;
 }
 h1 {
   font-size: 2.5em;
-  line-height: ;
+  line-height: 1em;
 }
 h2 {
   font-size: 1.2em;
@@ -50,6 +50,7 @@ p {
 a {
   color: white;
   text-decoration: none !important;
+  font-weight: bold;
 }
 a:hover {
   filter: brightness(95%);
@@ -60,7 +61,6 @@ p {
 p a {
   text-decoration: none !important;
 }
-
 /* Layout */
 
 main {
@@ -93,16 +93,18 @@ header {
   display: inline-block;
   border-radius: 100px;
   color: white;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: red;
 }
 
 .pill-gray {
   display: inline-block;
   border-radius: 100px;
-  color: white;
-  padding: 8px 12px;
-  background: gray;
+  color: gray;
+  padding: 6px 10px;
+  border: 2px solid gray;
+  font-weight: normal !important;
+  font-size: 0.9em;
 }
 
 video,
