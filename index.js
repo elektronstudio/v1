@@ -212,7 +212,7 @@ const App = {
     onMounted(() =>
       fetchEvents().then((events) => {
         currentEvents.value = events.filter(({ diff }) => diff !== "past");
-        pastEvents.value = events.filter(({ diff }) => diff === "past");
+        pastEvents.value = events.filter(({ diff }) => diff == "past");
       })
     );
     return { currentEvents, pastEvents };
