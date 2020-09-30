@@ -6,11 +6,8 @@
     <link href="../index.css" rel="stylesheet" />
     <title>eˉlektron.live</title>
     <style>
-      body {
-        padding: 0;
-      }
       main {
-        padding: 2vw;
+        padding: 4vw;
         height: 100vh;
         display: grid;
         grid-template-columns: 1fr 1fr 1.3fr;
@@ -37,19 +34,20 @@
             "desc";
         }
       }
-      [v-cloak] {
-        display: none;
-      }
-      video {
-        background: black;
-      }
     </style>
   </head>
   <body>
     <main id="app" v-cloak>
-      <div style="display: flex; align-items: center; grid-area: logo">
-        <h1>eˉlektron<span style="color: red">.</span>live</h1>
-        &emsp;
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          grid-area: logo;
+          padding: 8px 0;
+        "
+      >
+        <img src="index.svg" style="width: 300px; display: block" />
+        &nbsp;&nbsp;&nbsp;
         <a href=".."><div class="pill-gray">← Back to schedule</div></a>
       </div>
       <div
@@ -61,7 +59,7 @@
         "
       >
         <h3 v-show="clientsCount > 0">
-          {{ clientsCount }} live viewer{{ clientsCounts > 1 ? 's' : ''}}
+          {{ clientsCount }} live viewer{{ clientsCount > 1 ? 's' : ''}}
         </h3>
       </div>
 
