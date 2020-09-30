@@ -12,14 +12,13 @@
       main {
         padding: 2vw;
         border: 3px solid blue;
-        min-height: 100vh;
+        height: 100vh;
         display: grid;
-        grid-template-columns: 1fr 1fr 1.25fr;
-        grid-template-rows: auto auto auto auto 1fr;
+        grid-template-columns: 1fr 1fr 1.1fr;
+        grid-template-rows: auto auto auto 1fr;
         gap: 1.5vw;
         grid-template-areas:
           "logo   logo  count"
-          "msg    msg   msg"
           "main   main  spec"
           "main   main  chat"
           "title  desc  chat";
@@ -35,15 +34,20 @@
             "main"
             "chat"
             "count"
-            "msg"
             "spec"
             "desc";
         }
       }
+      [v-cloak] {
+        display: none;
+      }
+      video {
+        background: black;
+      }
     </style>
   </head>
   <body>
-    <main id="app">
+    <main id="app" v-cloak>
       <div style="display: flex; align-items: center; grid-area: logo">
         <h1>eˉlektron<span style="color: red">.</span>live</h1>
         &emsp;
@@ -61,10 +65,9 @@
           {{ clientsCount }} live viewer{{ clientsCounts > 1 ? 's' : ''}}
         </h3>
       </div>
-      <div
+      <!--div
         v-show="!videoStarted"
         style="
-          grid-area: msg;
           display: grid;
           grid-template-columns: 1fr auto;
           align-items: center;
@@ -77,7 +80,7 @@
         audience member in our venue!
 
         <button @click="startVideo">Start video</button>
-      </div>
+      </div-->
       <div
         style="
           grid-area: main;
@@ -102,15 +105,21 @@
         </div>
       </div>
 
-      <div style="grid-area: title; overflow: auto; border: 3px solid green">
-        <h3>Event name</h3>
+      <div
+        style="
+          grid-area: title;
+          overflow: auto;
+          padding-right: 16px;
+          border: 3px solid green;
+        "
+      >
+        <h3>{{ event ? event.summary : '' }}</h3>
       </div>
       <div
         style="grid-area: desc; overflow: auto; border: 3px solid green"
         id="event"
-      >
-        ...
-      </div>
+        v-html="event ? event.description : ''"
+      ></div>
       <div
         style="
           grid-area: spec;
@@ -139,5 +148,5 @@
       </div>
     </main>
   </body>
-  <script type="module" src="./index2.js"></script>
+  <script type="module" src="./index.js"></script>
 </html>
