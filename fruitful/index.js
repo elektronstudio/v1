@@ -2,7 +2,7 @@ import {
   createApp,
   ref,
   onMounted,
-  watchEffect,
+  computed,
 } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
 import postscribe from "https://cdn.skypack.dev/postscribe";
 import Hls from "https://cdn.skypack.dev/hls.js";
@@ -128,14 +128,20 @@ const useHls = (url) => {
 const Datetime = {
   props: ["event"],
   setup() {
-    return { formatAgo, formatDate };
+    const color = computed(() =>
+      event && (event.diff == "soon" || event.diff == "now") ? "red" : "inherit"
+    );
+    return { color, formatAgo, formatDate };
   },
   template: `
    <h4>
     ⏰
-    
+    <span :style="{ color }">
+      {{ formatAgo(event.start) }}
+    </span>
+    <br />
     <span style="opacity:0.7">
-      {{ formatDate(event.start) }} → {{formatDate(event.end)}}
+      {{ formatDate(event.start) }} → {{ formatDate(event.end) }}
     </span>
   </h4>
   `,
