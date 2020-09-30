@@ -16,6 +16,10 @@ import {
   formatDistanceToNowStrict,
 } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
 
+// We use standard script tag import for Flussonic since it's not available in npm CDN
+
+const { Publisher, PUBLISHER_EVENTS, PLAYER_EVENTS } = window.FlussonicWebRTC;
+
 // Setup
 
 const eventId = window.location.pathname.slice(1).split("/")[0];
@@ -28,6 +32,16 @@ function safeJsonParse(str) {
   } catch (err) {
     return null;
   }
+}
+
+// Id utils
+
+function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
 // Date utils
@@ -153,8 +167,34 @@ const App = {
   components: { Datetime },
   setup() {
     const videoStarted = ref(false);
+
+    const streamWSS =
+      "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
+
+    const publisher = new Publisher(streamWSS, {
+      previewOptions: {
+        autoplay: true,
+        controls: false,
+        muted: true,
+      },
+      constraints: {
+        video: true,
+        audio: true,
+      },
+    });
+
+    publisher.on(PUBLISHER_EVENTS.STREAMING, () => {
+      console.log("Streaming started");
+    });
+
     const startVideo = () => {
-      videoStarted.value = !videoStarted.value;
+      videoStarted.value = true;
+      publisher.start();
+    };
+
+    const stopVideo = () => {
+      videoStarted.value = false;
+      publisher.stop();
     };
 
     // Chat
@@ -239,6 +279,7 @@ const App = {
     return {
       videoStarted,
       startVideo,
+      stopVideo,
       clientsCount,
       mainVideo,
       specVideo,

@@ -142,7 +142,7 @@
             justify-content: center;
             text-align: center;
             padding: 0 16px;
-            background: rgba(20, 20, 20, 0.8);
+            background: rgba(20, 20, 20, 0.85);
           "
         >
           <div>
@@ -153,11 +153,24 @@
             <button @click="startVideo">Start my camera</button>
           </div>
         </div>
+        <div
+          v-show="videoStarted"
+          style="
+            position: absolute;
+            right: 0;
+            left: 0;
+            bottom: 16px;
+            text-align: center;
+          "
+        >
+          <button @click="stopVideo">Stop my camera</button>
+        </div>
       </div>
       <div style="grid-area: chat; border: 2px solid royalblue">
         <div id="chat"></div>
       </div>
     </main>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/@flussonic/flussonic-webrtc-player/dist/index.js"></script>
   <script type="module" src="./index.js"></script>
 </html>
