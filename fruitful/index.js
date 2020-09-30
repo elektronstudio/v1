@@ -8,9 +8,19 @@ import postscribe from "https://cdn.skypack.dev/postscribe";
 import Hls from "https://cdn.skypack.dev/hls.js";
 import TurndownService from "https://cdn.skypack.dev/pin/turndown@v6.0.0-qC3MfTphTfj9zgLFS0WD/min/turndown.js";
 import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76Ped/min/marked.js";
-import { differenceInHours } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
+import {
+  format,
+  compareAsc,
+  compareDesc,
+  differenceInHours,
+  formatDistanceToNowStrict,
+} from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
 
-// Utils
+// Setup
+
+const eventId = window.location.pathname.slice(1).split("/")[0];
+
+// Json utils
 
 function safeJsonParse(str) {
   try {
@@ -19,6 +29,8 @@ function safeJsonParse(str) {
     return null;
   }
 }
+
+// Date utils
 
 const isDatetime = (str) => String(str).match(/:/g);
 
@@ -38,6 +50,23 @@ const getDifference = (start, end) => {
     return "future";
   }
 };
+
+const formatDate = (str) => {
+  if (isDatetime(str)) {
+    return format(new Date(str), "d. MMM y HH:mm");
+  } else {
+    return format(new Date(str), "d. MMM y");
+  }
+};
+
+const formatAgo = (str) => {
+  const diff = differenceInHours(new Date(str), new Date());
+  return `${diff >= 0 ? "In " : ""} ${formatDistanceToNowStrict(
+    new Date(str)
+  )} ${diff < 0 ? "ago" : ""}`;
+};
+
+// Content utils
 
 const turndown = new TurndownService();
 
@@ -94,11 +123,28 @@ const useHls = (url) => {
   return el;
 };
 
+// Components
+
+const Datetime = {
+  props: ["event"],
+  setup() {
+    return { formatAgo, formatDate };
+  },
+  template: `
+   <h4>
+    ⏰
+    
+    <span style="opacity:0.7">
+      {{ formatDate(event.start) }} → {{formatDate(event.end)}}
+    </span>
+  </h4>
+  `,
+};
+
 // App
 
-const eventId = window.location.pathname.slice(1).split("/")[0];
-
 const App = {
+  components: { Datetime },
   setup() {
     const videoStarted = ref(false);
     const startVideo = () => {

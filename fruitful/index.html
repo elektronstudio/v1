@@ -113,6 +113,7 @@
           border: 3px solid green;
         "
       >
+        <datetime v-if="event" :event="event"></datetime>
         <h3>{{ event ? event.summary : '' }}</h3>
       </div>
       <div
