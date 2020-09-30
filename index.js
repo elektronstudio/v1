@@ -160,7 +160,6 @@ const EventRow = {
     const isOpen = ref(false);
     const style = computed(() => {
       return {
-        paddingLeft: "24px",
         borderLeft: `3px solid ${
           props.event.diff == "soon" || props.event.diff == "now"
             ? "red"
@@ -169,10 +168,19 @@ const EventRow = {
         opacity: props.event.diff == "past" ? 0.5 : 1,
       };
     });
-    return { isOpen, style };
+
+    const pillClass = computed(() => {
+      const isSoon = props.event.diff == "soon" || props.event.diff == "now";
+      return {
+        "pill-red": isSoon,
+        "pill-gray": !isSoon,
+      };
+    });
+
+    return { isOpen, style, pillClass };
   },
   template: `
-  <article :style="style" style="display: grid; gap: 8px">
+  <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
       <h3
         style="cursor: pointer; margin: 0"
         @click="isOpen = !isOpen"
@@ -183,8 +191,8 @@ const EventRow = {
       
       <datetime :event="event" />
       <a v-if="event.id" target="_blank" style="display: block" :href="'./' + event.id">
-        <div class="pill-red">
-          {{ event.id }}.elektron.live
+        <div :class="pillClass">
+          See the live at <b>{{ event.id }}.elektron.live</b> →
         </div>
       </a>
     <div v-if="isOpen" v-html="event ? event.description : ''" />
