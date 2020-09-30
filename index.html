@@ -5,24 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="index.css" rel="stylesheet" />
     <title>eˉlektron.live</title>
+    <style>
+      main {
+        padding: 4vw;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2vw 5vw;
+        grid-template-areas:
+          "header header"
+          "events about";
+      }
+      @media (max-width: 800px) {
+        main {
+          height: inherit;
+          grid-template-columns: 1fr;
+          gap: 8vw;
+          grid-template-areas:
+            "header"
+            "events"
+            "about";
+        }
+      }
+    </style>
   </head>
   <body>
-    <script type="module" src="index.js"></script>
-    <h1>eˉlektron<span style="color: red">.</span>live</h1>
-    <br /><br />
-    <main>
-      <div>
-        <h2>Upcoming events</h2>
+    <main id="app" v-cloak>
+      <div style="grid-area: header">
+        <img src="index.svg" style="width: 300px" />
         <br />
         <br />
-        <div id="events-current" style="display: grid; gap: 32px"></div>
-        <br />
-        <br />
-        <h2>Past events</h2>
-        <br />
-        <div id="events-past" style="display: grid; gap: 32px"></div>
       </div>
-      <div style="opacity: 0.7">
+      <div style="grid-area: events; display: grid; gap: 48px">
+        <h2>Upcoming events</h2>
+        <event-row v-for="event in currentEvents" :event="event" />
+        <h2>Past events</h2>
+        <event-row v-for="event in pastEvents" :event="event" />
+      </div>
+      <div style="grid-area: about; opacity: 0.7">
         <h2>About</h2>
         <br />
         <br />
@@ -33,7 +52,6 @@
           streaming) while minimizing the restrictions to access since any
           number of audience members is possible.
         </p>
-
         <p>
           When inventing and building elektron.live we realized that the
           platform could be something more than only a way of demonstrating
@@ -57,13 +75,10 @@
         </p>
         <p>
           elektron.live is created by e⁻lektron team together with Stepan
-          Bolotnikov and Babahh Media.
+          Bolotnikov and <a href="https://babahh.com">Babahh Media</a>.
         </p>
       </div>
     </main>
-    <script type="module">
-      import { renderEvents } from "./index.js";
-      renderEvents();
-    </script>
+    <script type="module" src="./index.js"></script>
   </body>
 </html>
