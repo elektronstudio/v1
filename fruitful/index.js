@@ -126,7 +126,12 @@ const fetchEvents = () => {
 const useHls = (url) => {
   const el = ref(null);
   onMounted(() => {
-    if (Hls.isSupported()) {
+    if (el.value.canPlayType("application/vnd.apple.mpegurl")) {
+      el.value.src = url;
+      el.value.onerror = (e) => {
+        el.value.src = url;
+      };
+    } else if (Hls.isSupported()) {
       const hls = new Hls({
         manifestLoadingRetryDelay: 5000,
         manifestLoadingMaxRetry: Infinity,
