@@ -287,10 +287,12 @@ const App = {
     const event = ref(null);
     fetchEvents().then((events) => {
       const e = events.filter(({ id, diff }) => {
-        return id === eventId && diff !== "past";
+        return id === eventId;
       });
       event.value = e[0];
     });
+
+    const isSummary = ref(false);
 
     return {
       videoStarted,
@@ -300,6 +302,7 @@ const App = {
       mainVideo,
       specVideo,
       event,
+      isSummary,
     };
   },
 };
