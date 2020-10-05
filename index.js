@@ -31,9 +31,9 @@ const getDifference = (start, end) => {
   );
   const diffEnd = differenceInHours(createDate(end), createDate(new Date()));
   //return `${diffStart} ${diffEnd}`;
-  if (isDatetime(diffEnd) && diffEnd <= 0) {
+  if (isDatetime(diffEnd) && diffEnd <= 12) {
     return { diff: "past", diffStart, diffEnd };
-  } else if (!isDatetime(diffEnd) && diffStart <= 0) {
+  } else if (!isDatetime(diffEnd) && diffEnd <= 0) {
     return { diff: "past", diffStart, diffEnd };
   } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
     return { diff: "now", diffStart, diffEnd };
@@ -193,7 +193,6 @@ const EventRow = {
   },
   template: `
   <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
-      <h4>{{ event.diff }} {{ event.diffStart }} {{ event.diffEnd }}
       <h3
         style="cursor: pointer; margin: 0"
         @click="isOpen = !isOpen"
@@ -203,6 +202,7 @@ const EventRow = {
       </h3>  
       
       <datetime :event="event" />
+      <p style="line-height: 0.5em" />
       <a v-if="event.id" target="_blank" style="display: block" :href="'./' + event.id">
         <div :class="pillClass">
           See the live at <b>{{ event.id }}.elektron.live</b> →
@@ -226,9 +226,13 @@ const App = {
     const pastEvents = ref([]);
     onMounted(() =>
       fetchEvents().then((events) => {
-        console.log(events);
-        currentEvents.value = events; //events.filter(({ diff }) => diff.diff !== "past");
-        //pastEvents.value = events.filter(({ diff }) => diff.diff == "past");
+        currentEvents.value = events
+          .filter(({ diff }) => {
+            return diff !== "past";
+          })
+          .reverse();
+
+        pastEvents.value = events.filter(({ diff }) => diff == "past");
       })
     );
     return { currentEvents, pastEvents };

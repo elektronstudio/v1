@@ -275,7 +275,7 @@ const App = {
     // Videos
 
     const testUrl = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
-    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/emp/index.m3u8`;
+    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${eventId}/index.m3u8`;
     const specUrl =
       "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
 
