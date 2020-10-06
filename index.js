@@ -4,6 +4,7 @@ import {
   onMounted,
   computed,
 } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
+import { createRouter, createWebHistory, useRoute } from "./router.js";
 import TurndownService from "https://cdn.skypack.dev/pin/turndown@v6.0.0-qC3MfTphTfj9zgLFS0WD/min/turndown.js";
 import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76Ped/min/marked.js";
 import {
@@ -217,6 +218,7 @@ const EventRow = {
 
 // App
 
+/*
 const App = {
   components: {
     EventRow,
@@ -240,3 +242,30 @@ const App = {
 };
 const app = createApp(App);
 app.mount("#app");
+*/
+
+const Home = { template: "<div>Home</div>" };
+const About = {
+  setup() {
+    const { params } = useRoute();
+    return { id: params.id };
+  },
+  template: "<div>About: {{ id }}</div>",
+};
+
+const routes = [
+  { path: "/:id", component: About },
+  { path: "/", component: Home },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+const app = createApp({});
+app.use(router);
+// app.component("RouterLink", RouterLink);
+// app.component("RouterView", RouterView);
+
+app.mount("#app2");

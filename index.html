@@ -29,7 +29,17 @@
     </style>
   </head>
   <body>
-    <main id="app" v-cloak>
+    <div id="app2">
+      <p>
+        <router-link to="/">Go to Home</router-link>
+        <router-link v-for="to in ['/a','/b']" :to="to"
+          >Go to {{ to }}</router-link
+        >
+      </p>
+      <router-view></router-view>
+    </div>
+
+    <main id="app" v-cloaks style="display: none">
       <div style="grid-area: header">
         <img src="index.svg" style="width: 300px" />
         <br />
