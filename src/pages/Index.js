@@ -9,10 +9,13 @@ export default {
     EventRow,
   },
   setup() {
+    const eventsUrl =
+      "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
+
     const currentEvents = ref([]);
     const pastEvents = ref([]);
     onMounted(() =>
-      fetchEvents().then((events) => {
+      fetchEvents(eventsUrl).then((events) => {
         currentEvents.value = events
           .filter(({ diff }) => {
             return diff !== "past";

@@ -100,10 +100,7 @@ export const parseEvent = (event) => {
   return { summary, description, teaser, id, start, end, youtube, ...diff };
 };
 
-export const fetchEvents = () => {
-  const url =
-    "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
-
+export const fetchEvents = (url) => {
   return fetch(url)
     .then((res) => res.json())
     .then(({ items }) =>

@@ -13,25 +13,31 @@ export default {
   setup() {
     const { params } = useRoute();
 
-    // Main video
+    // URLS
 
-    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${params.id}/index.m3u8`;
-    const mainVideo = useHls(mainUrl);
+    const mainInputUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${params.id}/index.m3u8`;
+    const specOutputUrl =
+      "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
+    const specInputmUrl =
+      "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
+    const counterUrl = "wss://ws-fggq5.ondigitalocean.app";
+    const eventsUrl =
+      "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
 
-    // Specator video
+    // Set up main video input
+
+    const mainVideo = useHls(mainInputUrl);
+
+    // Set up spectator video input
+
+    const specVideo = useHls(specOutputUrl);
+    const videoStarted = ref(false);
+
+    // Set up spectator video output
 
     const { Publisher, PUBLISHER_EVENTS } = Flussonic;
 
-    const specUrl =
-      "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
-    const specVideo = useHls(specUrl);
-
-    const videoStarted = ref(false);
-
-    const streamWSS =
-      "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
-
-    const publisher = new Publisher(streamWSS, {
+    const publisher = new Publisher(specInputmUrl, {
       previewOptions: {
         autoplay: true,
         controls: false,
@@ -101,7 +107,7 @@ export default {
 
     const clientsCount = ref(false);
 
-    const socket = new WebSocket("wss://ws-fggq5.ondigitalocean.app/");
+    const socket = new WebSocket(counterUrl);
 
     let interval = null;
 
@@ -125,7 +131,7 @@ export default {
     // Events
 
     const event = ref(null);
-    fetchEvents().then((events) => {
+    fetchEvents(eventsUrl).then((events) => {
       const e = events.reverse().filter(({ id, diff }) => {
         return id === params.id;
       });
