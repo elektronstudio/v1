@@ -1,10 +1,11 @@
 import { ref, onMounted } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
+import { useRoute } from "../deps/router.js";
 
-import { useRoute } from "../../router.js";
 import { useHls } from "../hooks/index.js";
-import DatetimeLive from "../components/DatetimeLive.js";
 import { uuidv4, fetchEvents, safeJsonParse } from "../utils/index.js";
+
+import DatetimeLive from "../components/DatetimeLive.js";
 
 // We use standard script tag import for Flussonic since it's not available in npm CDN
 
@@ -126,7 +127,7 @@ export default {
 
     const event = ref(null);
     fetchEvents().then((events) => {
-      const e = events.filter(({ id, diff }) => {
+      const e = events.reverse().filter(({ id, diff }) => {
         return id === params.id;
       });
       event.value = e[0];

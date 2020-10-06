@@ -43,7 +43,7 @@ export default {
       <p style="line-height: 0.5em" />
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
         <div :class="pillClass">
-          See the live at <b>{{ event.id }}.elektron.live</b> →
+          See the live at <b>elektron.live/{{ event.id }}</b> →
         </div>
       </router-link>
     <div v-if="isOpen" v-html="event ? event.description : ''" />

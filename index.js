@@ -1,5 +1,5 @@
-import { createApp } from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
-import { createRouter, createWebHistory } from "./router.js";
+import { createApp } from "./src/deps/vue.js";
+import { createRouter, createWebHistory } from "./src/deps/router.js";
 
 import Live from "./src/pages/Live.js";
 import Index from "./src/pages/Index.js";

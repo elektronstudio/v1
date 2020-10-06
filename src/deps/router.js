@@ -20,7 +20,7 @@ import {
   watch,
   shallowRef,
   nextTick,
-} from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
+} from "./vue.js";
 
 const hasSymbol =
   typeof Symbol === "function" && typeof Symbol.toStringTag === "symbol";

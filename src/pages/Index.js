@@ -1,8 +1,9 @@
 import { ref, onMounted } from "../deps/vue.js";
 
-import EventRow from "../components/EventRow.js";
-//const EventRow = { template: `a` };
 import { fetchEvents } from "../utils/index.js";
+
+import EventRow from "../components/EventRow.js";
+
 export default {
   components: {
     EventRow,
