@@ -1,15 +1,12 @@
 import { ref, onMounted } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { useRoute } from "../deps/router.js";
+import { Flussonic } from "../deps/flussonic.js";
 
 import { useHls } from "../hooks/index.js";
 import { uuidv4, fetchEvents, safeJsonParse } from "../utils/index.js";
 
 import DatetimeLive from "../components/DatetimeLive.js";
-
-// We use standard script tag import for Flussonic since it's not available in npm CDN
-
-const { Publisher, PUBLISHER_EVENTS } = window.FlussonicWebRTC;
 
 export default {
   components: { DatetimeLive },
@@ -22,6 +19,8 @@ export default {
     const mainVideo = useHls(mainUrl);
 
     // Specator video
+
+    const { Publisher, PUBLISHER_EVENTS } = Flussonic;
 
     const specUrl =
       "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
@@ -156,7 +155,7 @@ export default {
         padding: 8px 0;
       "
     >
-      <img src="index.svg" style="width: 300px; display: block" />
+      <img src="../index.svg" style="width: 300px; display: block" />
       &nbsp;&nbsp;&nbsp;
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>
