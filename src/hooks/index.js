@@ -1,10 +1,5 @@
-import {
-  ref,
-  onMounted,
-  computed,
-} from "https://unpkg.com/vue@3.0.0/dist/vue.esm-browser.prod.js";
-import postscribe from "https://cdn.skypack.dev/postscribe";
-import Hls from "https://cdn.skypack.dev/hls.js";
+import { ref, onMounted } from "../deps/vue.js";
+import { Hls } from "../deps/hls.js";
 
 export const useHls = (url) => {
   const el = ref(null);
