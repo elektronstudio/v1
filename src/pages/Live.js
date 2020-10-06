@@ -5,11 +5,11 @@ import { Flussonic } from "../deps/flussonic.js";
 import { useHls } from "../hooks/index.js";
 import { uuidv4, fetchEvents, safeJsonParse } from "../utils/index.js";
 
-import DatetimeLive from "../components/DatetimeLive.js";
+import EventDetails from "../components/EventDetails.js";
 import LegacyChat from "../components/LegacyChat.js";
 
 export default {
-  components: { DatetimeLive, LegacyChat },
+  components: { EventDetails, LegacyChat },
   setup() {
     const { params } = useRoute();
 
@@ -88,7 +88,7 @@ export default {
 
     socket.onclose = () => clearInterval(interval);
 
-    // Events
+    // Event
 
     const event = ref(null);
     fetchEvents(eventsUrl).then((events) => {
@@ -98,8 +98,6 @@ export default {
       event.value = e[0];
     });
 
-    const isSummary = ref(false);
-
     return {
       videoStarted,
       startVideo,
@@ -108,7 +106,6 @@ export default {
       mainVideo,
       specVideo,
       event,
-      isSummary,
     };
   },
   template: `
@@ -152,8 +149,9 @@ export default {
       </div>
     </div>
 
-    <div style="grid-area: title; padding-right: 16px">
-      <datetime-live v-if="event" :event="event"></datetime-live>
+    <div style="grid-area: title">
+      <event-details :event="event" />
+      <!-- <datetime-live v-if="event" :event="event"></datetime-live>
       <p style="margin-bottom: 8px"></p>
       <h3>{{ event ? event.summary : '' }}</h3>
       <p style="margin-bottom: 8px"></p>
@@ -169,7 +167,7 @@ export default {
         v-if="isSummary"
         style="opacity: 0.7"
         v-html="event ? event.description : ''"
-      ></div>
+      ></div> -->
     </div>
     <div
       style="
