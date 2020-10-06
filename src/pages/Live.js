@@ -20,7 +20,7 @@ export default {
       "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
     const specInputmUrl =
       "wss://fo1.babahhcdn.com/elektron/" + uuidv4() + "?password=tron";
-    const counterUrl = "wss://ws-fggq5.ondigitalocean.app";
+    const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
     const eventsUrl =
       "https://www.googleapis.com/calendar/v3/calendars/mkr5k66b069hve1f7aa77m4bsc@group.calendar.google.com/events?key=AIzaSyAkeDHwQgc22TWxi4-2r9_5yMWVnLQNMXc";
 
@@ -67,7 +67,7 @@ export default {
 
     const clientsCount = ref(false);
 
-    const socket = new WebSocket(counterUrl);
+    const socket = new WebSocket(chatUrl);
 
     let interval = null;
 
@@ -151,23 +151,6 @@ export default {
 
     <div style="grid-area: title">
       <event-details :event="event" />
-      <!-- <datetime-live v-if="event" :event="event"></datetime-live>
-      <p style="margin-bottom: 8px"></p>
-      <h3>{{ event ? event.summary : '' }}</h3>
-      <p style="margin-bottom: 8px"></p>
-      <div
-        v-if="!isSummary"
-        @click="isSummary = !isSummary"
-        style="cursor: pointer"
-        class="pill-gray"
-      >
-        More info
-      </div>
-      <div
-        v-if="isSummary"
-        style="opacity: 0.7"
-        v-html="event ? event.description : ''"
-      ></div> -->
     </div>
     <div
       style="
