@@ -3,11 +3,15 @@ import postscribe from "https://cdn.skypack.dev/postscribe";
 import TurndownService from "https://cdn.skypack.dev/pin/turndown@v6.0.0-qC3MfTphTfj9zgLFS0WD/min/turndown.js";
 import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76Ped/min/marked.js";
 import {
-  format,
-  compareAsc,
+  compareDesc,
   differenceInHours,
   formatDistanceToNowStrict,
 } from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
+import {
+  zonedTimeToUtc,
+  utcToZonedTime,
+  format,
+} from "https://cdn.skypack.dev/date-fns-tz";
 
 // Json utils
 
@@ -33,20 +37,24 @@ export const uuidv4 = () => {
 
 const isDatetime = (str) => String(str).match(/:/g);
 
+const createDate = (str) => utcToZonedTime(str, "Europe/Tallinn");
+
 const getDifference = (start, end) => {
-  const diffStart = differenceInHours(new Date(start), new Date());
-  const diffEnd = differenceInHours(new Date(end), new Date());
-  //return `${diffStart} ${diffEnd}`;
-  if (isDatetime(diffEnd) && diffEnd <= 0) {
-    return "past";
-  } else if (!isDatetime(diffEnd) && diffStart <= 0) {
-    return "past";
+  const diffStart = differenceInHours(
+    createDate(start),
+    createDate(new Date())
+  );
+  const diffEnd = differenceInHours(createDate(end), createDate(new Date()));
+  if (isDatetime(diffEnd) && diffEnd <= 12) {
+    return { diff: "past", diffStart, diffEnd };
+  } else if (!isDatetime(diffEnd) && diffEnd <= 0) {
+    return { diff: "past", diffStart, diffEnd };
   } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
-    return "now";
+    return { diff: "now", diffStart, diffEnd };
   } else if (diffStart <= 12) {
-    return "soon";
+    return { diff: "soon", diffStart, diffEnd };
   } else {
-    return "future";
+    return { diff: "future", diffStart, diffEnd };
   }
 };
 
@@ -93,7 +101,7 @@ export const parseEvent = (event) => {
   const youtube = youtubes && youtubes[2] ? youtubes[2] : "";
 
   const diff = getDifference(start, end);
-  return { summary, description, teaser, id, start, end, diff, youtube };
+  return { summary, description, teaser, id, start, end, youtube, ...diff };
 };
 
 export const fetchEvents = () => {
@@ -105,6 +113,6 @@ export const fetchEvents = () => {
     .then(({ items }) =>
       items
         .map(parseEvent)
-        .sort((a, b) => compareAsc(new Date(a.start), new Date(b.start)))
+        .sort((a, b) => compareDesc(createDate(a.start), createDate(b.start)))
     );
 };

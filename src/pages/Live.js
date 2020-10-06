@@ -8,7 +8,7 @@ import { uuidv4, fetchEvents, safeJsonParse } from "../utils/index.js";
 
 // We use standard script tag import for Flussonic since it's not available in npm CDN
 
-const { Publisher, PUBLISHER_EVENTS, PLAYER_EVENTS } = window.FlussonicWebRTC;
+const { Publisher, PUBLISHER_EVENTS } = window.FlussonicWebRTC;
 
 export default {
   components: { DatetimeLive },
@@ -187,7 +187,7 @@ export default {
     </div>
 
     <div style="grid-area: title; padding-right: 16px">
-      <datetime v-if="event" :event="event"></datetime>
+      <datetime-live v-if="event" :event="event"></datetime-live>
       <p style="margin-bottom: 8px"></p>
       <h3>{{ event ? event.summary : '' }}</h3>
       <p style="margin-bottom: 8px"></p>
