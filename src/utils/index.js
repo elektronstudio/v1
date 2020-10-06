@@ -1,17 +1,14 @@
 import { ref, onMounted, computed } from "../deps/vue.js";
-import postscribe from "https://cdn.skypack.dev/postscribe";
-import TurndownService from "https://cdn.skypack.dev/pin/turndown@v6.0.0-qC3MfTphTfj9zgLFS0WD/min/turndown.js";
-import marked from "https://cdn.skypack.dev/pin/marked@v1.1.1-iZqTGJZXK3XAWXf76Ped/min/marked.js";
+import { postscribe } from "../deps/postscribe.js";
+import { TurndownService } from "../deps/turndown.js";
+
+import { marked } from "../deps/marked.js";
 import {
   compareDesc,
   differenceInHours,
   formatDistanceToNowStrict,
-} from "https://cdn.skypack.dev/pin/date-fns@v2.16.1-bghq1qKsQxU85Me2Z8iI/min/date-fns.js";
-import {
-  zonedTimeToUtc,
-  utcToZonedTime,
-  format,
-} from "https://cdn.skypack.dev/date-fns-tz";
+} from "../deps/date-fns.js";
+import { zonedTimeToUtc, utcToZonedTime, format } from "../deps/date-fns-tz.js";
 
 // Json utils
 
