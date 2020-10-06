@@ -5,33 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="index.css" rel="stylesheet" />
     <title>eˉlektron.live</title>
-    <style>
-      main {
-        padding: 4vw;
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 2vw 5vw;
-        grid-template-areas:
-          "header header"
-          "events about";
-      }
-      @media (max-width: 800px) {
-        main {
-          height: inherit;
-          grid-template-columns: 1fr;
-          gap: 8vw;
-          grid-template-areas:
-            "header"
-            "events"
-            "about";
-        }
-      }
-    </style>
   </head>
   <body>
     <div id="app" v-cloak>
       <router-view></router-view>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@flussonic/flussonic-webrtc-player/dist/index.js"></script>
     <script type="module" src="./index.js"></script>
   </body>
 </html>

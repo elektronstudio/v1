@@ -132,3 +132,52 @@ button:hover {
 [v-cloak] {
   display: none;
 }
+
+.layout-index {
+  padding: 4vw;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2vw 5vw;
+  grid-template-areas:
+    "header header"
+    "events about";
+}
+@media (max-width: 800px) {
+  .layout-index {
+    height: inherit;
+    grid-template-columns: 1fr;
+    gap: 8vw;
+    grid-template-areas:
+      "header"
+      "events"
+      "about";
+  }
+}
+
+.layout-live {
+  padding: 4vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  grid-template-rows: auto auto auto 1fr;
+  gap: 1.5vw;
+  grid-template-areas:
+    "logo   logo  count"
+    "main   main  spec"
+    "main   main  chat"
+    "title  title  chat";
+}
+@media (max-width: 800px) {
+  .layout-live {
+    height: inherit;
+    grid-template-columns: 1fr;
+    gap: 2vw 1.5vw;
+    grid-template-areas:
+      "logo"
+      "title"
+      "main"
+      "chat"
+      "count"
+      "spec";
+  }
+}
