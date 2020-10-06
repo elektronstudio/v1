@@ -1,5 +1,5 @@
 import { ref, onMounted } from "../deps/vue.js";
-import postscribe from "https://cdn.skypack.dev/postscribe";
+import { postscribe } from "../deps/postscribe.js";
 
 import { useRoute } from "../../router.js";
 import { useHls } from "../hooks/index.js";
@@ -15,7 +15,16 @@ export default {
   setup() {
     const { params } = useRoute();
 
-    // Audience video
+    // Main video
+
+    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${params.id}/index.m3u8`;
+    const mainVideo = useHls(mainUrl);
+
+    // Specator video
+
+    const specUrl =
+      "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
+    const specVideo = useHls(specUrl);
 
     const videoStarted = ref(false);
 
@@ -112,16 +121,6 @@ export default {
     };
 
     socket.onclose = () => clearInterval(interval);
-
-    // Videos
-
-    const testUrl = `https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8`;
-    const mainUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${params.id}/index.m3u8`;
-    const specUrl =
-      "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
-
-    const mainVideo = useHls(mainUrl);
-    const specVideo = useHls(specUrl);
 
     // Events
 
