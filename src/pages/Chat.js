@@ -1,14 +1,28 @@
 import { ref, onMounted } from "../deps/vue.js";
+import { utcToZonedTime, zonedTimeToUtc, format } from "../deps/date-fns-tz.js";
 import { useLocalstorage } from "../hooks/index.js";
-import { safeJsonParse, any, animals } from "../utils/index.js";
+import {
+  safeJsonParse,
+  createNow,
+  randomId,
+  any,
+  adjectives,
+  animals,
+} from "../utils/index.js";
+
+import ChatMessage from "../components/ChatMessage.js";
 
 export default {
+  components: { ChatMessage },
   setup() {
-    const messagesEl = ref(null);
     const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
 
-    const user = useLocalstorage("elektron_user", { name: any(animals) });
-
+    const messagesEl = ref(null);
+    const userId = useLocalstorage("elektron_user_id", randomId());
+    const userName = useLocalstorage(
+      "elektron_use_name",
+      `${any(adjectives)} ${any(animals)}`
+    );
     const messages = useLocalstorage("elektron_chat", []);
     const newMessage = ref("");
 
@@ -25,7 +39,9 @@ export default {
       const outgoingMessage = {
         type: "message",
         value: newMessage.value,
-        user: user.value,
+        userId: userId.value,
+        userName: userName.value,
+        datetime: createNow(),
       };
       socket.send(JSON.stringify(outgoingMessage));
       newMessage.value = "";
