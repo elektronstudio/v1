@@ -23,7 +23,7 @@ export const useHls = (url) => {
   return el;
 };
 
-export const useLocalstore = (initialValue = null, key = null) => {
+export const useLocalstorage = (key = null, initialValue = null) => {
   const value = ref(initialValue);
   if (window.localStorage !== undefined) {
     if (initialValue !== null && key && !window.localStorage.getItem(key)) {

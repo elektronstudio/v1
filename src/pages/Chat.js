@@ -1,12 +1,15 @@
 import { ref, onMounted } from "../deps/vue.js";
-import { safeJsonParse } from "../utils/index.js";
+import { useLocalstorage } from "../hooks/index.js";
+import { safeJsonParse, any, animals } from "../utils/index.js";
 
 export default {
   setup() {
     const messagesEl = ref(null);
     const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
 
-    const messages = ref([]);
+    const user = useLocalstorage("elektron_user", { name: any(animals) });
+
+    const messages = useLocalstorage("elektron_chat", []);
     const newMessage = ref("");
 
     const socket = new WebSocket(chatUrl);
@@ -14,7 +17,7 @@ export default {
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (incomingMessage && incomingMessage.type === "message") {
-        messages.value.push(incomingMessage);
+        messages.value = [...messages.value, incomingMessage];
       }
     };
 
@@ -22,12 +25,14 @@ export default {
       const outgoingMessage = {
         type: "message",
         value: newMessage.value,
+        user: user.value,
       };
       socket.send(JSON.stringify(outgoingMessage));
       newMessage.value = "";
     };
 
     onMounted(() => {
+      messagesEl.value.scrollTop = messagesEl.value.scrollHeight;
       const observer = new MutationObserver(
         () => (messagesEl.value.scrollTop = messagesEl.value.scrollHeight)
       );
