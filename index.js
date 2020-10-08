@@ -6,7 +6,7 @@ import Index from "./src/pages/Index.js";
 import Test from "./src/pages/Test.js";
 
 const routes = [
-  { path: "/test", component: Test },
+  { path: "/chattest", component: Test },
   { path: "/:id", component: Live },
   { path: "/", component: Index },
 ];
