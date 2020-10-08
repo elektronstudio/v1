@@ -1,31 +1,7 @@
-import { ref, onMounted, watch } from "../deps/vue.js";
+import { ref, onMounted, watch, watchEffect } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 import { fetchAuth, randomId } from "../utils/index.js";
-
-//const url = "https://elektron.studio/api/sessions";
-
-// fetchAuth(
-//   url,
-//   {
-//     customSessionId: "hello",
-//   },
-//   "OPENVIDUAPP",
-//   "secret"
-// )
-//   .then((res) => console.log(res))
-//   .catch((e) => console.log(e));
-
-// let username = "john";
-// let password = "doe";
-// let url = `https://httpbin.org/basic-auth/${username}/${password}`;
-// let authString = `${username}:${password}`;
-// let headers = new Headers();
-// headers.set("Authorization", "Basic " + btoa(authString));
-// fetch(url, { method: "GET", headers: headers }).then(function (response) {
-//   console.log(response);
-//   return response;
-// });
 
 const VideoStream = {
   props: ["stream"],
@@ -46,22 +22,6 @@ const VideoStream = {
   `,
 };
 
-const safeStringify = (obj, indent = 2) => {
-  let cache = [];
-  const retVal = JSON.stringify(
-    obj,
-    (key, value) =>
-      typeof value === "object" && value !== null
-        ? cache.includes(value)
-          ? undefined
-          : cache.push(value) && value
-        : value,
-    indent
-  );
-  cache = null;
-  return retVal;
-};
-
 export default {
   components: { VideoStream },
   setup() {
@@ -79,6 +39,8 @@ export default {
     session.on("streamCreated", ({ stream }) => {
       const subscriber = session.subscribe(stream);
       subscribers.value.push(subscriber);
+      console.log(a);
+      console.log(subscribers.value);
     });
 
     session.on("streamDestroyed", ({ stream }) => {
@@ -96,7 +58,7 @@ export default {
     ).then(({ id }) =>
       fetchAuth(`${url}/api/tokens`, { session: id }, user, secret).then(
         ({ token }) => {
-          session.connect(token, { clientData: "pingo" }).then(() => {
+          session.connect(token).then(() => {
             const newPublisher = OV.initPublisher(null, {
               publishVideo: true,
               resolution: "320x240",
@@ -110,7 +72,7 @@ export default {
         }
       )
     );
-
+    watchEffect(() => console.log(subscribers.value));
     return { publisher, subscribers };
   },
   template: `
