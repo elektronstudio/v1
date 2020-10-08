@@ -123,9 +123,9 @@ export const any = (arr) => shuffle(arr)[0];
 
 // Strings
 
-export const randomId = () => {
+export const randomId = (length = 16) => {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-  return shuffle(letters).slice(0, 8).join("");
+  return shuffle(letters).slice(0, length).join("");
 };
 
 // Sample datata

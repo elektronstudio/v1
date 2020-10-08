@@ -57,6 +57,7 @@ export const useTextarea = (callback) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       callback();
+      el.value.style.height = "auto";
     }
   };
 

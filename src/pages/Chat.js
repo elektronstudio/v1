@@ -26,7 +26,7 @@ export default {
       "elektron_use_name",
       `${any(adjectives)} ${any(animals)}`
     );
-    const messages = useLocalstorage("elektron_chat", []);
+    const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
     const socket = new WebSocket(chatUrl);
@@ -40,11 +40,18 @@ export default {
 
     const onNewMessage = () => {
       const outgoingMessage = {
+        id: randomId(),
         type: "message",
         value: newMessage.value,
-        userId: userId.value,
-        userName: userName.value,
-        datetime: createNow(),
+        from: {
+          type: "user",
+          id: userId.value,
+          name: userName.value,
+        },
+        to: {
+          type: "all",
+        },
+        datetime: new Date().toISOString(),
       };
       socket.send(JSON.stringify(outgoingMessage));
       newMessage.value = "";
@@ -81,15 +88,15 @@ export default {
       display: grid;
       grid-template-rows: 1fr auto;
       height: 100%;
-      border: 1px solid blue;
       gap: 8px;
     ">
       <div
         ref="scrollEl"
         style="
-          border: 1px solid red;
           height: 100%;
           overflow: scroll;
+          background: #111;
+          padding: 16px;
         ">
         <div v-for="message in messages" style="margin-bottom: 12px" >
           <chat-message :message="message" :userId="userId">
