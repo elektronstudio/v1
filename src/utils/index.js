@@ -133,22 +133,26 @@ export const fetchEvents = (url) => {
 
 // Fetch
 
-export const fetchAuth = (
+export const fetchAuth = ({
   url,
   payload = {},
   username,
   password,
-  method = "POST"
-) => {
+  method = "POST",
+}) => {
+  console.log(username, password);
   let headers = new Headers();
-  headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
   headers.set("content-type", "application/json");
+  if (username && password) {
+    headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
+  }
   return fetch(url, {
     method,
     headers,
     body: JSON.stringify(payload),
   }).then((res) => res.json());
 };
+
 // Arrays
 
 export const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);

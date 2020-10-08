@@ -33,13 +33,12 @@ export default {
     const session = OV.initSession();
 
     const url = "https://elektron.studio";
-    const user = "OPENVIDUAPP";
-    const secret = "secret";
+    const username = "OPENVIDUAPP";
+    const password = "secret";
 
     session.on("streamCreated", ({ stream }) => {
       const subscriber = session.subscribe(stream);
       subscribers.value.push(subscriber);
-      console.log(a);
       console.log(subscribers.value);
     });
 
@@ -50,29 +49,31 @@ export default {
       }
     });
 
-    fetchAuth(
-      `${url}/api/sessions`,
-      { customSessionId: randomId() },
-      user,
-      secret
-    ).then(({ id }) =>
-      fetchAuth(`${url}/api/tokens`, { session: id }, user, secret).then(
-        ({ token }) => {
-          session.connect(token).then(() => {
-            const newPublisher = OV.initPublisher(null, {
-              publishVideo: true,
-              resolution: "320x240",
-              frameRate: 15,
-              insertMode: "APPEND",
-              mirror: false,
-            });
-            session.publish(newPublisher);
-            publisher.value = newPublisher;
+    fetchAuth({
+      url: `${url}/api/sessions`,
+      payload: { customSessionId: "hola" },
+      username,
+      password,
+    }).then(({ id }) => {
+      fetchAuth({
+        url: `${url}/api/tokens`,
+        payload: { session: id },
+        username,
+        password,
+      }).then(({ token }) => {
+        session.connect(token, { clientData: randomId() }).then(() => {
+          const newPublisher = OV.initPublisher(null, {
+            publishVideo: true,
+            resolution: "320x240",
+            frameRate: 15,
+            insertMode: "APPEND",
+            mirror: false,
           });
-        }
-      )
-    );
-    watchEffect(() => console.log(subscribers.value));
+          session.publish(newPublisher);
+          publisher.value = newPublisher;
+        });
+      });
+    });
     return { publisher, subscribers };
   },
   template: `
