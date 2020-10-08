@@ -151,16 +151,16 @@ export const fetchAuth = (
   username,
   password,
   method = "POST"
-) =>
-  fetch(url, {
-    method: "POST",
+) => {
+  let headers = new Headers();
+  headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
+  headers.set("content-type", "application/json");
+  return fetch(url, {
+    method,
+    headers,
     body: JSON.stringify(payload),
-    headers: new Headers({
-      Authorization: `Basic ${btoa(`${username}:${password}`)}`,
-      "content-type": "application/json",
-    }),
-  }); //.then((res) => res.json());
-
+  }).then((res) => res.json());
+};
 // Arrays
 
 export const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
