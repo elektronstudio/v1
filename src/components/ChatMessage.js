@@ -19,6 +19,7 @@ export default {
       padding: 12px;
       gap: 7px;
       font-size: 15px;
+      line-height: 1.5em;
     "
     :style="{
       background: isMyMessage ? '#222' : '#444'

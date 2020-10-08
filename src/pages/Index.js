@@ -30,7 +30,7 @@ export default {
   template: `
     <div class="layout-index">
     <div style="grid-area: header">
-      <img src="index.svg" style="width: 300px" />
+      <img src="index.svg" style="width: 250px" />
       <br />
       <br />
     </div>
@@ -76,7 +76,7 @@ export default {
         elektron.live is created by e⁻lektron team together with Stepan
         Bolotnikov and <a href="https://babahh.com">Babahh Media</a>.
       </p>
-      <router-link to="/test"><div class="pill-gray">Chat test</div></router-link>
+      <router-link to="/chattest"><div class="pill-gray">Chat test</div></router-link>
 
     </div>
   </div>
