@@ -1,4 +1,4 @@
-import { ref, onMounted } from "../deps/vue.js";
+import { ref, onMounted, onUnmounted, computed } from "../deps/vue.js";
 import { Hls } from "../deps/hls.js";
 
 export const useHls = (url) => {
@@ -19,6 +19,75 @@ export const useHls = (url) => {
         hls.loadSource(url);
       });
     }
+  });
+  return el;
+};
+
+export const useLocalstorage = (key = null, initialValue = null) => {
+  const value = ref(initialValue);
+  if (window.localStorage !== undefined) {
+    if (initialValue !== null && key && !window.localStorage.getItem(key)) {
+      window.localStorage.setItem(key, JSON.stringify(initialValue));
+    }
+    const localValue = computed({
+      get: () => {
+        let storedValue = null;
+        if (key && window.localStorage.getItem(key)) {
+          storedValue = JSON.parse(window.localStorage.getItem(key));
+          return storedValue !== value.value ? storedValue : value.value;
+        }
+        return value.value;
+      },
+      set: (val) => {
+        value.value = val;
+        if (key) {
+          window.localStorage.setItem(key, JSON.stringify(val));
+        }
+      },
+    });
+    return localValue;
+  }
+  return value;
+};
+
+export const useTextarea = (callback) => {
+  const el = ref(null);
+
+  const onKeydown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      callback();
+      el.value.style.height = "auto";
+    }
+  };
+
+  const onInput = (e) => {
+    el.value.style.height = "auto";
+    el.value.style.height = el.value.scrollHeight + "px";
+  };
+
+  onMounted(() => {
+    el.value.focus();
+    el.value.addEventListener("keydown", onKeydown);
+    onInput();
+    el.value.addEventListener("input", onInput);
+  });
+
+  onUnmounted(() => {
+    el.value.removeEventListener("keydown", onKeydown);
+  });
+
+  return el;
+};
+
+export const useScrollToBottom = () => {
+  const el = ref(null);
+  onMounted(() => {
+    el.value.scrollTop = el.value.scrollHeight;
+    const observer = new MutationObserver(
+      () => (el.value.scrollTop = el.value.scrollHeight)
+    );
+    observer.observe(el.value, { childList: true });
   });
   return el;
 };
