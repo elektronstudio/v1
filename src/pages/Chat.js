@@ -1,5 +1,9 @@
 import { ref, onMounted } from "../deps/vue.js";
-import { useLocalstorage, useTextarea } from "../hooks/index.js";
+import {
+  useLocalstorage,
+  useScrollToBottom,
+  useTextarea,
+} from "../hooks/index.js";
 import {
   safeJsonParse,
   createNow,
@@ -46,16 +50,6 @@ export default {
       newMessage.value = "";
     };
 
-    const textareaEl = useTextarea(onNewMessage);
-
-    onMounted(() => {
-      messagesEl.value.scrollTop = messagesEl.value.scrollHeight;
-      const observer = new MutationObserver(
-        () => (messagesEl.value.scrollTop = messagesEl.value.scrollHeight)
-      );
-      observer.observe(messagesEl.value, { childList: true });
-    });
-
     const onNameChange = () => {
       const newName = window.prompt("Enter your name", userName.value);
       if (newName) {
@@ -63,15 +57,18 @@ export default {
       }
     };
 
+    const textareaEl = useTextarea(onNewMessage);
+    const scrollEl = useScrollToBottom();
+
     return {
       messages,
-      messagesEl,
       newMessage,
       onNewMessage,
       userId,
       userName,
-      textareaEl,
       onNameChange,
+      scrollEl,
+      textareaEl,
     };
   },
   template: `
@@ -88,7 +85,7 @@ export default {
       gap: 8px;
     ">
       <div
-        ref="messagesEl"
+        ref="scrollEl"
         style="
           border: 1px solid red;
           height: 100%;
