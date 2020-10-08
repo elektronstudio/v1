@@ -2,17 +2,27 @@ import { computed } from "../deps/vue.js";
 import { formatAgo, formatDate } from "../utils/index.js";
 
 export default {
-  props: ["message"],
+  props: ["message", "userId"],
   setup() {
     return { formatAgo };
   },
   template: `
-  <div>
-    <div>
-      <div>{{ message.user.name }}</div>
-      <!-- <div>{{formatAgo(message.datetime) }}</div> -->
+  <div style="display: flex; font-size: 0.8em; margin-bottom: 8px;">
+      <div style="opacity: 0.5">{{ message.userName }}</div>&emsp;
+      <!-- <div style="opacity: 0.25">{{formatAgo(message.datetime) }}</div> -->
     </div>
-    <div v-html="message.value"></div>
+  <div
+    style="
+      display: inline-block;
+      borderRadius: 8px;
+      padding: 12px;
+      gap: 7px;
+    "
+    :style="{
+      background: message.userId === userId ? '#222' : '#444'
+    }"
+  >
+    <div>{{ message.value }}</div>
   </div>
   `,
 };

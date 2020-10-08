@@ -1,4 +1,4 @@
-import { ref, onMounted, computed } from "../deps/vue.js";
+import { ref, onMounted, onUnmounted, computed } from "../deps/vue.js";
 import { Hls } from "../deps/hls.js";
 
 export const useHls = (url) => {
@@ -48,4 +48,29 @@ export const useLocalstorage = (key = null, initialValue = null) => {
     return localValue;
   }
   return value;
+};
+
+export const useTextarea = (key, callback) => {
+  const el = ref(null);
+
+  const onKeydown = (e) => {
+    if (e.key === key && !e.shiftKey) {
+      e.preventDefault();
+      callback();
+    }
+  };
+
+  onMounted(() => {
+    el.value.addEventListener("keydown", onKeydown);
+    el.value.addEventListener("input", function () {
+      el.value.style.height = "auto";
+      el.value.style.height = el.value.scrollHeight + "px";
+    });
+  });
+
+  onUnmounted(() => {
+    el.value.removeEventListener("keydown", onKeydown);
+  });
+
+  return el;
 };

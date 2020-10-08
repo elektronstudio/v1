@@ -1,6 +1,5 @@
 import { ref, onMounted } from "../deps/vue.js";
-import { utcToZonedTime, zonedTimeToUtc, format } from "../deps/date-fns-tz.js";
-import { useLocalstorage } from "../hooks/index.js";
+import { useLocalstorage, useKey } from "../hooks/index.js";
 import {
   safeJsonParse,
   createNow,
@@ -35,7 +34,7 @@ export default {
       }
     };
 
-    const onNewMessage = (value) => {
+    const onNewMessage = () => {
       const outgoingMessage = {
         type: "message",
         value: newMessage.value,
@@ -47,6 +46,8 @@ export default {
       newMessage.value = "";
     };
 
+    const keyEl = useKey("Enter", onNewMessage);
+
     onMounted(() => {
       messagesEl.value.scrollTop = messagesEl.value.scrollHeight;
       const observer = new MutationObserver(
@@ -55,17 +56,39 @@ export default {
       observer.observe(messagesEl.value, { childList: true });
     });
 
-    return { messages, messagesEl, newMessage, onNewMessage };
+    return { messages, messagesEl, newMessage, onNewMessage, userId, keyEl };
   },
   template: `
-  <div class="layout-index">
-    <div style="grid-area: events">
-      <h1>Chat</h1>
-      <div ref="messagesEl" style="border: 1px solid red; height: 50vh; overflow: scroll">
-        <pre v-for="message in messages">{{ message }}</pre>
+  <div class="layout-live">
+    <div style="grid-area: main">
+      <h1>Chat demo</h1>
+    </div>
+    <div style="
+      grid-area: chat;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      height: 100%;
+      border: 1px solid blue;
+      gap: 8px;
+    ">
+      <div
+        ref="messagesEl"
+        style="
+          border: 1px solid red;
+          height: 100%;
+          overflow: scroll;
+        ">
+        <div v-for="message in messages" style="margin-bottom: 12px" >
+          <chat-message :message="message" :userId="userId">
+        </div>
       </div>
-      <div>
-        <textarea v-model="newMessage"></textarea>
+      <div style="
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: flex-start;
+        gap: 8px;
+      ">
+        <textarea ref="keyEl" v-model="newMessage"></textarea>
         <button @click="onNewMessage">Send</button>
       </div>
     </div>
