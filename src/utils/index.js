@@ -115,6 +115,24 @@ export const fetchEvents = (url) => {
     );
 };
 
+// Fetch
+
+export const fetchAuth = (
+  url,
+  payload = {},
+  username,
+  password,
+  method = "POST"
+) =>
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: new Headers({
+      Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+      "content-type": "application/json",
+    }),
+  }); //.then((res) => res.json());
+
 // Arrays
 
 export const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
