@@ -1,14 +1,15 @@
 import { computed } from "../deps/vue.js";
-import { formatAgo, formatDate } from "../utils/index.js";
+import { formatAgo } from "../utils/index.js";
 
 export default {
   props: ["message", "userId"],
   setup(props) {
-    return { formatAgo };
+    const isMyMessage = computed(() => props.message.from.id === props.userId);
+    return { formatAgo, isMyMessage };
   },
   template: `
   <div style="display: flex; font-size: 13px; margin-bottom: 8px;">
-      <div style="opacity: 0.5">{{ message.from.name }}</div>&emsp;
+      <div :style="{opacity: isMyMessage ? 0.25 : 0.5}">{{ message.from.name }}</div>&emsp;
       <!-- <div style="opacity: 0.25">{{formatAgo(message.datetime) }}</div> -->
     </div>
   <div
@@ -20,7 +21,7 @@ export default {
       font-size: 15px;
     "
     :style="{
-      background: message.from.id === userId ? '#222' : '#444'
+      background: isMyMessage ? '#222' : '#444'
     }"
   >
     <div v-html="message.value"></div>

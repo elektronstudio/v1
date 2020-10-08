@@ -23,7 +23,7 @@ export default {
     const messagesEl = ref(null);
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
-      "elektron_use_name",
+      "elektron_user_name",
       `${any(adjectives)} ${any(animals)}`
     );
     const messages = useLocalstorage("elektron_messages", []);
@@ -80,8 +80,9 @@ export default {
   },
   template: `
   <div class="layout-live">
-    <div style="grid-area: main">
-      <h1>Chat demo</h1>
+    <div style="grid-area: main; display: flex; align-items: center;">
+      <h1>Chat demo</h1>&nbsp;&nbsp;&nbsp;
+      <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>
     <div style="
       grid-area: chat;
@@ -98,7 +99,7 @@ export default {
           background: #111;
           padding: 16px;
         ">
-        <div v-for="message in messages" style="margin-bottom: 12px" >
+        <div v-for="message in messages" style="margin-bottom: 24px" >
           <chat-message :message="message" :userId="userId">
         </div>
       </div>
@@ -107,7 +108,7 @@ export default {
           display: grid;
           grid-template-columns: 1fr auto;
           align-items: flex-start;
-          gap: 8px;
+          gap: 12px;
           margin-bottom: 4px;
         ">
           <textarea ref="textareaEl" v-model="newMessage" ></textarea>

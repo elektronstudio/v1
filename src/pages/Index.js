@@ -76,6 +76,8 @@ export default {
         elektron.live is created by e⁻lektron team together with Stepan
         Bolotnikov and <a href="https://babahh.com">Babahh Media</a>.
       </p>
+      <router-link to="/chat"><div class="pill-gray">Experimental chat</div></router-link>
+
     </div>
   </div>
   `,
