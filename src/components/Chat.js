@@ -13,13 +13,12 @@ import {
   animals,
 } from "../utils/index.js";
 
-import ChatMessage from "../components/ChatMessage.js";
+import ChatMessage from "./ChatMessage.js";
 
 export default {
   components: { ChatMessage },
-  setup() {
-    const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
-
+  props: ["chatUrl"],
+  setup(props) {
     const messagesEl = ref(null);
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
@@ -29,7 +28,7 @@ export default {
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
-    const socket = new WebSocket(chatUrl);
+    const socket = new WebSocket(props.chatUrl);
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);
@@ -79,46 +78,39 @@ export default {
     };
   },
   template: `
-  <div class="layout-live">
-    <div style="grid-area: main; display: flex; align-items: center;">
-      <h1>Chat demo</h1>&nbsp;&nbsp;&nbsp;
-      <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
+  <div style="
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    gap: 8px;
+  ">
+    <div
+      ref="scrollEl"
+      style="
+        height: 100%;
+        overflow: scroll;
+        background: #111;
+        padding: 16px;
+      ">
+      <div v-for="message in messages" style="margin-bottom: 24px" >
+        <chat-message :message="message" :userId="userId">
+      </div>
     </div>
-    <div style="
-      grid-area: chat;
-      display: grid;
-      grid-template-rows: 1fr auto;
-      height: 100%;
-      gap: 8px;
-    ">
-      <div
-        ref="scrollEl"
-        style="
-          height: 100%;
-          overflow: scroll;
-          background: #111;
-          padding: 16px;
-        ">
-        <div v-for="message in messages" style="margin-bottom: 24px" >
-          <chat-message :message="message" :userId="userId">
-        </div>
+    <div>
+      <div style="
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 4px;
+      ">
+        <textarea ref="textareaEl" v-model="newMessage" ></textarea>
+        <button @click="onNewMessage">Send</button>
       </div>
-      <div>
-        <div style="
-          display: grid;
-          grid-template-columns: 1fr auto;
-          align-items: flex-start;
-          gap: 12px;
-          margin-bottom: 4px;
-        ">
-          <textarea ref="textareaEl" v-model="newMessage" ></textarea>
-          <button @click="onNewMessage">Send</button>
-        </div>
-      <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.5">
-        Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a>
-      </div>
-    </div>  
-  </div>
+    <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.5">
+      Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a>
+    </div>
+  </div>  
   `,
 };
 

@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from "./src/deps/router.js";
 
 import Live from "./src/pages/Live.js";
 import Index from "./src/pages/Index.js";
-import Chat from "./src/pages/Chat.js";
+import Test from "./src/pages/Test.js";
 
 const routes = [
-  { path: "/chat", component: Chat },
+  { path: "/test", component: Test },
   { path: "/:id", component: Live },
   { path: "/", component: Index },
 ];
