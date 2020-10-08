@@ -50,22 +50,26 @@ export const useLocalstorage = (key = null, initialValue = null) => {
   return value;
 };
 
-export const useTextarea = (key, callback) => {
+export const useTextarea = (callback) => {
   const el = ref(null);
 
   const onKeydown = (e) => {
-    if (e.key === key && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       callback();
     }
   };
 
+  const onInput = (e) => {
+    el.value.style.height = "auto";
+    el.value.style.height = el.value.scrollHeight + "px";
+  };
+
   onMounted(() => {
+    el.value.focus();
     el.value.addEventListener("keydown", onKeydown);
-    el.value.addEventListener("input", function () {
-      el.value.style.height = "auto";
-      el.value.style.height = el.value.scrollHeight + "px";
-    });
+    onInput();
+    el.value.addEventListener("input", onInput);
   });
 
   onUnmounted(() => {

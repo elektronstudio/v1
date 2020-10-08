@@ -1,5 +1,5 @@
 import { ref, onMounted } from "../deps/vue.js";
-import { useLocalstorage, useKey } from "../hooks/index.js";
+import { useLocalstorage, useTextarea } from "../hooks/index.js";
 import {
   safeJsonParse,
   createNow,
@@ -46,7 +46,7 @@ export default {
       newMessage.value = "";
     };
 
-    const keyEl = useKey("Enter", onNewMessage);
+    const textareaEl = useTextarea(onNewMessage);
 
     onMounted(() => {
       messagesEl.value.scrollTop = messagesEl.value.scrollHeight;
@@ -56,7 +56,23 @@ export default {
       observer.observe(messagesEl.value, { childList: true });
     });
 
-    return { messages, messagesEl, newMessage, onNewMessage, userId, keyEl };
+    const onNameChange = () => {
+      const newName = window.prompt("Enter your name", userName.value);
+      if (newName) {
+        userName.value = newName;
+      }
+    };
+
+    return {
+      messages,
+      messagesEl,
+      newMessage,
+      onNewMessage,
+      userId,
+      userName,
+      textareaEl,
+      onNameChange,
+    };
   },
   template: `
   <div class="layout-live">
@@ -82,16 +98,23 @@ export default {
           <chat-message :message="message" :userId="userId">
         </div>
       </div>
-      <div style="
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: flex-start;
-        gap: 8px;
-      ">
-        <textarea ref="keyEl" v-model="newMessage"></textarea>
-        <button @click="onNewMessage">Send</button>
+      <div>
+        <div style="
+          display: grid;
+          grid-template-columns: 1fr auto;
+          align-items: flex-start;
+          gap: 8px;
+          margin-bottom: 4px;
+        ">
+          <textarea ref="textareaEl" v-model="newMessage" ></textarea>
+          <button @click="onNewMessage">Send</button>
+        </div>
+      <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.5">
+        Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a>
       </div>
-    </div>
+    </div>  
   </div>
   `,
 };
+
+// Press Enter for sending, Shift+Enter for adding a new line

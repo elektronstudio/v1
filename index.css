@@ -63,11 +63,12 @@ p a {
 input,
 textarea {
   background: #000;
-  border: 1px solid white;
+  border: 2px solid gray;
+  border-radius: 2px;
   outline: none;
   padding: 8px;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5em;
   color: white;
 }
