@@ -140,17 +140,24 @@ export const fetchAuth = ({
   password,
   method = "POST",
 }) => {
-  console.log(username, password);
   let headers = new Headers();
   headers.set("content-type", "application/json");
   if (username && password) {
     headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
   }
-  return fetch(url, {
-    method,
-    headers,
-    body: JSON.stringify(payload),
-  }).then((res) => res.json());
+  return new Promise((resolve, reject) => {
+    fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(payload),
+    }).then((res) => {
+      if (res.status === 409) {
+        return resolve(payload);
+      } else {
+        return resolve(res.json());
+      }
+    });
+  });
 };
 
 // Arrays

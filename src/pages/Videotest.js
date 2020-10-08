@@ -54,7 +54,8 @@ export default {
       payload: { customSessionId: "hola" },
       username,
       password,
-    }).then(({ id }) => {
+    }).then((data) => {
+      const id = data && data.id ? data.id : data.customSessionId;
       fetchAuth({
         url: `${url}/api/tokens`,
         payload: { session: id },
