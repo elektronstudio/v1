@@ -92,10 +92,14 @@ export default {
 
     const event = ref(null);
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.reverse().filter(({ id, diff }) => {
+      const e = events.filter(({ id, diff }) => {
         return id === params.id;
       });
       event.value = e[0];
+      console.log(e[0].color);
+      if (e[0] && e[0].color) {
+        document.body.style.setProperty("background", e[0].color);
+      }
     });
 
     return {

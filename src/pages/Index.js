@@ -25,6 +25,7 @@ export default {
         pastEvents.value = events.filter(({ diff }) => diff == "past");
       })
     );
+    document.body.style.setProperty("background", "black");
     return { currentEvents, pastEvents };
   },
   template: `
