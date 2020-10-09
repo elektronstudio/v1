@@ -18,7 +18,7 @@ const VideoStream = {
     return { videoEl };
   },
   template: `
-    <video ref="videoEl" autoplay style="width: 80px; height: 60px;"></video>
+    <video ref="videoEl" autoplay style="background: gray; width: 80px; height: 60px; border: px solid black;"></video>
   `,
 };
 
@@ -29,7 +29,7 @@ export default {
     const subscribers = ref([]);
 
     const OV = new OpenVidu();
-    OV.enableProdMode();
+    //OV.enableProdMode();
     const session = OV.initSession();
 
     const url = "https://elektron.studio";
@@ -64,6 +64,7 @@ export default {
         session.connect(token, { clientData: randomId() }).then(() => {
           const newPublisher = OV.initPublisher(null, {
             publishVideo: true,
+            publishAudio: true,
             resolution: "80x60",
             frameRate: 15,
             insertMode: "APPEND",
@@ -92,19 +93,4 @@ export default {
      </div>
   </div>
   `,
-  // template: `
-  // <div class="index-layout">
-  //   <div style="
-  //     grid-area: chat;
-  //   ">aa</a>
-  //   <div style="
-  //     grid-area: main;
-  //     display: flex;
-  //     flex-wrap: wrap;
-  //   ">aa
-  //     <!-- <video-stream :stream="publisher" />
-  //     <video-stream v-for="stream in subscribers" :stream="stream" /> -->
-  //   </div>
-  // </div>
-  // `,
 };
