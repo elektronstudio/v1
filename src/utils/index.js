@@ -92,17 +92,39 @@ export const parseEvent = (event) => {
     : "";
 
   const markdown = turndown.turndown(event.description || "");
-  const description = event.description ? marked(markdown) : "";
+  const description = event.description ? marked(markdown).split("---")[0] : "";
 
   const teaser = event.description ? marked(markdown.split("\n\n")[0]) : "";
 
   const ids = markdown.match(/(\n\r?id:\s?)(.*)/);
   const id = ids && ids[2] ? ids[2] : "";
+
   const youtubes = markdown.match(/(\n\r?youtube:\s?)(.*)/);
-  const youtube = youtubes && youtubes[2] ? youtubes[2] : "";
+  const youtube =
+    youtubes && youtubes[2]
+      ? youtubes[2].split("](")[0].replace("[", "").replace(")", "")
+      : "";
+
+  const images = markdown.match(/(\n\r?image:\s?)(.*)/);
+  const image = images && images[2] ? images[2] : "";
+
+  const colors = markdown.match(/(\n\r?color:\s?)(.*)/);
+  const color = colors && colors[2] ? colors[2] : "";
 
   const diff = getDifference(start, end);
-  return { summary, description, teaser, id, start, end, youtube, ...diff };
+
+  return {
+    summary,
+    description,
+    teaser,
+    id,
+    start,
+    end,
+    youtube,
+    color,
+    image,
+    ...diff,
+  };
 };
 
 export const fetchEvents = (url) => {
