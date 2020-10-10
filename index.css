@@ -230,3 +230,8 @@ button:hover {
     margin-bottom: 0;
   }
 }
+
+.rotalic {
+  font-family: font-medium-rotalic;
+  letter-spacing: 0.1em;
+}

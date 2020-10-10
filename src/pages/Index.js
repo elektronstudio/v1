@@ -35,15 +35,14 @@ export default {
       <br />
       <br />
     </div>
-    <div style="grid-area: events; display: grid; gap: 48px">
-      <h2>Upcoming events</h2>
+    <div style="grid-area: events; display: grid; gap: 32px">
+      <h2 class="rotalic">Upcoming events</h2>
       <event-row v-for="event in currentEvents" :event="event"></event-row>
       <h2>Past events</h2>
       <event-row v-for="event in pastEvents" :event="event"></event-row>
     </div>
     <div style="grid-area: about; opacity: 0.7">
-      <h2>About</h2>
-      <br />
+      <h2 class="rotalic">About</h2>
       <br />
       <p>
         elektron.live can be considered as an online stage or a virtual
