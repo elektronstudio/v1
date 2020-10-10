@@ -11,7 +11,7 @@ export default {
   },
   template: `
   <datetime-live v-if="event" :event="event"></datetime-live>
-  <p style="margin-bottom: 8px"></p>
+  <br />
   <h3>{{ event ? event.summary : '' }}</h3>
   <p style="margin-bottom: 8px"></p>
   <div

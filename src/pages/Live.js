@@ -145,7 +145,7 @@ export default {
       </div>
     </div>
 
-    <div style="grid-area: title">
+    <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
     <div
