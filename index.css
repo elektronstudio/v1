@@ -101,6 +101,7 @@ textarea {
   font-weight: normal !important;
   font-size: 0.9em;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .pill-gray {
@@ -112,6 +113,7 @@ textarea {
   font-weight: normal !important;
   font-size: 0.9em;
   cursor: pointer;
+  white-space: nowrap;
 }
 .pill-red:hover,
 .pill-gray:hover {

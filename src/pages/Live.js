@@ -113,8 +113,7 @@ export default {
   template: `
   <div class="layout-live">
     <div
-      class="flex-justified"
-      style="padding: 8px 0"
+      class="flex"
     >
       <img src="../index.svg" style="width: 250px; display: block;" />
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
