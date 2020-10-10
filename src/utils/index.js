@@ -89,7 +89,9 @@ export const formatAgo = (event) => {
     return `Starts in ${formatDistanceToNowStrict(new Date(event.start))}`;
   }
   if (event.diff === "now") {
-    return `Started ${formatDistanceToNowStrict(new Date(event.start))} ago`;
+    return `Started ${formatDistanceToNowStrict(
+      new Date(event.start)
+    )} ago, ends in ${formatDistanceToNowStrict(new Date(event.end))}`;
   }
   return `Ended ${formatDistanceToNowStrict(new Date(event.end))} ago`;
 };
