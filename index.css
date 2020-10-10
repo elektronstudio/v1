@@ -55,7 +55,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.5em;
+  font-size: 1.7em;
 }
 p {
   margin: 0 0 1em 0;
@@ -90,19 +90,6 @@ textarea {
   color: white;
 }
 
-header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-@media (max-width: 800px) {
-  header {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Components */
 
 .pill-red {
@@ -114,6 +101,7 @@ header {
   font-weight: normal !important;
   font-size: 0.9em;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .pill-gray {
@@ -125,6 +113,7 @@ header {
   font-weight: normal !important;
   font-size: 0.9em;
   cursor: pointer;
+  white-space: nowrap;
 }
 .pill-red:hover,
 .pill-gray:hover {
@@ -155,7 +144,7 @@ button:hover {
 }
 
 .layout-index {
-  padding: 4vw;
+  padding: 32px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2vw 5vw;
@@ -176,7 +165,7 @@ button:hover {
 }
 
 .layout-live {
-  padding: 4vw;
+  padding: 32px;
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -201,4 +190,48 @@ button:hover {
       "count"
       "spec";
   }
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex > * {
+  margin-right: 8px;
+}
+
+@media (max-width: 800px) {
+  .flex {
+    display: block;
+  }
+  .flex > * {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  .flex > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flex-justified {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .flex-justified {
+    display: block;
+  }
+  .flex-justified > * {
+    margin-bottom: 12px;
+  }
+  .flex-justified > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.rotalic {
+  font-family: font-medium-rotalic;
+  letter-spacing: 0.1em;
 }

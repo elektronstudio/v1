@@ -113,15 +113,9 @@ export default {
   template: `
   <div class="layout-live">
     <div
-      style="
-        display: flex;
-        align-items: center;
-        grid-area: logo;
-        padding: 8px 0;
-      "
+      class="flex"
     >
-      <img src="../index.svg" style="width: 250px; display: block; transform: translateY(-5px)" />
-      &nbsp;&nbsp;&nbsp;
+      <img src="../index.svg" style="width: 250px; display: block;" />
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>
     <div
@@ -151,7 +145,7 @@ export default {
       </div>
     </div>
 
-    <div style="grid-area: title">
+    <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
     <div
