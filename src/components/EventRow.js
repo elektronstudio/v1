@@ -31,21 +31,23 @@ export default {
   },
   template: `
   <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
-      <h3
-        style="cursor: pointer; margin: 0"
-        @click="isOpen = !isOpen"
-        
-      >
-        {{ event ? event.summary : '' }}
-      </h3>  
-      
+      <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
+        <h3 style="cursor: pointer; margin: 0">{{  event.summary  }}</h3>
+      </router-link>
+      <h3 v-if="!event.id" style="cursor: pointer; margin: 0">{{ event.summary  }}</h3>
       <datetime-index :event="event" />
       <p style="line-height: 0.5em" />
+      <div style="display: flex;">
+      <div class="pill-gray" @click="isOpen = !isOpen">
+        More info ↓
+      </div>
+      &nbsp;&nbsp;
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
         <div :class="pillClass">
           See the live at <b>elektron.live/{{ event.id }}</b> →
         </div>
       </router-link>
+      </div>
     <div v-if="isOpen" v-html="event ? event.description : ''" />
     <br v-if="event && event.youtube" />
     <youtube v-if="event && event.youtube" :src="event.youtube" />
