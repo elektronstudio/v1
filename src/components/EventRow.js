@@ -15,6 +15,8 @@ export default {
             ? "red"
             : "none"
         }`,
+        paddingLeft:
+          props.event.diff == "soon" || props.event.diff == "now" ? "24px" : 0,
         opacity: props.event.diff == "past" ? 0.5 : 1,
       };
     });
@@ -30,7 +32,7 @@ export default {
     return { isOpen, style, pillClass };
   },
   template: `
-  <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
+  <article :style="style" style="display: grid; gap: 12px">
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
         <h3 style="cursor: pointer; margin: 0">{{  event.summary  }}</h3>
       </router-link>

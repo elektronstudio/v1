@@ -142,7 +142,7 @@ button:hover {
 }
 
 .layout-index {
-  padding: 24px;
+  padding: 32px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2vw 5vw;
@@ -163,7 +163,7 @@ button:hover {
 }
 
 .layout-live {
-  padding: 24px;
+  padding: 32px;
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
