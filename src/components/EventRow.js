@@ -20,7 +20,7 @@ export default {
     });
 
     const pillClass = computed(() => {
-      const isSoon = props.event.diff == "soon" || props.event.diff == "now";
+      const isSoon = props.event.diff == "now";
       return {
         "pill-red": isSoon,
         "pill-gray": !isSoon,
@@ -29,10 +29,7 @@ export default {
 
     return { isOpen, style, pillClass };
   },
-  template: ` {{ event.diff }} <br />
-  {{ event.diffStart }} / {{ event.diffStart / 24 }}
-  <br />
-  {{ event.diffEnd }} / {{ event.diffEnd / 24 }}
+  template: `
   <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
         <h3 style="cursor: pointer; margin: 0">{{  event.summary  }}</h3>

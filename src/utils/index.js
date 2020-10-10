@@ -49,7 +49,9 @@ const getDifference = (start, end) => {
   if (isDatetime(start) && isDatetime(end)) {
     if (diffStart <= 0 && diffEnd >= 0) {
       return { diff: "now", diffStart, diffEnd };
-    } else if (diffEnd >= 3) {
+    } else if (diffStart >= 0 && diffStart <= 3) {
+      return { diff: "soon", diffStart, diffEnd };
+    } else if (diffStart >= 0 && diffStart > 3) {
       return { diff: "future", diffStart, diffEnd };
     } else {
       return { diff: "past", diffStart, diffEnd };
@@ -62,18 +64,6 @@ const getDifference = (start, end) => {
       return { diff: "future", diffStart, diffEnd };
     }
   }
-
-  // if (isDatetime(end) && diffEnd <= 12) {
-  //   return { diff: "past", diffStart, diffEnd };
-  // } else if (!isDatetime(diffEnd) && diffEnd <= 0) {
-  //   return { diff: "past", diffStart, diffEnd };
-  // } else if (isDatetime(diffEnd) && diffStart <= 0 && diffEnd > 0) {
-  //   return { diff: "now", diffStart, diffEnd };
-  // } else if (diffStart <= 12) {
-  //   return { diff: "soon", diffStart, diffEnd };
-  // } else {
-  //   return { diff: "future", diffStart, diffEnd };
-  // }
 };
 
 export const formatDate = (str) => {
@@ -89,9 +79,7 @@ export const formatAgo = (event) => {
     return `Starts in ${formatDistanceToNowStrict(new Date(event.start))}`;
   }
   if (event.diff === "now") {
-    return `Started ${formatDistanceToNowStrict(
-      new Date(event.start)
-    )} ago, ends in ${formatDistanceToNowStrict(new Date(event.end))}`;
+    return `Started ${formatDistanceToNowStrict(new Date(event.start))} ago`;
   }
   return `Ended ${formatDistanceToNowStrict(new Date(event.end))} ago`;
 };
