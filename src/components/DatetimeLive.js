@@ -13,7 +13,7 @@ export default {
    <h4>
     ⏰
     <span :style="{ color }">
-      {{ formatAgo(event.start) }}
+      {{ formatAgo(event) }}
     </span>
     <br />
     <span style="opacity:0.7">

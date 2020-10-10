@@ -20,7 +20,7 @@ export default {
     });
 
     const pillClass = computed(() => {
-      const isSoon = props.event.diff == "soon" || props.event.diff == "now";
+      const isSoon = props.event.diff == "now";
       return {
         "pill-red": isSoon,
         "pill-gray": !isSoon,
