@@ -120,7 +120,7 @@ export default {
         padding: 8px 0;
       "
     >
-      <img src="../index.svg" style="width: 250px; display: block" />
+      <img src="../index.svg" style="width: 250px; display: block; transform: translateY(-5px)" />
       &nbsp;&nbsp;&nbsp;
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>

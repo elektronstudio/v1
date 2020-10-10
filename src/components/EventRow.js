@@ -36,7 +36,6 @@ export default {
       </router-link>
       <h3 v-if="!event.id" style="cursor: pointer; margin: 0">{{ event.summary  }}</h3>
       <datetime-index :event="event" />
-      <p style="line-height: 0.5em" />
       <div style="display: flex;">
       <div class="pill-gray" @click="isOpen = !isOpen">
         More info ↓
