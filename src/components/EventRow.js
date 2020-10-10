@@ -29,7 +29,10 @@ export default {
 
     return { isOpen, style, pillClass };
   },
-  template: `
+  template: ` {{ event.diff }} <br />
+  {{ event.diffStart }} / {{ event.diffStart / 24 }}
+  <br />
+  {{ event.diffEnd }} / {{ event.diffEnd / 24 }}
   <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
         <h3 style="cursor: pointer; margin: 0">{{  event.summary  }}</h3>
