@@ -160,7 +160,7 @@ button:hover {
   padding: 4vw;
   height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 1fr 1.3fr;
+  grid-template-columns: 1fr 1fr 1.1fr;
   grid-template-rows: auto auto auto 1fr;
   gap: 1.5vw;
   grid-template-areas:
