@@ -31,7 +31,7 @@ body {
   margin: 0;
   background: var(--background);
   color: white;
-  font-family: "Nunito Sans", monospace, sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: calc(14px + 0.25vw);
 }
 h1,
