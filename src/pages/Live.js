@@ -91,8 +91,8 @@ export default {
 
     const event = ref(null);
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.filter(({ id, diff }) => {
-        return id === params.id && diff !== "past";
+      const e = events.filter(({ id }) => {
+        return id === params.id;
       });
       event.value = e[0];
       if (e[0] && e[0].color) {
