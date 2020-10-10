@@ -47,7 +47,7 @@ const getDifference = (start, end) => {
   );
   const diffEnd = differenceInHours(createDate(end), createDate(new Date()));
   if (isDatetime(start) && isDatetime(end)) {
-    if (diffStart <= 0 && diffEnd >= 0) {
+    if (diffStart < 0 && diffEnd >= 0) {
       return { diff: "now", diffStart, diffEnd };
     } else if (diffStart >= 0 && diffStart <= 3) {
       return { diff: "soon", diffStart, diffEnd };
