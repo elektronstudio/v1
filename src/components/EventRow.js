@@ -36,16 +36,15 @@ export default {
       </router-link>
       <h3 v-if="!event.id" style="cursor: pointer; margin: 0">{{ event.summary  }}</h3>
       <datetime-index :event="event" />
-      <div style="display: flex;">
-      <div class="pill-gray" @click="isOpen = !isOpen">
-        More info ↓
-      </div>
-      &nbsp;&nbsp;
-      <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
-        <div :class="pillClass">
-          See the live at <b>elektron.live/{{ event.id }}</b> →
+      <div class="flex">
+        <div class="pill-gray" @click="isOpen = !isOpen">
+          More info ↓
         </div>
-      </router-link>
+        <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
+          <div :class="pillClass">
+            See the live at <b>elektron.live/{{ event.id }}</b> →
+          </div>
+        </router-link>
       </div>
     <div v-if="isOpen" v-html="event ? event.description : ''" />
     <br v-if="event && event.youtube" />

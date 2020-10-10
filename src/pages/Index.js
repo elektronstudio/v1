@@ -31,7 +31,7 @@ export default {
   template: `
     <div class="layout-index">
     <div style="grid-area: header">
-      <img src="index.svg" style="width: 250px; transform: translateY(-5px)" />
+      <img src="index.svg" style="width: 250px;" />
       <br />
       <br />
     </div>
