@@ -80,8 +80,8 @@ p a {
 
 input,
 textarea {
-  background: #000;
-  border: 2px solid #bbb;
+  background: black;
+  border: 2px solid white;
   border-radius: 2px;
   outline: none;
   padding: 8px;

@@ -11,6 +11,7 @@ export default {
   setup(props) {
     const publisher = ref(null);
     const subscribers = ref([]);
+    const videoStarted = ref(false);
 
     const OV = new OpenVidu();
     OV.enableProdMode();
@@ -32,36 +33,44 @@ export default {
       }
     });
 
-    fetchAuth({
-      url: `${url}/api/sessions`,
-      payload: { customSessionId: props.id },
-      username,
-      password,
-    }).then((data) => {
-      const sessionId = data && data.id ? data.id : data.customSessionId;
+    const startVideo = () => {
       fetchAuth({
-        url: `${url}/api/tokens`,
-        payload: { session: sessionId },
+        url: `${url}/api/sessions`,
+        payload: { customSessionId: props.id },
         username,
         password,
-      }).then(({ token }) => {
-        session
-          .connect(token, { clientData: { userName: randomId() } })
-          .then(() => {
-            const newPublisher = OV.initPublisher(null, {
-              publishVideo: true,
-              publishAudio: false,
-              resolution: "80x60",
-              frameRate: 12,
-              mirror: true,
+      }).then((data) => {
+        const sessionId = data && data.id ? data.id : data.customSessionId;
+        fetchAuth({
+          url: `${url}/api/tokens`,
+          payload: { session: sessionId },
+          username,
+          password,
+        }).then(({ token }) => {
+          session
+            .connect(token, { clientData: { userName: randomId() } })
+            .then(() => {
+              const newPublisher = OV.initPublisher(null, {
+                publishVideo: true,
+                publishAudio: false,
+                resolution: "80x60",
+                frameRate: 12,
+                mirror: true,
+              });
+              session.publish(newPublisher);
+              publisher.value = newPublisher;
+              videoStarted.value = true;
             });
-            session.publish(newPublisher);
-            publisher.value = newPublisher;
-          });
+        });
       });
-    });
-    const videoStarted = ref(false);
-    return { publisher, subscribers, videoStarted };
+    };
+
+    const stopVideo = () => {
+      session.disconnect();
+      videoStarted.value = false;
+    };
+
+    return { publisher, subscribers, videoStarted, startVideo, stopVideo };
   },
   template: `
   <div
@@ -71,6 +80,7 @@ export default {
       overflow: auto;
     "
   ><div
+    v-show="videoStarted"
     style="
       display: flex;
       flex-wrap: wrap;
@@ -96,7 +106,7 @@ export default {
         justify-content: center;
         text-align: center;
         padding: 0 32px;
-        background: rgba(20, 20, 20, 0.8);
+        background: rgba(20, 20, 20, 0.2);
       "
     >
       <div>
@@ -106,6 +116,18 @@ export default {
         </p>
         <button @click="startVideo">Start my camera</button>
       </div>
+    </div>
+    <div
+      v-show="videoStarted"
+      style="
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: 16px;
+        text-align: center;
+      "
+    >
+      <button @click="stopVideo">Stop my camera</button>
     </div>
   </div>
   `,

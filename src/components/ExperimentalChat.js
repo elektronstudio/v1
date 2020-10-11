@@ -17,6 +17,7 @@ import { chatUrl } from "../config/index.js";
 
 export default {
   components: { ChatMessage },
+  props: ["id"],
   setup(props) {
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
@@ -30,7 +31,11 @@ export default {
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);
-      if (incomingMessage && incomingMessage.type === "message") {
+      if (
+        incomingMessage &&
+        incomingMessage.type === "message" &&
+        incomingMessage.channel === props.id
+      ) {
         messages.value = [...messages.value, incomingMessage];
       }
     };
@@ -38,6 +43,7 @@ export default {
     const onNewMessage = () => {
       const outgoingMessage = {
         id: randomId(),
+        channel: props.id,
         type: "message",
         value: newMessage.value,
         from: {
@@ -106,7 +112,7 @@ export default {
         <textarea ref="textareaEl" v-model="newMessage" ></textarea>
         <button @click="onNewMessage">Send</button>
       </div>
-    <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.5">
+    <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.7">
       Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a>
     </div>
   </div>  
