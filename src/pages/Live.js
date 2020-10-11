@@ -4,14 +4,15 @@ import { useRoute } from "../deps/router.js";
 import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents, safeJsonParse } from "../utils/index.js";
 
-import EventDetails from "../components/EventDetails.js";
-import LegacyVideo from "../components/LegacyVideo.js";
+import LegacySpectatorsVideo from "../components/LegacySpectatorsVideo.js";
+import Chat from "../components/Chat.js";
 import LegacyChat from "../components/LegacyChat.js";
+import EventDetails from "../components/EventDetails.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 
 export default {
-  components: { EventDetails, LegacyVideo, LegacyChat },
+  components: { EventDetails, LegacySpectatorsVideo, Chat, LegacyChat },
   setup() {
     const { params } = useRoute();
 
@@ -81,10 +82,10 @@ export default {
       <event-details :event="event" />
     </div>
     <div style="grid-area: spec">
-      <legacy-video></legacy-video>
+      <component :is="'legacy-spectators-video'" />
     </div>
     <div style="grid-area: chat">
-      <legacy-chat></legacy-chat>
+      <component :is="'chat'" />
     </div>
   </div>
   `,

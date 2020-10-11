@@ -6,7 +6,6 @@ import {
 } from "../hooks/index.js";
 import {
   safeJsonParse,
-  createNow,
   randomId,
   any,
   adjectives,
@@ -14,12 +13,11 @@ import {
 } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
+import { chatUrl } from "../config/index.js";
 
 export default {
   components: { ChatMessage },
-  props: ["chatUrl"],
   setup(props) {
-    const messagesEl = ref(null);
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
       "elektron_user_name",
@@ -28,7 +26,7 @@ export default {
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
-    const socket = new WebSocket(props.chatUrl);
+    const socket = new WebSocket(chatUrl);
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);
