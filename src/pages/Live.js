@@ -2,17 +2,17 @@ import { ref } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
 import { useHls, useClientsCount } from "../hooks/index.js";
-import { fetchEvents, safeJsonParse } from "../utils/index.js";
+import { fetchEvents } from "../utils/index.js";
 
-import LegacySpectatorsVideo from "../components/LegacySpectatorsVideo.js";
+import SpectatorsVideo from "../components/SpectatorsVideo.js";
 import Chat from "../components/Chat.js";
-import LegacyChat from "../components/LegacyChat.js";
+import ExperimentalChat from "../components/ExperimentalChat.js";
 import EventDetails from "../components/EventDetails.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 
 export default {
-  components: { EventDetails, LegacySpectatorsVideo, Chat, LegacyChat },
+  components: { EventDetails, SpectatorsVideo, Chat, ExperimentalChat },
   setup() {
     const { params } = useRoute();
 
@@ -82,10 +82,10 @@ export default {
       <event-details :event="event" />
     </div>
     <div style="grid-area: spec">
-      <component :is="'legacy-spectators-video'" />
+      <component :is="'spectators-video'" />
     </div>
     <div style="grid-area: chat">
-      <component :is="'chat'" />
+      <component :is="'experimental-chat'" />
     </div>
   </div>
   `,
