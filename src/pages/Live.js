@@ -35,8 +35,9 @@ export default {
     // Fetch and parse event
 
     const event = ref(null);
+
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.filter(({ id }) => {
+      const e = events.reverse().filter(({ id }) => {
         return id === params.id;
       });
       event.value = e[0];
@@ -86,15 +87,14 @@ export default {
         <video ref="mainVideo" controls autoplay muted></video>
       </div>
     </div>
-
     <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
     <div style="grid-area: spec">
-      <component :is="'experimental-spec-video'" :id="id"/>
+      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
     </div>
     <div style="grid-area: chat">
-      <component :is="'experimental-chat'"  />
+      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" />
     </div>
   </div>
   `,

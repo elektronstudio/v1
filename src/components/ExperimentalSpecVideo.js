@@ -13,7 +13,7 @@ export default {
     const subscribers = ref([]);
 
     const OV = new OpenVidu();
-    //OV.enableProdMode();
+    OV.enableProdMode();
     const session = OV.initSession();
 
     const url = "https://elektron.studio";
@@ -53,7 +53,7 @@ export default {
               publishAudio: false,
               resolution: "80x60",
               frameRate: 12,
-              mirror: false,
+              mirror: true,
             });
             session.publish(newPublisher);
             publisher.value = newPublisher;
@@ -63,7 +63,14 @@ export default {
     return { publisher, subscribers };
   },
   template: `
-  <div style="display: flex; flex-wrap: wrap">
+  <div
+    style="
+      display: flex;
+      flex-wrap: wrap;
+      height: 300px;
+      overflow: auto;
+    "
+  >
     <video-stream :stream="publisher" />
     <video-stream v-for="stream in subscribers" :stream="stream" />
   </div>

@@ -235,3 +235,11 @@ button:hover {
   font-family: font-medium-rotalic;
   letter-spacing: 0.1em;
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

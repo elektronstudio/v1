@@ -134,6 +134,12 @@ export const parseEvent = (event) => {
   const colors = markdown.match(/(\n\r?color:\s?)(.*)/);
   const color = colors && colors[2] ? colors[2].trim() : "";
 
+  const experimentals = markdown.match(/(\n\r?experimental:\s?)(.*)/);
+  const experimental =
+    experimentals && experimentals[2]
+      ? experimentals[2].toLowerCase().trim() === "true"
+      : false;
+
   const diff = getDifference(start, end);
 
   return {
@@ -145,6 +151,7 @@ export const parseEvent = (event) => {
     end,
     youtube,
     color,
+    experimental,
     ...diff,
   };
 };

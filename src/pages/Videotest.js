@@ -5,10 +5,6 @@ export default {
   components: { ExperimentalSpecVideo },
   template: `
   <div class="layout-live">
-    <div style="grid-area: main; display: flex; align-items: center;">
-      <h1>Video demo</h1>&nbsp;&nbsp;&nbsp;
-      <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
-    </div>
     <div style="
        grid-area: spec;
        display: flex;
