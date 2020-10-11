@@ -6,7 +6,7 @@ export default {
   components: { DatetimeLive },
   props: ["event"],
   setup() {
-    const isSummary = ref(false);
+    const isSummary = ref(true);
     return { isSummary };
   },
   template: `
