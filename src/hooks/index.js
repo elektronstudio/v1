@@ -1,6 +1,9 @@
 import { ref, onMounted, onUnmounted, computed } from "../deps/vue.js";
 import { Hls } from "../deps/hls.js";
 
+import { safeJsonParse } from "../utils/index.js";
+import { chatUrl } from "../config/index.js";
+
 export const useHls = (url) => {
   const el = ref(null);
   onMounted(() => {
@@ -90,4 +93,31 @@ export const useScrollToBottom = () => {
     observer.observe(el.value, { childList: true });
   });
   return el;
+};
+
+export const useClientsCount = () => {
+  const clientsCount = ref(false);
+
+  const socket = new WebSocket(chatUrl);
+
+  let interval = null;
+
+  socket.onopen = () => {
+    socket.send(JSON.stringify({ type: "statsRequest" }));
+    interval = setInterval(
+      () => socket.send(JSON.stringify({ type: "statsRequest" })),
+      8000
+    );
+  };
+
+  socket.onmessage = ({ data }) => {
+    const message = safeJsonParse(data);
+    if (message && message.type === "statsResponse") {
+      clientsCount.value = message.clientsCount;
+    }
+  };
+
+  socket.onclose = () => clearInterval(interval);
+
+  return clientsCount;
 };
