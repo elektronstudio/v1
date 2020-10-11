@@ -25,16 +25,17 @@ export default {
         pastEvents.value = events.filter(({ diff }) => diff == "past");
       })
     );
+    document.body.style.setProperty("background", "black");
     return { currentEvents, pastEvents };
   },
   template: `
     <div class="layout-index">
     <div style="grid-area: header">
-      <img src="index.svg" style="width: 250px" />
+      <img src="index.svg" style="width: 250px;" />
       <br />
       <br />
     </div>
-    <div style="grid-area: events; display: grid; gap: 48px">
+    <div style="grid-area: events; display: grid; gap: 32px">
       <h2>Upcoming events</h2>
       <event-row v-for="event in currentEvents" :event="event"></event-row>
       <h2>Past events</h2>
@@ -42,7 +43,6 @@ export default {
     </div>
     <div style="grid-area: about; opacity: 0.7">
       <h2>About</h2>
-      <br />
       <br />
       <p>
         elektron.live can be considered as an online stage or a virtual

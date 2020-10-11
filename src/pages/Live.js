@@ -12,7 +12,6 @@ export default {
   components: { EventDetails, LegacyChat },
   setup() {
     const { params } = useRoute();
-
     // URLS
 
     const mainInputUrl = `https://elektron-live.babahhcdn.com/bb1150-le/${params.id}/index.m3u8`;
@@ -92,10 +91,13 @@ export default {
 
     const event = ref(null);
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.reverse().filter(({ id, diff }) => {
+      const e = events.filter(({ id }) => {
         return id === params.id;
       });
       event.value = e[0];
+      if (e[0] && e[0].color) {
+        document.body.style.setProperty("background", e[0].color);
+      }
     });
 
     return {
@@ -111,15 +113,9 @@ export default {
   template: `
   <div class="layout-live">
     <div
-      style="
-        display: flex;
-        align-items: center;
-        grid-area: logo;
-        padding: 8px 0;
-      "
+      class="flex"
     >
-      <img src="../index.svg" style="width: 250px; display: block" />
-      &nbsp;&nbsp;&nbsp;
+      <img src="../index.svg" style="width: 250px; display: block;" />
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>
     <div
@@ -149,7 +145,7 @@ export default {
       </div>
     </div>
 
-    <div style="grid-area: title">
+    <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
     <div
@@ -157,11 +153,11 @@ export default {
         grid-area: spec;
         height: 0;
         max-width: 100%;
-        padding-bottom: calc(3 / 4 * 100%);
+        padding-bottom: 100%;
         position: relative;
       "
     >
-      <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
+      <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0; background: black">
         <video ref="specVideo" autoplay muted></video>
       </div>
       <div

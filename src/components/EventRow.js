@@ -15,12 +15,14 @@ export default {
             ? "red"
             : "none"
         }`,
+        paddingLeft:
+          props.event.diff == "soon" || props.event.diff == "now" ? "24px" : 0,
         opacity: props.event.diff == "past" ? 0.5 : 1,
       };
     });
 
     const pillClass = computed(() => {
-      const isSoon = props.event.diff == "soon" || props.event.diff == "now";
+      const isSoon = props.event.diff == "now";
       return {
         "pill-red": isSoon,
         "pill-gray": !isSoon,
@@ -30,22 +32,22 @@ export default {
     return { isOpen, style, pillClass };
   },
   template: `
-  <article :style="style" style="display: grid; gap: 12px; paddingLeft: 24px">
-      <h3
-        style="cursor: pointer; margin: 0"
-        @click="isOpen = !isOpen"
-        
-      >
-        {{ event ? event.summary : '' }}
-      </h3>  
-      
-      <datetime-index :event="event" />
-      <p style="line-height: 0.5em" />
+  <article :style="style" style="display: grid; gap: 12px; margin-bottom: 8px;">
       <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
-        <div :class="pillClass">
-          See the live at <b>elektron.live/{{ event.id }}</b> →
-        </div>
+        <h3 style="cursor: pointer; margin: 0">{{  event.summary  }}</h3>
       </router-link>
+      <h3 v-if="!event.id" style="cursor: pointer; margin: 0">{{ event.summary  }}</h3>
+      <datetime-index :event="event" />
+      <div class="flex">
+        <div class="pill-gray" @click="isOpen = !isOpen">
+          More info ↓
+        </div>
+        <router-link v-if="event.id" style="display: block" :to="'/' + event.id">
+          <div :class="pillClass">
+            See the live at <b>elektron.live/{{ event.id }}</b> →
+          </div>
+        </router-link>
+      </div>
     <div v-if="isOpen" v-html="event ? event.description : ''" />
     <br v-if="event && event.youtube" />
     <youtube v-if="event && event.youtube" :src="event.youtube" />

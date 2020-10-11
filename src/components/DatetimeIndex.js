@@ -11,11 +11,11 @@ export default {
   },
   template: `
    <h4 style="font-weight: normal">
-    ⏰
+    <!--⏰
     <b :style="{ color }">
-      {{ formatAgo(event.start) }}
+      {{ formatAgo(event) }}
     </b>
-    &ensp;
+    &ensp;-->
     <span style="opacity:0.7">
       {{ formatDate(event.start) }} → {{ formatDate(event.end) }}
     </span>
