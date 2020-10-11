@@ -4,7 +4,8 @@ import { useRoute } from "../deps/router.js";
 import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 
-import SpectatorsVideo from "../components/SpectatorsVideo.js";
+import SpecVideo from "../components/SpecVideo.js";
+import ExperimentalSpecVideo from "../components/ExperimentalSpecVideo.js";
 import Chat from "../components/Chat.js";
 import ExperimentalChat from "../components/ExperimentalChat.js";
 import EventDetails from "../components/EventDetails.js";
@@ -12,13 +13,20 @@ import EventDetails from "../components/EventDetails.js";
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 
 export default {
-  components: { EventDetails, SpectatorsVideo, Chat, ExperimentalChat },
+  components: {
+    EventDetails,
+    SpecVideo,
+    ExperimentalSpecVideo,
+    Chat,
+    ExperimentalChat,
+  },
   setup() {
     const { params } = useRoute();
+    const id = params.id;
 
     // Set up main video input
 
-    const mainVideo = useHls(mainInputUrl(params.id));
+    const mainVideo = useHls(mainInputUrl(id));
 
     // Set up clients count
 
@@ -41,6 +49,7 @@ export default {
       clientsCount,
       mainVideo,
       event,
+      id,
     };
   },
   template: `
@@ -82,10 +91,10 @@ export default {
       <event-details :event="event" />
     </div>
     <div style="grid-area: spec">
-      <component :is="'spectators-video'" />
+      <component :is="'experimental-spec-video'" :id="id"/>
     </div>
     <div style="grid-area: chat">
-      <component :is="'experimental-chat'" />
+      <component :is="'experimental-chat'"  />
     </div>
   </div>
   `,

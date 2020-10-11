@@ -1,7 +1,7 @@
-import Chat from "../components/Chat.js";
+import ExperimentalChat from "../components/ExperimentalChat.js";
 
 export default {
-  components: { Chat },
+  components: { ExperimentalChat },
   setup() {
     const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
     return { chatUrl };
@@ -12,7 +12,7 @@ export default {
       <h1>Chat demo</h1>&nbsp;&nbsp;&nbsp;
       <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
     </div>
-    <chat :chatUrl="chatUrl" style="grid-area: chat"></chat>
+    <experimental-chat style="grid-area: chat" />
   </div>
   `,
 };

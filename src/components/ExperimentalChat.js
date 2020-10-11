@@ -80,6 +80,7 @@ export default {
     display: grid;
     grid-template-rows: 1fr auto;
     height: 100%;
+    max-height: 50vh;
     gap: 8px;
   ">
     <div
