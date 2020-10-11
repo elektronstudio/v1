@@ -60,19 +60,53 @@ export default {
           });
       });
     });
-    return { publisher, subscribers };
+    const videoStarted = ref(false);
+    return { publisher, subscribers, videoStarted };
   },
   template: `
   <div
     style="
-      display: flex;
-      flex-wrap: wrap;
+      position: relative;
       height: 300px;
       overflow: auto;
     "
-  >
-    <video-stream :stream="publisher" />
-    <video-stream v-for="stream in subscribers" :stream="stream" />
+  ><div
+    style="
+      display: flex;
+      flex-wrap: wrap;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0
+    ">
+      <video-stream :stream="publisher" />
+      <video-stream v-for="stream in subscribers" :stream="stream" />
+    </div>
+    <div
+      v-show="!videoStarted"
+      style="
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 32px;
+        background: rgba(20, 20, 20, 0.8);
+      "
+    >
+      <div>
+        <p>
+          Please allow access to your camera. By saying YES you become a
+          public audience member in our venue!
+        </p>
+        <button @click="startVideo">Start my camera</button>
+      </div>
+    </div>
   </div>
   `,
 };
