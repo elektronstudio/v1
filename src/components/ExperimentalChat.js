@@ -94,7 +94,7 @@ export default {
       style="
         height: 100%;
         overflow: scroll;
-        background: #111;
+        background: rgba(20, 20, 20, 0.2);
         padding: 16px;
       ">
       <div v-for="message in messages" style="margin-bottom: 24px" >

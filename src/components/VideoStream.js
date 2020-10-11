@@ -22,8 +22,8 @@ export default {
     style="
       position: relative;
       background: #333;
-      width: 80px;
-      height: 60px;
+      width: 106px;
+      height: 80px;
       margin: 0 0 1px 1px
     "
   >

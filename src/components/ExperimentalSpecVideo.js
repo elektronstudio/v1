@@ -11,6 +11,7 @@ export default {
   setup(props) {
     const publisher = ref(null);
     const subscribers = ref([]);
+    const sessionStarted = ref(false);
     const videoStarted = ref(false);
 
     const OV = new OpenVidu();
@@ -33,7 +34,7 @@ export default {
       }
     });
 
-    const startVideo = () => {
+    const startSession = () => {
       fetchAuth({
         url: `${url}/api/sessions`,
         payload: { customSessionId: props.id },
@@ -59,18 +60,35 @@ export default {
               });
               session.publish(newPublisher);
               publisher.value = newPublisher;
-              videoStarted.value = true;
+              sessionStarted.value = true;
             });
         });
       });
     };
 
-    const stopVideo = () => {
+    const stopSession = () => {
       session.disconnect();
-      videoStarted.value = false;
+      sessionStarted.value = false;
     };
 
-    return { publisher, subscribers, videoStarted, startVideo, stopVideo };
+    // const startVideo = () => {
+    //   publisher.value.publishVideo(true);
+    //   videoStarted.value = true;
+    // };
+
+    // const stopVideo = () => {
+    //   publisher.value.publishVideo(false);
+    //   videoStarted.value = false;
+    // };
+
+    return {
+      publisher,
+      subscribers,
+      sessionStarted,
+      videoStarted,
+      startSession,
+      stopSession,
+    };
   },
   template: `
   <div
@@ -80,7 +98,7 @@ export default {
       overflow: auto;
     "
   ><div
-    v-show="videoStarted"
+    v-show="sessionStarted"
     style="
       display: flex;
       flex-wrap: wrap;
@@ -94,7 +112,7 @@ export default {
       <video-stream v-for="stream in subscribers" :stream="stream" />
     </div>
     <div
-      v-show="!videoStarted"
+      v-show="!sessionStarted"
       style="
         position: absolute;
         top: 0;
@@ -111,14 +129,15 @@ export default {
     >
       <div>
         <p>
-          Please allow access to your camera. By saying YES you become a
-          public audience member in our venue!
+          Please allow access to your camera to be a
+          public audience member in our venue. 
+          Note that we do not use your microphone.
         </p>
-        <button @click="startVideo">Start my camera</button>
+        <button @click="startSession">Start my camera</button>
       </div>
     </div>
     <div
-      v-show="videoStarted"
+      v-show="sessionStarted"
       style="
         position: absolute;
         right: 0;
@@ -127,7 +146,7 @@ export default {
         text-align: center;
       "
     >
-      <button @click="stopVideo">Stop my camera</button>
+      <button v-if="sessionStarted" @click="stopSession">Stop my camera</button>
     </div>
   </div>
   `,

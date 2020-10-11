@@ -9,7 +9,7 @@ export default {
   },
   template: `
   <div style="display: flex; font-size: 13px; margin-bottom: 8px;">
-      <div :style="{opacity: isMyMessage ? 0.25 : 0.5}">{{ message.from.name }}</div>&emsp;
+      <div :style="{opacity: isMyMessage ? 0.5 : 0.75}">{{ message.from.name }}</div>&emsp;
       <!-- <div style="opacity: 0.25">{{formatAgo(message.datetime) }}</div> -->
     </div>
   <div
@@ -22,7 +22,7 @@ export default {
       line-height: 1.5em;
     "
     :style="{
-      background: isMyMessage ? '#222' : '#444'
+      background: isMyMessage ? 'rgba(50,50,50,0.5)' : 'rgba(50,50,50,0.25)'
     }"
   >
     <div v-html="message.value"></div>
