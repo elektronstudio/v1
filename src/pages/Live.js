@@ -1,7 +1,7 @@
 import { ref } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useHls } from "../hooks/index.js";
+import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents, safeJsonParse } from "../utils/index.js";
 
 import EventDetails from "../components/EventDetails.js";
@@ -19,32 +19,11 @@ export default {
 
     const mainVideo = useHls(mainInputUrl(params.id));
 
-    // Clients count
+    // Set up clients count
 
-    const clientsCount = ref(false);
+    const clientsCount = useClientsCount();
 
-    const socket = new WebSocket(chatUrl);
-
-    let interval = null;
-
-    socket.onopen = () => {
-      socket.send(JSON.stringify({ type: "statsRequest" }));
-      interval = setInterval(
-        () => socket.send(JSON.stringify({ type: "statsRequest" })),
-        8000
-      );
-    };
-
-    socket.onmessage = ({ data }) => {
-      const message = safeJsonParse(data);
-      if (message && message.type === "statsResponse") {
-        clientsCount.value = message.clientsCount;
-      }
-    };
-
-    socket.onclose = () => clearInterval(interval);
-
-    // Event
+    // Fetch and parse event
 
     const event = ref(null);
     fetchEvents(eventsUrl).then((events) => {
