@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap");
 :root {
   --background: black;
+  --foreground: white;
 }
 @font-face {
   font-family: "font-medium";
@@ -84,7 +85,7 @@ textarea {
   border-radius: 2px;
   outline: none;
   padding: 8px;
-  font-family: "Nunito Sans" sans-serif;
+  font-family: "Nunito Sans", sans-serif;
   font-size: 15px;
   line-height: 1.5em;
   color: white;
