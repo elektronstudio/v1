@@ -2,6 +2,7 @@ import { ref } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 import { fetchAuth, randomId } from "../utils/index.js";
+import { useLocalstorage } from "../hooks/index.js";
 
 import VideoStream from "./VideoStream.js";
 
@@ -12,7 +13,8 @@ export default {
     const publisher = ref(null);
     const subscribers = ref([]);
     const sessionStarted = ref(false);
-    const videoStarted = ref(false);
+
+    const userName = useLocalstorage("elektron_user_name", `hmm`);
 
     const OV = new OpenVidu();
     OV.enableProdMode();
@@ -49,8 +51,18 @@ export default {
           password,
         }).then(({ token }) => {
           session
-            .connect(token, { clientData: { userName: randomId() } })
+            .connect(token, { clientData: { userName: userName.value } })
             .then(() => {
+              // fetchAuth({
+              //   url: `${url}/api/sessions/${sessionId}`,
+              //   username,
+              //   password,
+              //   method: "GET",
+              // }).then((data) => {
+              //   console.log("sessiondata");
+              //   console.log(data.connections);
+              // });
+
               const newPublisher = OV.initPublisher(null, {
                 publishVideo: true,
                 publishAudio: false,
@@ -69,23 +81,15 @@ export default {
     const stopSession = () => {
       session.disconnect();
       sessionStarted.value = false;
+      window.removeEventListener("beforeunload", leaveSession);
     };
 
-    // const startVideo = () => {
-    //   publisher.value.publishVideo(true);
-    //   videoStarted.value = true;
-    // };
-
-    // const stopVideo = () => {
-    //   publisher.value.publishVideo(false);
-    //   videoStarted.value = false;
-    // };
+    window.addEventListener("beforeunload", leaveSession);
 
     return {
       publisher,
       subscribers,
       sessionStarted,
-      videoStarted,
       startSession,
       stopSession,
     };

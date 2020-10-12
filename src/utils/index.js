@@ -170,7 +170,7 @@ export const fetchEvents = (url) => {
 
 export const fetchAuth = ({
   url,
-  payload = {},
+  payload = null,
   username,
   password,
   method = "POST",
@@ -184,7 +184,7 @@ export const fetchAuth = ({
     fetch(url, {
       method,
       headers,
-      body: JSON.stringify(payload),
+      body: payload ? JSON.stringify(payload) : null,
     }).then((res) => {
       if (res.status === 409) {
         return resolve(payload);
