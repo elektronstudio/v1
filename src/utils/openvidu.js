@@ -1,15 +1,16 @@
-import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js"
+import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js";
 
-const OPENVIDU_SERVER_URL = 'https://elektron.studio'
-const OPENVIDU_SERVER_SECRET = 'secret'
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
-export function getToken(mySessionId) {
-  return createSession(mySessionId).then((sessionId) =>
-    createToken(sessionId)
-  );
-},
+const OPENVIDU_SERVER_URL = "https://elektron.studio";
+const OPENVIDU_SERVER_SECRET = "secret";
+
+export const getToken = (mySessionId) => {
+  return createSession(mySessionId).then((sessionId) => createToken(sessionId));
+};
 
 function createSession(sessionId) {
+  console.log(sessionId);
   return new Promise((resolve, reject) => {
     axios
       .post(
@@ -20,7 +21,7 @@ function createSession(sessionId) {
         {
           auth: {
             username: "OPENVIDUAPP",
-            password: OPENVIDU_SERVER_SECRET
+            password: OPENVIDU_SERVER_SECRET,
           },
         }
       )
@@ -30,21 +31,11 @@ function createSession(sessionId) {
         if (error.response.status === 409) {
           resolve(sessionId);
         } else {
-          console.warn(
-            `No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`
-          );
-          if (
-            window.confirm(
-              `No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
-            )
-          ) {
-            location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
-          }
           reject(error.response);
         }
       });
   });
-},
+}
 
 function createToken(sessionId) {
   return new Promise((resolve, reject) => {
@@ -65,4 +56,4 @@ function createToken(sessionId) {
       .then((data) => resolve(data.token))
       .catch((error) => reject(error.response));
   });
-},
+}

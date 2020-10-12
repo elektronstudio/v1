@@ -18,6 +18,13 @@ export default {
     return { videoEl };
   },
   template: `
+  <video
+    ref="videoEl"
+    autoplay
+    muted
+  ></video>
+  `,
+  template2: `
   <div
     style="
       position: relative;

@@ -244,3 +244,7 @@ button:hover {
     transform: rotate(360deg);
   }
 }
+
+video {
+  border: 3px solid black;
+}

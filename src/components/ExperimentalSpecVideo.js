@@ -2,6 +2,7 @@ import { ref } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 import { fetchAuth, randomId } from "../utils/index.js";
+import { getToken } from "../utils/openvidu.js";
 import { useLocalstorage } from "../hooks/index.js";
 
 import VideoStream from "./VideoStream.js";
@@ -11,6 +12,7 @@ export default {
   props: ["id"],
   setup(props) {
     const publisher = ref(null);
+    const streamManager = ref(null);
     const subscribers = ref([]);
     const sessionStarted = ref(false);
 
@@ -20,9 +22,9 @@ export default {
     OV.enableProdMode();
     const session = OV.initSession();
 
-    const url = "https://elektron.studio";
-    const username = "OPENVIDUAPP";
-    const password = "secret";
+    // const url = "https://elektron.studio";
+    // const username = "OPENVIDUAPP";
+    // const password = "secret";
 
     session.on("streamCreated", ({ stream }) => {
       const subscriber = session.subscribe(stream);
@@ -37,54 +39,33 @@ export default {
     });
 
     const startSession = () => {
-      fetchAuth({
-        url: `${url}/api/sessions`,
-        payload: { customSessionId: props.id },
-        username,
-        password,
-      }).then((data) => {
-        const sessionId = data && data.id ? data.id : data.customSessionId;
-        fetchAuth({
-          url: `${url}/api/tokens`,
-          payload: { session: sessionId },
-          username,
-          password,
-        }).then(({ token }) => {
-          session
-            .connect(token, { clientData: { userName: userName.value } })
-            .then(() => {
-              // fetchAuth({
-              //   url: `${url}/api/sessions/${sessionId}`,
-              //   username,
-              //   password,
-              //   method: "GET",
-              // }).then((data) => {
-              //   console.log("sessiondata");
-              //   console.log(data.connections);
-              // });
-
-              const newPublisher = OV.initPublisher(null, {
-                publishVideo: true,
-                publishAudio: false,
-                resolution: "80x60",
-                frameRate: 12,
-                mirror: true,
-              });
-              session.publish(newPublisher);
-              publisher.value = newPublisher;
-              sessionStarted.value = true;
+      getToken(props.id).then((token) => {
+        session
+          .connect(token, { clientData: { userName: userName.value } })
+          .then(() => {
+            const newPublisher = OV.initPublisher(null, {
+              publishVideo: true,
+              publishAudio: true,
+              resolution: "80x60",
+              frameRate: 12,
+              mirror: true,
+              insertMode: "APPEND",
             });
-        });
+            session.publish(newPublisher);
+            streamManager.value = newPublisher;
+            publisher.value = newPublisher;
+            sessionStarted.value = true;
+          });
       });
     };
 
     const stopSession = () => {
       session.disconnect();
       sessionStarted.value = false;
-      window.removeEventListener("beforeunload", leaveSession);
+      window.removeEventListener("beforeunload", stopSession);
     };
 
-    window.addEventListener("beforeunload", leaveSession);
+    window.addEventListener("beforeunload", stopSession);
 
     return {
       publisher,
