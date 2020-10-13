@@ -11,27 +11,27 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 // const OPENVIDU_SERVER_URL = "https://elektron.studio";
 // const OPENVIDU_SERVER_SECRET = "secret";
 
-const SubscriberVideo = {
-  props: ["subscriber"],
+const PublisherVideo = {
+  props: ["publisher"],
   setup(props) {
     const video = ref(null);
-    onMounted(() => props.subscriber.addVideoElement(video.value));
+    onMounted(() => props.publisher.addVideoElement(video.value));
     return { video };
   },
   template: `
-    <video ref="video" muted autoplay/>
+    <video ref="video" muted autoplay />
   `,
 };
 
-const SubscriberCard = {
+export const PublisherCard = {
   components: {
-    SubscriberVideo,
+    PublisherVideo,
   },
-  props: ["subscriber"],
+  props: ["publisher"],
   setup(props) {
     const clientData = computed(() => {
-      if (props.subscriber) {
-        const { connection } = props.subscriber.stream;
+      if (props.publisher) {
+        const { connection } = props.publisher.stream;
         return JSON.parse(connection.data);
       }
       return { userName: null };
@@ -40,7 +40,7 @@ const SubscriberCard = {
   },
   template: `
   <div>
-	  <subscriber-video v-if="subscriber" :subscriber="subscriber"/>
+	  <publisher-video v-if="publisher" :publisher="publisher"/>
 	  <div>{{ clientData.userName }}</div>
   </div>
   `,
@@ -48,7 +48,7 @@ const SubscriberCard = {
 
 export default {
   components: {
-    SubscriberCard,
+    PublisherCard,
   },
 
   data() {
@@ -294,13 +294,13 @@ export default {
         <!-- <subscriber-card :subscriber="mainStreamManager" /> -->
       </div>
       <div id="video-container" class="col-md-6">
-        <subscriber-card
-          :subscriber="publisher"
+        <publisher-card
+          :publisher="publisher"
         />
-        <subscriber-card
-          v-for="(sub, index) in subscribers"
+        <publisher-card
+          v-for="(publisher, index) in subscribers"
           :key="index"
-          :subscriber="sub"
+          :publisher="publisher"
         />
       </div>
     </div>
