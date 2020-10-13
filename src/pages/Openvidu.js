@@ -11,13 +11,11 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 const OPENVIDU_SERVER_URL = "https://elektron.studio";
 const OPENVIDU_SERVER_SECRET = "secret";
 
-const OvVideo = {
-  props: {
-    streamManager: Object,
-  },
+const SubscriberVideo = {
+  props: ["subscriber"],
   setup(props) {
     const video = ref(null);
-    onMounted(() => props.streamManager.addVideoElement(video.value));
+    onMounted(() => props.subscriber.addVideoElement(video.value));
     return { video };
   },
   template: `
@@ -25,15 +23,15 @@ const OvVideo = {
   `,
 };
 
-const UserVideo = {
+const SubscriberCard = {
   components: {
-    OvVideo,
+    SubscriberVideo,
   },
-  props: ["streamManager"],
+  props: ["subscriber"],
   setup(props) {
     const clientData = computed(() => {
-      if (props.streamManager) {
-        const { connection } = props.streamManager.stream;
+      if (props.subscriber) {
+        const { connection } = props.subscriber.stream;
         return JSON.parse(connection.data);
       }
       return { userName: null };
@@ -42,7 +40,7 @@ const UserVideo = {
   },
   template: `
   <div>
-	  <ov-video v-if="streamManager" :stream-manager="streamManager"/>
+	  <subscriber-video v-if="subscriber" :subscriber="subscriber"/>
 	  <div>{{ clientData.userName }}</div>
   </div>
   `,
@@ -50,7 +48,7 @@ const UserVideo = {
 
 export default {
   components: {
-    UserVideo,
+    SubscriberCard,
   },
 
   data() {
@@ -106,7 +104,7 @@ export default {
               publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
               publishVideo: true, // Whether you want to start publishing with your video enabled or not
               resolution: "160x120", // The resolution of your video
-              frameRate: 30, // The frame rate of your video
+              frameRate: 12, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
               mirror: false, // Whether to mirror your local video or not
             });
@@ -292,18 +290,16 @@ export default {
         />
       </div>
       <div id="main-video" class="col-md-6">
-        <user-video :stream-manager="mainStreamManager" />
+        <!-- <subscriber-card :subscriber="mainStreamManager" /> -->
       </div>
       <div id="video-container" class="col-md-6">
-        <!-- <user-video
-          :stream-manager="publisher"
-          @click.native="updateMainVideoStreamManager(publisher)"
-        /> -->
-        <user-video
+        <subscriber-card
+          :subscriber="publisher"
+        />
+        <subscriber-card
           v-for="(sub, index) in subscribers"
           :key="index"
-          :stream-manager="sub"
-          @click.native="updateMainVideoStreamManager(sub)"
+          :subscriber="sub"
         />
       </div>
     </div>
