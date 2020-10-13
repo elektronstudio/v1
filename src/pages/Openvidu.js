@@ -32,15 +32,18 @@ const UserVideo = {
   props: ["streamManager"],
   setup(props) {
     const clientData = computed(() => {
-      const { connection } = props.streamManager.stream;
-      return JSON.parse(connection.data);
+      if (props.streamManager) {
+        const { connection } = props.streamManager.stream;
+        return JSON.parse(connection.data);
+      }
+      return { userName: null };
     });
     return { clientData };
   },
   template: `
-  <div v-if="streamManager">
-	  <ov-video :stream-manager="streamManager"/>
-	  <div><p>{{ clientData }}</p></div>
+  <div>
+	  <ov-video v-if="streamManager" :stream-manager="streamManager"/>
+	  <div>{{ clientData.userName }}</div>
   </div>
   `,
 };
@@ -93,7 +96,7 @@ export default {
       // 'token' parameter should be retrieved and returned by your own backend
       this.getToken2(this.mySessionId).then(({ token }) => {
         this.session
-          .connect(token, { clientData: this.myUserName })
+          .connect(token, { userName: this.myUserName })
           .then(() => {
             // --- Get your own camera stream with the desired properties ---
 
