@@ -1,3 +1,5 @@
+import { computed } from "../deps/vue.js";
+
 import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
@@ -25,22 +27,13 @@ const UserVideo = {
   components: {
     OvVideo,
   },
-  props: {
-    streamManager: Object,
-  },
-
-  computed: {
-    clientData() {
-      const { clientData } = this.getConnectionData();
-      return clientData;
-    },
-  },
-
-  methods: {
-    getConnectionData() {
-      const { connection } = this.streamManager.stream;
+  props: ["streamManager"],
+  setup(props) {
+    const clientData = computed(() => {
+      const { connection } = props.streamManager.stream;
       return JSON.parse(connection.data);
-    },
+    });
+    return { clientData };
   },
   template: `
   <div v-if="streamManager">
