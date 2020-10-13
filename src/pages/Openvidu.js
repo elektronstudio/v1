@@ -1,6 +1,7 @@
 import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
+import { fetchAuth } from "../utils/index.js";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -16,7 +17,7 @@ const OvVideo = {
     this.streamManager.addVideoElement(this.$el);
   },
   template: `
-    <video autoplay/>
+    <video muted autoplay/>
   `,
 };
 
@@ -95,7 +96,7 @@ export default {
 
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
-      this.getToken(this.mySessionId).then((token) => {
+      this.getToken2(this.mySessionId).then(({ token }) => {
         this.session
           .connect(token, { clientData: this.myUserName })
           .then(() => {
@@ -109,7 +110,7 @@ export default {
               resolution: "160x120", // The resolution of your video
               frameRate: 30, // The frame rate of your video
               insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-              mirror: true, // Whether to mirror your local video or not
+              mirror: false, // Whether to mirror your local video or not
             });
 
             this.mainStreamManager = publisher;
@@ -160,6 +161,22 @@ export default {
      *   2) Generate a token in OpenVidu Server		(POST /api/tokens)
      *   3) The token must be consumed in Session.connect() method
      */
+
+    getToken2(id) {
+      return fetchAuth({
+        url: `${OPENVIDU_SERVER_URL}/api/sessions`,
+        payload: { customSessionId: id },
+        username: "OPENVIDUAPP",
+        password: OPENVIDU_SERVER_SECRET,
+      }).then(() => {
+        return fetchAuth({
+          url: `${OPENVIDU_SERVER_URL}/api/tokens`,
+          payload: { session: id },
+          username: "OPENVIDUAPP",
+          password: OPENVIDU_SERVER_SECRET,
+        });
+      });
+    },
 
     getToken(mySessionId) {
       return this.createSession(mySessionId).then((sessionId) =>
