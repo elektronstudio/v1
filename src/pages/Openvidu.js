@@ -3,13 +3,13 @@ import { computed, ref, onMounted } from "../deps/vue.js";
 import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
-import { fetchAuth } from "../utils/index.js";
+import { getToken } from "../utils/index.js";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 //const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-const OPENVIDU_SERVER_URL = "https://elektron.studio";
-const OPENVIDU_SERVER_SECRET = "secret";
+// const OPENVIDU_SERVER_URL = "https://elektron.studio";
+// const OPENVIDU_SERVER_SECRET = "secret";
 
 const SubscriberVideo = {
   props: ["subscriber"],
@@ -65,6 +65,7 @@ export default {
   },
 
   methods: {
+    getToken,
     joinSession() {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
@@ -92,7 +93,7 @@ export default {
 
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
-      this.getToken2(this.mySessionId).then(({ token }) => {
+      this.getToken(this.mySessionId).then(({ token }) => {
         this.session
           .connect(token, { userName: this.myUserName })
           .then(() => {
@@ -174,7 +175,7 @@ export default {
       });
     },
 
-    getToken(mySessionId) {
+    getToken3(mySessionId) {
       return this.createSession(mySessionId).then((sessionId) =>
         this.createToken(sessionId)
       );

@@ -9,6 +9,12 @@ import {
 } from "../deps/date-fns.js";
 import { zonedTimeToUtc, utcToZonedTime, format } from "../deps/date-fns-tz.js";
 
+import {
+  openviduUrl,
+  openviduUsername,
+  openviduPassword,
+} from "../config/index.js";
+
 // Json utils
 
 export const safeJsonParse = (str) => {
@@ -33,16 +39,6 @@ export const safeStringify = (obj, indent = 2) => {
   );
   cache = null;
   return retVal;
-};
-
-// Id utils
-
-export const uuidv4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
 };
 
 // Date utils
@@ -194,6 +190,21 @@ export const fetchAuth = ({
     });
   });
 };
+
+export const getToken = (id) =>
+  fetchAuth({
+    url: `${openviduUrl}/api/sessions`,
+    payload: { customSessionId: id },
+    username: openviduUsername,
+    password: openviduPassword,
+  }).then(() =>
+    fetchAuth({
+      url: `${openviduUrl}/api/tokens`,
+      payload: { session: id },
+      username: openviduUsername,
+      password: openviduPassword,
+    })
+  );
 
 // Arrays
 
