@@ -1,4 +1,4 @@
-import { computed } from "../deps/vue.js";
+import { computed, ref, onMounted } from "../deps/vue.js";
 
 import axios from "https://cdn.skypack.dev/pin/axios@v0.20.0-LOBv4rtrPNcfEDCm7t9v/min/axios.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
@@ -15,11 +15,13 @@ const OvVideo = {
   props: {
     streamManager: Object,
   },
-  mounted() {
-    this.streamManager.addVideoElement(this.$el);
+  setup(props) {
+    const video = ref(null);
+    onMounted(() => props.streamManager.addVideoElement(video.value));
+    return { video };
   },
   template: `
-    <video muted autoplay/>
+    <video ref="video" muted autoplay/>
   `,
 };
 
