@@ -1,4 +1,4 @@
-import { ref } from "../deps/vue.js";
+import { ref, computed } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 import { getToken } from "../utils/index.js";
@@ -71,6 +71,14 @@ export default {
 
     window.addEventListener("beforeunload", leaveSession);
 
+    const proportion = 16 / 9;
+    const columns = computed(() =>
+      Math.min(
+        subscribers.value.length + 1,
+        Math.round(Math.sqrt(proportion * subscribers.value.length + 1))
+      )
+    );
+
     return {
       session,
       publisher,
@@ -79,13 +87,14 @@ export default {
       myUserName,
       joinSession,
       leaveSession,
+      columns,
     };
   },
   template: `
   <div
     style="
       position: relative;
-      height: 300px;
+      height: 60vw;
       overflow: auto;
     "
   ><div
@@ -97,19 +106,18 @@ export default {
       bottom: 0;
       left: 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
       align-items: flex-start;
-      gap: 1px;
-  ">
-    <div v-for="i in 10" style="background: yellow; height: 100%;">a</div>
-    <!-- <publisher-card
+    "
+    :style="{gridTemplateColumns: 'repeat(' + columns + ', 1fr)'}"
+  >
+    <publisher-card
       :publisher="publisher"
     />
     <publisher-card
       v-for="(publisher, i) in subscribers"
       :key="i"
       :publisher="publisher"
-    /> -->
+    />
     </div>
     <div
       v-show="!session"
