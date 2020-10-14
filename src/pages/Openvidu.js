@@ -51,71 +51,47 @@ export default {
     PublisherCard,
   },
 
-  data() {
-    return {
-      OV: undefined,
-      session: undefined,
-      mainStreamManager: undefined,
-      publisher: undefined,
-      subscribers: [],
+  setup() {
+    const session = ref(null);
+    const publisher = ref(null);
+    const subscribers = ref([]);
+    const mySessionId = ref("SessionA");
+    const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
-      mySessionId: "SessionA",
-      myUserName: "Participant" + Math.floor(Math.random() * 100),
-    };
-  },
+    const joinSession = () => {
+      const OV = new OpenVidu();
 
-  methods: {
-    getToken,
-    joinSession() {
-      // --- Get an OpenVidu object ---
-      this.OV = new OpenVidu();
+      session.value = OV.initSession();
 
-      // --- Init a session ---
-      this.session = this.OV.initSession();
-
-      // --- Specify the actions when events take place in the session ---
-
-      // On every new Stream received...
-      this.session.on("streamCreated", ({ stream }) => {
-        const subscriber = this.session.subscribe(stream);
-        this.subscribers.push(subscriber);
+      session.value.on("streamCreated", ({ stream }) => {
+        const subscriber = session.value.subscribe(stream);
+        subscribers.value.push(subscriber);
       });
 
-      // On every Stream destroyed...
-      this.session.on("streamDestroyed", ({ stream }) => {
-        const index = this.subscribers.indexOf(stream.streamManager, 0);
+      session.value.on("streamDestroyed", ({ stream }) => {
+        const index = subscribers.value.indexOf(stream.streamManager, 0);
         if (index >= 0) {
-          this.subscribers.splice(index, 1);
+          subscribers.value.splice(index, 1);
         }
       });
 
-      // --- Connect to the session with a valid user token ---
-
-      // 'getToken' method is simulating what your server-side should do.
-      // 'token' parameter should be retrieved and returned by your own backend
-      this.getToken(this.mySessionId).then(({ token }) => {
-        this.session
-          .connect(token, { userName: this.myUserName })
+      getToken(mySessionId.value).then(({ token }) => {
+        session.value
+          .connect(token, { userName: myUserName.value })
           .then(() => {
-            // --- Get your own camera stream with the desired properties ---
-
-            let publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-              publishVideo: true, // Whether you want to start publishing with your video enabled or not
-              resolution: "160x120", // The resolution of your video
-              frameRate: 12, // The frame rate of your video
-              insertMode: "APPEND", // How the video is inserted in the target element 'video-container'
-              mirror: false, // Whether to mirror your local video or not
+            let newPublisher = OV.initPublisher(undefined, {
+              audioSource: undefined,
+              videoSource: undefined,
+              publishAudio: true,
+              publishVideo: true,
+              resolution: "160x120",
+              frameRate: 12,
+              insertMode: "APPEND",
+              mirror: false,
             });
 
-            this.mainStreamManager = publisher;
-            this.publisher = publisher;
-
-            // --- Publish your stream ---
-
-            this.session.publish(this.publisher);
+            publisher.value = newPublisher;
+            session.value.publish(newPublisher);
           })
           .catch((error) => {
             console.log(
@@ -125,121 +101,24 @@ export default {
             );
           });
       });
+    };
 
-      window.addEventListener("beforeunload", this.leaveSession);
-    },
+    const leaveSession = () => {
+      session.value.disconnect();
+      window.removeEventListener("beforeunload", leaveSession);
+    };
 
-    leaveSession() {
-      // --- Leave the session by calling 'disconnect' method over the Session object ---
-      if (this.session) this.session.disconnect();
+    window.addEventListener("beforeunload", leaveSession);
 
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
-
-      window.removeEventListener("beforeunload", this.leaveSession);
-    },
-
-    updateMainVideoStreamManager(stream) {
-      if (this.mainStreamManager === stream) return;
-      this.mainStreamManager = stream;
-    },
-
-    /**
-     * --------------------------
-     * SERVER-SIDE RESPONSIBILITY
-     * --------------------------
-     * These methods retrieve the mandatory user token from OpenVidu Server.
-     * This behavior MUST BE IN YOUR SERVER-SIDE IN PRODUCTION (by using
-     * the API REST, openvidu-java-client or openvidu-node-client):
-     *   1) Initialize a session in OpenVidu Server	(POST /api/sessions)
-     *   2) Generate a token in OpenVidu Server		(POST /api/tokens)
-     *   3) The token must be consumed in Session.connect() method
-     */
-
-    getToken2(id) {
-      return fetchAuth({
-        url: `${OPENVIDU_SERVER_URL}/api/sessions`,
-        payload: { customSessionId: id },
-        username: "OPENVIDUAPP",
-        password: OPENVIDU_SERVER_SECRET,
-      }).then(() => {
-        return fetchAuth({
-          url: `${OPENVIDU_SERVER_URL}/api/tokens`,
-          payload: { session: id },
-          username: "OPENVIDUAPP",
-          password: OPENVIDU_SERVER_SECRET,
-        });
-      });
-    },
-
-    getToken3(mySessionId) {
-      return this.createSession(mySessionId).then((sessionId) =>
-        this.createToken(sessionId)
-      );
-    },
-
-    // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-apisessions
-    createSession(sessionId) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post(
-            `${OPENVIDU_SERVER_URL}/api/sessions`,
-            JSON.stringify({
-              customSessionId: sessionId,
-            }),
-            {
-              auth: {
-                username: "OPENVIDUAPP",
-                password: OPENVIDU_SERVER_SECRET,
-              },
-            }
-          )
-          .then((response) => response.data)
-          .then((data) => resolve(data.id))
-          .catch((error) => {
-            if (error.response.status === 409) {
-              resolve(sessionId);
-            } else {
-              console.warn(
-                `No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`
-              );
-              if (
-                window.confirm(
-                  `No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`
-                )
-              ) {
-                location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
-              }
-              reject(error.response);
-            }
-          });
-      });
-    },
-
-    // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-apitokens
-    createToken(sessionId) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post(
-            `${OPENVIDU_SERVER_URL}/api/tokens`,
-            JSON.stringify({
-              session: sessionId,
-            }),
-            {
-              auth: {
-                username: "OPENVIDUAPP",
-                password: OPENVIDU_SERVER_SECRET,
-              },
-            }
-          )
-          .then((response) => response.data)
-          .then((data) => resolve(data.token))
-          .catch((error) => reject(error.response));
-      });
-    },
+    return {
+      session,
+      publisher,
+      subscribers,
+      mySessionId,
+      myUserName,
+      joinSession,
+      leaveSession,
+    };
   },
   template: `
   <div id="main-container" class="container">
@@ -260,7 +139,7 @@ export default {
             />
           </p>
           <p>
-            <label>Session</label>
+            <label>Session {{ mySessionId }}</label>
             <input
               v-model="mySessionId"
               class="form-control"
