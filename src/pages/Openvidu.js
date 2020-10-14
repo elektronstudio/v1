@@ -69,6 +69,7 @@ export default {
       });
 
       session.value.on("streamDestroyed", ({ stream }) => {
+        console.log("des");
         const index = subscribers.value.indexOf(stream.streamManager, 0);
         if (index >= 0) {
           subscribers.value.splice(index, 1);
@@ -105,6 +106,7 @@ export default {
 
     const leaveSession = () => {
       session.value.disconnect();
+      session.value = null;
       window.removeEventListener("beforeunload", leaveSession);
     };
 
