@@ -1,78 +1,84 @@
 import { ref } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
-import { fetchAuth, randomId } from "../utils/index.js";
-import { getToken } from "../utils/openvidu.js";
-import { useLocalstorage } from "../hooks/index.js";
+import { getToken } from "../utils/index.js";
 
-import VideoStream from "./VideoStream.js";
+import { PublisherCard } from "../pages/OpenVidu.js";
 
 export default {
-  components: { VideoStream },
+  components: {
+    PublisherCard,
+  },
   props: ["id"],
   setup(props) {
+    const session = ref(null);
     const publisher = ref(null);
-    const streamManager = ref(null);
     const subscribers = ref([]);
-    const sessionStarted = ref(false);
+    const mySessionId = ref("SessionA");
+    const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
-    const userName = useLocalstorage("elektron_user_name", `hmm`);
+    const joinSession = () => {
+      const OV = new OpenVidu();
 
-    const OV = new OpenVidu();
-    OV.enableProdMode();
-    const session = OV.initSession();
+      session.value = OV.initSession();
 
-    // const url = "https://elektron.studio";
-    // const username = "OPENVIDUAPP";
-    // const password = "secret";
+      session.value.on("streamCreated", ({ stream }) => {
+        const subscriber = session.value.subscribe(stream);
+        subscribers.value.push(subscriber);
+      });
 
-    session.on("streamCreated", ({ stream }) => {
-      const subscriber = session.subscribe(stream);
-      subscribers.value.push(subscriber);
-    });
+      session.value.on("streamDestroyed", ({ stream }) => {
+        console.log("des");
+        const index = subscribers.value.indexOf(stream.streamManager, 0);
+        if (index >= 0) {
+          subscribers.value.splice(index, 1);
+        }
+      });
 
-    session.on("streamDestroyed", ({ stream }) => {
-      const index = subscribers.value.indexOf(stream.streamManager, 0);
-      if (index >= 0) {
-        subscribers.value.splice(index, 1);
-      }
-    });
-
-    const startSession = () => {
-      getToken(props.id).then((token) => {
-        session
-          .connect(token, { clientData: { userName: userName.value } })
+      getToken(mySessionId.value).then(({ token }) => {
+        session.value
+          .connect(token, { userName: myUserName.value })
           .then(() => {
-            const newPublisher = OV.initPublisher(null, {
-              publishVideo: true,
+            let newPublisher = OV.initPublisher(undefined, {
+              audioSource: undefined,
+              videoSource: undefined,
               publishAudio: true,
-              resolution: "80x60",
+              publishVideo: true,
+              resolution: "160x120",
               frameRate: 12,
-              mirror: true,
               insertMode: "APPEND",
+              mirror: false,
             });
-            session.publish(newPublisher);
-            streamManager.value = newPublisher;
+
             publisher.value = newPublisher;
-            sessionStarted.value = true;
+            session.value.publish(newPublisher);
+          })
+          .catch((error) => {
+            console.log(
+              "There was an error connecting to the session:",
+              error.code,
+              error.message
+            );
           });
       });
     };
 
-    const stopSession = () => {
-      session.disconnect();
-      sessionStarted.value = false;
-      window.removeEventListener("beforeunload", stopSession);
+    const leaveSession = () => {
+      session.value.disconnect();
+      session.value = null;
+      window.removeEventListener("beforeunload", leaveSession);
     };
 
-    window.addEventListener("beforeunload", stopSession);
+    window.addEventListener("beforeunload", leaveSession);
 
     return {
+      session,
       publisher,
       subscribers,
-      sessionStarted,
-      startSession,
-      stopSession,
+      mySessionId,
+      myUserName,
+      joinSession,
+      leaveSession,
     };
   },
   template: `
@@ -83,21 +89,30 @@ export default {
       overflow: auto;
     "
   ><div
-    v-show="sessionStarted"
+    v-show="session"
     style="
-      display: flex;
-      flex-wrap: wrap;
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
-      left: 0
-    ">
-      <video-stream :stream="publisher" />
-      <video-stream v-for="stream in subscribers" :stream="stream" />
+      left: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: flex-start;
+      gap: 1px;
+  ">
+    <div v-for="i in 10" style="background: yellow; height: 100%;">a</div>
+    <!-- <publisher-card
+      :publisher="publisher"
+    />
+    <publisher-card
+      v-for="(publisher, i) in subscribers"
+      :key="i"
+      :publisher="publisher"
+    /> -->
     </div>
     <div
-      v-show="!sessionStarted"
+      v-show="!session"
       style="
         position: absolute;
         top: 0;
@@ -118,11 +133,11 @@ export default {
           public audience member in our venue. 
           Note that we do not use your microphone.
         </p>
-        <button @click="startSession">Start my camera</button>
+        <button @click="joinSession">Start my camera</button>
       </div>
     </div>
     <div
-      v-show="sessionStarted"
+      v-show="session"
       style="
         position: absolute;
         right: 0;
@@ -131,7 +146,7 @@ export default {
         text-align: center;
       "
     >
-      <button v-if="sessionStarted" @click="stopSession">Stop my camera</button>
+      <button v-if="session" @click="leaveSession">Stop my camera</button>
     </div>
   </div>
   `,
