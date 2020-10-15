@@ -11,7 +11,6 @@ export default {
         max-width: 100%;
         padding-bottom: calc(1 / 1 * 100%);
         position: relative;
-        border: 1px solid red;
       "
     >
     <experimental-spec-video 
@@ -22,7 +21,7 @@ export default {
         bottom: 0;
         left: 0;
       "
-      id="romeojulia"
+      id="lores"
     />
   </div>
   </div>

@@ -19,3 +19,7 @@ export const eventsUrl =
 export const openviduUrl = "https://elektron.studio";
 export const openviduUsername = "OPENVIDUAPP";
 export const openviduPassword = "secret";
+
+export const openviduWidth = 80;
+export const openviduHeight = 60;
+export const openviduFps = 12;

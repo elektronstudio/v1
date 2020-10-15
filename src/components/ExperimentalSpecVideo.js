@@ -14,7 +14,7 @@ export default {
     const session = ref(null);
     const publisher = ref(null);
     const subscribers = ref([]);
-    const mySessionId = ref("SessionA");
+    const mySessionId = ref(props.id);
     const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
     const joinSession = () => {
