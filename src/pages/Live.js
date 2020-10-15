@@ -115,7 +115,7 @@ export default {
       <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
     </div> -->
     <div style="grid-area: chat">
-      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
+      <experimental-chat :id="id" />
     </div>
   </div>
   `,
