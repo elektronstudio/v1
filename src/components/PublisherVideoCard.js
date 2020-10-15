@@ -17,8 +17,8 @@ export default {
     return { clientData };
   },
   template: `
-	  <div style="border: 1px solid yellow; height: 100%;">
-      <publisher-video v-if="publisher" :publisher="publisher"/>
+	  <div>
+      <publisher-video v-if="publisher" :publisher="publisher" />
     </div>
   <!-- <div>
 	  <publisher-video v-if="publisher" :publisher="publisher"/>

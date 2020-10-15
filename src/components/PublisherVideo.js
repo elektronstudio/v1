@@ -8,6 +8,6 @@ export default {
     return { video };
   },
   template: `
-    <video ref="video" muted autoplay style="border: 1px solid red; height: 100%;"/>
+    <video ref="video" muted autoplay />
   `,
 };

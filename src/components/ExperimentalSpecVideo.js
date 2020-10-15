@@ -66,10 +66,14 @@ export default {
     const leaveSession = () => {
       session.value.disconnect();
       session.value = null;
+      publisher.value = null;
+      subscribers.value = [];
       window.removeEventListener("beforeunload", leaveSession);
     };
 
     window.addEventListener("beforeunload", leaveSession);
+
+    // https://stackoverflow.com/a/51956837
 
     const proportion = 4 / 3;
     const columns = computed(() =>
@@ -78,6 +82,9 @@ export default {
         Math.round(Math.sqrt(proportion * subscribers.value.length + 1))
       )
     );
+    // const rows = computed(() =>
+    //   Math.ceil((subscribers.value.length + columns.value) / columns)
+    // );
 
     return {
       session,
@@ -94,7 +101,6 @@ export default {
   <div
     style="
       position: relative;
-      height: 60vw;
       overflow: auto;
     "
   ><div
@@ -108,7 +114,10 @@ export default {
       display: grid;
       align-items: flex-start;
     "
-    :style="{gridTemplateColumns: 'repeat(' + columns + ', 1fr)'}"
+    :style="{
+      gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
+      gridAutoRows: 'max-content'
+    }"
   >
     <publisher-video-card
       :publisher="publisher"
