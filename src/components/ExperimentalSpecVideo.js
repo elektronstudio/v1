@@ -3,11 +3,11 @@ import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v
 const { OpenVidu } = OpenviduBrowser.default;
 import { getToken } from "../utils/index.js";
 
-import { PublisherCard } from "../pages/OpenVidu.js";
+import PublisherVideoCard from "./PublisherVideoCard.js";
 
 export default {
   components: {
-    PublisherCard,
+    PublisherVideoCard,
   },
   props: ["id"],
   setup(props) {
@@ -71,7 +71,7 @@ export default {
 
     window.addEventListener("beforeunload", leaveSession);
 
-    const proportion = 16 / 9;
+    const proportion = 4 / 3;
     const columns = computed(() =>
       Math.min(
         subscribers.value.length + 1,
@@ -110,10 +110,10 @@ export default {
     "
     :style="{gridTemplateColumns: 'repeat(' + columns + ', 1fr)'}"
   >
-    <publisher-card
+    <publisher-video-card
       :publisher="publisher"
     />
-    <publisher-card
+    <publisher-video-card
       v-for="(publisher, i) in subscribers"
       :key="i"
       :publisher="publisher"
