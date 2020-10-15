@@ -3,6 +3,8 @@ import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v
 const { OpenVidu } = OpenviduBrowser.default;
 import { getToken } from "../utils/index.js";
 
+import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
+
 import PublisherVideoCard from "./PublisherVideoCard.js";
 
 export default {
@@ -39,13 +41,11 @@ export default {
         session.value
           .connect(token, { userName: myUserName.value })
           .then(() => {
-            let newPublisher = OV.initPublisher(undefined, {
-              audioSource: undefined,
-              videoSource: undefined,
-              publishAudio: true,
+            let newPublisher = OV.initPublisher(null, {
               publishVideo: true,
-              resolution: "160x120",
-              frameRate: 12,
+              publishAudio: false,
+              resolution: `${openviduWidth}x${openviduHeight}`,
+              frameRate: openviduFps,
               insertMode: "APPEND",
               mirror: false,
             });
