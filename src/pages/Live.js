@@ -90,9 +90,30 @@ export default {
     <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
-    <div style="grid-area: spec">
-      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
+    <div
+      style="
+        grid-area: spec;
+        height: 0;
+        max-width: 100%;
+        padding-bottom: calc(1 / 1 * 100%);
+        position: relative;
+      "
+    >
+      <component
+        :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'"
+        :id="id"
+        style="
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+        "
+      />
     </div>
+    <!-- <div style="grid-area: spec">
+      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
+    </div> -->
     <div style="grid-area: chat">
       <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
     </div>
