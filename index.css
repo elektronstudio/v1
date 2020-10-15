@@ -80,7 +80,7 @@ p a {
 
 input,
 textarea {
-  background: black;
+  background: none;
   border: 2px solid white;
   border-radius: 2px;
   outline: none;
@@ -132,7 +132,7 @@ button {
   color: white;
   padding: 8px 16px;
   font-size: 16px;
-  background: black;
+  background: none;
   border: 2px solid white;
   font: "Nunito Sans", sans-serif;
   outline: none;

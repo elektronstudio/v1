@@ -22,7 +22,7 @@ export default {
       line-height: 1.5em;
     "
     :style="{
-      background: isMyMessage ? 'rgba(50,50,50,0.5)' : 'rgba(50,50,50,0.25)'
+      background: isMyMessage ? 'rgba(25,25,25,0.5)' : 'rgba(25,25,25,0.8)'
     }"
   >
     <div v-html="message.value"></div>
