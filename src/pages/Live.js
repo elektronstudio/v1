@@ -2,22 +2,31 @@ import { ref } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
 import { useHls, useClientsCount } from "../hooks/index.js";
-import { fetchEvents, safeJsonParse } from "../utils/index.js";
+import { fetchEvents } from "../utils/index.js";
 
+import SpecVideo from "../components/SpecVideo.js";
+import ExperimentalSpecVideo from "../components/ExperimentalSpecVideo.js";
+import Chat from "../components/Chat.js";
+import ExperimentalChat from "../components/ExperimentalChat.js";
 import EventDetails from "../components/EventDetails.js";
-import LegacyVideo from "../components/LegacyVideo.js";
-import LegacyChat from "../components/LegacyChat.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 
 export default {
-  components: { EventDetails, LegacyVideo, LegacyChat },
+  components: {
+    EventDetails,
+    SpecVideo,
+    ExperimentalSpecVideo,
+    Chat,
+    ExperimentalChat,
+  },
   setup() {
     const { params } = useRoute();
+    const id = params.id;
 
     // Set up main video input
 
-    const mainVideo = useHls(mainInputUrl(params.id));
+    const mainVideo = useHls(mainInputUrl(id));
 
     // Set up clients count
 
@@ -26,8 +35,9 @@ export default {
     // Fetch and parse event
 
     const event = ref(null);
+
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.filter(({ id }) => {
+      const e = events.reverse().filter(({ id }) => {
         return id === params.id;
       });
       event.value = e[0];
@@ -40,6 +50,7 @@ export default {
       clientsCount,
       mainVideo,
       event,
+      id,
     };
   },
   template: `
@@ -76,15 +87,35 @@ export default {
         <video ref="mainVideo" controls autoplay muted></video>
       </div>
     </div>
-
     <div style="grid-area: title; padding-top: 16px;">
       <event-details :event="event" />
     </div>
-    <div style="grid-area: spec">
-      <legacy-video></legacy-video>
+    <div
+      style="
+        grid-area: spec;
+        height: 0;
+        max-width: 100%;
+        padding-bottom: calc(1 / 1 * 100%);
+        position: relative;
+      "
+    >
+      <component
+        :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'"
+        :id="id"
+        style="
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+        "
+      />
     </div>
+    <!-- <div style="grid-area: spec">
+      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
+    </div> -->
     <div style="grid-area: chat">
-      <legacy-chat></legacy-chat>
+      <experimental-chat :id="id" />
     </div>
   </div>
   `,

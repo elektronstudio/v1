@@ -9,6 +9,12 @@ import {
 } from "../deps/date-fns.js";
 import { zonedTimeToUtc, utcToZonedTime, format } from "../deps/date-fns-tz.js";
 
+import {
+  openviduUrl,
+  openviduUsername,
+  openviduPassword,
+} from "../config/index.js";
+
 // Json utils
 
 export const safeJsonParse = (str) => {
@@ -19,14 +25,20 @@ export const safeJsonParse = (str) => {
   }
 };
 
-// Id utils
-
-export const uuidv4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+export const safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined
+          : cache.push(value) && value
+        : value,
+    indent
+  );
+  cache = null;
+  return retVal;
 };
 
 // Date utils
@@ -118,6 +130,12 @@ export const parseEvent = (event) => {
   const colors = markdown.match(/(\n\r?color:\s?)(.*)/);
   const color = colors && colors[2] ? colors[2].trim() : "";
 
+  const experimentals = markdown.match(/(\n\r?experimental:\s?)(.*)/);
+  const experimental =
+    experimentals && experimentals[2]
+      ? experimentals[2].toLowerCase().trim() === "true"
+      : false;
+
   const diff = getDifference(start, end);
 
   return {
@@ -129,6 +147,7 @@ export const parseEvent = (event) => {
     end,
     youtube,
     color,
+    experimental,
     ...diff,
   };
 };
@@ -142,6 +161,50 @@ export const fetchEvents = (url) => {
         .sort((a, b) => compareDesc(createDate(a.start), createDate(b.start)))
     );
 };
+
+// Fetch
+
+export const fetchAuth = ({
+  url,
+  payload = null,
+  username,
+  password,
+  method = "POST",
+}) => {
+  let headers = new Headers();
+  headers.set("content-type", "application/json");
+  if (username && password) {
+    headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
+  }
+  return new Promise((resolve, reject) => {
+    fetch(url, {
+      method,
+      headers,
+      body: payload ? JSON.stringify(payload) : null,
+    }).then((res) => {
+      if (res.status === 409) {
+        return resolve(payload);
+      } else {
+        return resolve(res.json());
+      }
+    });
+  });
+};
+
+export const getToken = (id) =>
+  fetchAuth({
+    url: `${openviduUrl}/api/sessions`,
+    payload: { customSessionId: id },
+    username: openviduUsername,
+    password: openviduPassword,
+  }).then(() =>
+    fetchAuth({
+      url: `${openviduUrl}/api/tokens`,
+      payload: { session: id },
+      username: openviduUsername,
+      password: openviduPassword,
+    })
+  );
 
 // Arrays
 

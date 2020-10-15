@@ -74,7 +74,7 @@ export default {
         justify-content: center;
         text-align: center;
         padding: 0 32px;
-        background: rgba(20, 20, 20, 0.9);
+        background: rgba(20, 20, 20, 0.2);
       "
     >
       <div>
