@@ -37,7 +37,7 @@ export default {
     const event = ref(null);
 
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.reverse().filter(({ id }) => {
+      const e = events.filter(({ id }) => {
         return id === params.id;
       });
       event.value = e[0];
