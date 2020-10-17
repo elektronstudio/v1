@@ -10,6 +10,8 @@ import {
 
 import { chatUrl } from "../config/index.js";
 
+const scale = 0.25;
+
 export default {
   setup() {
     const videoEl = ref(null);
@@ -20,8 +22,8 @@ export default {
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
-        canvasEl.value.width = srcElement.videoWidth;
-        canvasEl.value.height = srcElement.videoHeight;
+        canvasEl.value.width = srcElement.videoWidth * scale;
+        canvasEl.value.height = srcElement.videoHeight * scale;
       });
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
@@ -51,6 +53,7 @@ export default {
         incomingMessage.channel == id
       ) {
         image.value = incomingMessage.value;
+        console.log(incomingMessage.value);
       }
     };
 
@@ -59,8 +62,8 @@ export default {
         videoEl.value,
         0,
         0,
-        videoEl.value.videoWidth,
-        videoEl.value.videoHeight
+        videoEl.value.videoWidth * scale,
+        videoEl.value.videoHeight * scale
       );
       const outgoingMessage = {
         id: randomId(),
