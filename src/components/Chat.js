@@ -41,5 +41,5 @@ export default {
       )
     );
   },
-  template: `<div id="legacy-chat"></div>`,
+  template: `<div><div id="legacy-chat"></div></div>`,
 };

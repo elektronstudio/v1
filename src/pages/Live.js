@@ -37,7 +37,7 @@ export default {
     const event = ref(null);
 
     fetchEvents(eventsUrl).then((events) => {
-      const e = events.reverse().filter(({ id }) => {
+      const e = events.filter(({ id }) => {
         return id === params.id;
       });
       event.value = e[0];
@@ -111,11 +111,8 @@ export default {
         "
       />
     </div>
-    <!-- <div style="grid-area: spec">
-      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
-    </div> -->
     <div style="grid-area: chat">
-      <experimental-chat :id="id" />
+      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
     </div>
   </div>
   `,
