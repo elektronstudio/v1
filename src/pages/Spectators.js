@@ -15,6 +15,7 @@ export default {
     const videoEl = ref(null);
     const canvasEl = ref(null);
     const context = ref(null);
+    const image = ref(null);
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -47,9 +48,10 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.type === "userImage" &&
-        inComingMessage.channel == id
+        incomingMessage.channel == id
       ) {
         console.log(incomingMessage);
+        image.value = incomingMessage.value;
       }
     };
 
@@ -61,32 +63,33 @@ export default {
         videoEl.value.videoWidth,
         videoEl.value.videoHeight
       );
-      // const outgoingMessage = {
-      //   id: randomId(),
-      //   channel: id,
-      //   type: "userImage",
-      //   value: image,
-      //   from: {
-      //     type: "user",
-      //     id: userId.value,
-      //     name: userName.value,
-      //   },
-      //   to: {
-      //     type: "all",
-      //   },
-      //   datetime: new Date().toISOString(),
-      // };
+      const outgoingMessage = {
+        id: randomId(),
+        channel: id,
+        type: "userImage",
+        value: canvasEl.value.toDataURL("image/jpeg", 0.5),
+        from: {
+          type: "user",
+          id: userId.value,
+          name: userName.value,
+        },
+        to: {
+          type: "all",
+        },
+        datetime: new Date().toISOString(),
+      };
 
-      // socket.send(JSON.stringify(outgoingMessage));
+      socket.send(JSON.stringify(outgoingMessage));
     };
 
-    return { videoEl, canvasEl, sendMessage };
+    return { videoEl, canvasEl, sendMessage, image };
   },
   template: `
   <div>
     <video ref="videoEl" autoplay style="border: 1px solid red" />
     <canvas ref="canvasEl" style="border: 1px solid red; width: 100%" />
     <button @click="sendMessage">Send</button>
+    <img :src="image" style="border: 1px solid red; width: 100%" />
   </div>
   `,
 };
