@@ -112,7 +112,7 @@ export default {
       />
     </div>
     <div style="grid-area: chat">
-      <component :is="event && event.experimental ? 'experimental-chat' : 'char'" :id="id" />
+      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
     </div>
   </div>
   `,
