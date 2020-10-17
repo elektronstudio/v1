@@ -111,11 +111,8 @@ export default {
         "
       />
     </div>
-    <!-- <div style="grid-area: spec">
-      <component :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'" :id="id"/>
-    </div> -->
     <div style="grid-area: chat">
-      <experimental-chat :id="id" />
+      <component :is="event && event.experimental ? 'experimental-chat' : 'char'" :id="id" />
     </div>
   </div>
   `,
