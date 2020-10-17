@@ -50,7 +50,6 @@ export default {
         incomingMessage.type === "userImage" &&
         incomingMessage.channel == id
       ) {
-        console.log(incomingMessage);
         image.value = incomingMessage.value;
       }
     };
@@ -81,6 +80,8 @@ export default {
 
       socket.send(JSON.stringify(outgoingMessage));
     };
+
+    //setInterval(sendMessage, 1000);
 
     return { videoEl, canvasEl, sendMessage, image };
   },
