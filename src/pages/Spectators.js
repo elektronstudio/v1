@@ -12,17 +12,7 @@ import {
 import VideoGrid from "../components/VideoGrid.js";
 import { chatUrl } from "../config/index.js";
 
-const scale = 0.25;
-
-const upsert = (arr, item, callback) => {
-  const index = arr.findIndex(callback);
-  if (index > -1) {
-    arr[index] = item;
-  } else {
-    arr.push(item);
-  }
-  //return arr;
-};
+const scale = 2;
 
 export default {
   components: { VideoGrid },

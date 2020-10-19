@@ -227,8 +227,8 @@ export const useSetInterval = (callback, timeout, nth) => {
   onMounted(() => {
     interval = setInterval(() => {
       a = a >= nth.value - 1 ? 0 : a + 1;
+      console.log(a === 0);
       if (a === 0) {
-        console.log(a, a === 0, new Date().getSeconds());
         callback();
       }
     }, timeout);
