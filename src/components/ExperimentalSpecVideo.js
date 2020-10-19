@@ -7,11 +7,13 @@ import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
 import VideoGrid from "./VideoGrid.js";
 import PublisherVideoCard from "./PublisherVideoCard.js";
+import AspectRatio from "./AspectRatio.js";
 
 export default {
   components: {
     VideoGrid,
     PublisherVideoCard,
+    AspectRatio,
   },
   setup(props) {
     const session = ref(null);
@@ -86,24 +88,8 @@ export default {
     };
   },
   template: `
-  <div
-    style="
-      position: relative;
-      overflow: auto;
-      display: flex;
-      min-height: 400px;
-    "
-  >
-    <div
-      v-show="session"
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      "
-    >
+  <aspect-ratio :ratio="4 / 3">
+    <div v-show="session">
       <publisher-video-card
         :publisher="publisher"
       />
@@ -116,7 +102,6 @@ export default {
     <div
       v-show="!session"
       style="
-        border: 2px solid red;
         position: absolute;
         top: 0;
         right: 0;
@@ -151,6 +136,6 @@ export default {
     >
       <button v-if="session" @click="leaveSession">Stop my camera</button>
     </div>
-  </div>
+  </aspect-ratio>
   `,
 };
