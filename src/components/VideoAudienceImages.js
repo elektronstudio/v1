@@ -50,6 +50,11 @@ export default {
       }
     };
 
+    const stopVideo = () => {
+      videoEl.value.srcObject.getTracks().forEach((track) => track.stop());
+      delete images.value[userId.value];
+    };
+
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
       "elektron_user_name",
@@ -102,6 +107,7 @@ export default {
       videoStarted.value = true;
     };
     const onStop = () => {
+      stopVideo();
       videoStarted.value = false;
     };
 
