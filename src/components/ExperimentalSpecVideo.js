@@ -30,8 +30,7 @@ export default {
       });
 
       session.value.on("streamDestroyed", ({ stream }) => {
-        console.log("des");
-        const index = subscribers.value.indexOf(stream.streamManager, 0);
+        const index = subscribers.value.indexOf(stream.streamManager);
         if (index >= 0) {
           subscribers.value.splice(index, 1);
         }

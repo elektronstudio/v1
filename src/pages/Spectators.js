@@ -8,16 +8,19 @@ import {
   animals,
 } from "../utils/index.js";
 
+import VideoGrid from "../components/VideoGrid.js";
 import { chatUrl } from "../config/index.js";
 
 const scale = 0.25;
 
 export default {
+  components: { VideoGrid },
   setup() {
     const videoEl = ref(null);
     const canvasEl = ref(null);
     const context = ref(null);
     const image = ref(null);
+    const images = ref([]);
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -41,8 +44,6 @@ export default {
       `${any(adjectives)} ${any(animals)}`
     );
 
-    const images = ref([]);
-
     const socket = new WebSocket(chatUrl);
 
     socket.onmessage = ({ data }) => {
@@ -52,8 +53,7 @@ export default {
         incomingMessage.type === "userImage" &&
         incomingMessage.channel == id
       ) {
-        image.value = incomingMessage.value;
-        console.log(incomingMessage.value);
+        images.value.push(incomingMessage);
       }
     };
 
@@ -86,14 +86,21 @@ export default {
 
     //setInterval(sendMessage, 1000);
 
-    return { videoEl, canvasEl, sendMessage, image };
+    return { videoEl, canvasEl, sendMessage, image, images };
   },
   template: `
   <div>
-    <video ref="videoEl" autoplay style="border: 1px solid red" />
-    <canvas ref="canvasEl" style="border: 1px solid red; width: 100%" />
+    <video ref="videoEl" autoplay style="display: none;" />
+    <canvas ref="canvasEl" style="display: none;" />
     <button @click="sendMessage">Send</button>
-    <img :src="image" style="border: 1px solid red; width: 100%" />
+    <video-grid :length="images.length">
+      <img
+        v-for="image in images"
+        :key="image.value.split(',')[1].slice(0,10)" 
+        :src="image.value" 
+        style="width: 100%"
+      />
+    </div>
   </div>
   `,
 };
