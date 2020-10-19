@@ -92,8 +92,6 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    socket.onopen = () => sendMessage();
-
     useSetInterval(sendMessage, 1000, imagesLength);
 
     const videoStarted = ref(false);
