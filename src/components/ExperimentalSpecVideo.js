@@ -13,12 +13,11 @@ export default {
     VideoGrid,
     PublisherVideoCard,
   },
-  props: ["id"],
   setup(props) {
     const session = ref(null);
     const publisher = ref(null);
     const subscribers = ref([]);
-    const mySessionId = ref(props.id);
+    const mySessionId = ref("test");
     const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
     const joinSession = () => {
@@ -84,7 +83,6 @@ export default {
       myUserName,
       joinSession,
       leaveSession,
-      columns,
     };
   },
   template: `
@@ -92,30 +90,33 @@ export default {
     style="
       position: relative;
       overflow: auto;
-    "
-  ><video-grid
-    :length="subscribers.length"
-    v-show="session"
-    style="
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
+      display: flex;
+      min-height: 400px;
     "
   >
-    <publisher-video-card
-      :publisher="publisher"
-    />
-    <publisher-video-card
-      v-for="(publisher, i) in subscribers"
-      :key="i"
-      :publisher="publisher"
-    />
+    <div
+      v-show="session"
+      style="
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      "
+    >
+      <publisher-video-card
+        :publisher="publisher"
+      />
+      <publisher-video-card
+        v-for="(publisher, i) in subscribers"
+        :key="i"
+        :publisher="publisher"
+      />
     </div>
     <div
       v-show="!session"
       style="
+        border: 2px solid red;
         position: absolute;
         top: 0;
         right: 0;

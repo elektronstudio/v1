@@ -89,18 +89,18 @@ export default {
 
     useSetInterval(sendMessage, 1000, imagesLength);
 
-    return { videoEl, canvasEl, sendMessage, image, images, imagesLength };
+    return { videoEl, canvasEl, sendMessage, image, images };
   },
   template: `
   <div>
-    <video-grid :length="imagesLength">
+    <video-grid>
       <img
         v-for="image in images"
         :key="image.value.split(',')[1].slice(0,10)" 
         :src="image.value" 
         style="width: 100%"
       />
-    </div>
+    </video-grid>
     <video ref="videoEl" autoplay style="display: none;" />
     <canvas ref="canvasEl" style="display: none;" />
   </div>
