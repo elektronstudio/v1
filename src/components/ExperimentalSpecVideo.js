@@ -5,10 +5,12 @@ import { getToken } from "../utils/index.js";
 
 import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
+import VideoGrid from "./VideoGrid.js";
 import PublisherVideoCard from "./PublisherVideoCard.js";
 
 export default {
   components: {
+    VideoGrid,
     PublisherVideoCard,
   },
   props: ["id"],
@@ -74,17 +76,6 @@ export default {
 
     // https://stackoverflow.com/a/51956837
 
-    const proportion = 4 / 3;
-    const columns = computed(() =>
-      Math.min(
-        subscribers.value.length + 1,
-        Math.round(Math.sqrt(proportion * subscribers.value.length + 1))
-      )
-    );
-    // const rows = computed(() =>
-    //   Math.ceil((subscribers.value.length + columns.value) / columns)
-    // );
-
     return {
       session,
       publisher,
@@ -102,7 +93,8 @@ export default {
       position: relative;
       overflow: auto;
     "
-  ><div
+  ><video-grid
+    :length="subscribers.length"
     v-show="session"
     style="
       position: absolute;
@@ -110,13 +102,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
-      display: grid;
-      align-items: flex-start;
     "
-    :style="{
-      gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
-      gridAutoRows: 'max-content'
-    }"
   >
     <publisher-video-card
       :publisher="publisher"

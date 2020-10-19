@@ -12,7 +12,7 @@ import {
 import VideoGrid from "../components/VideoGrid.js";
 import { chatUrl } from "../config/index.js";
 
-const scale = 2;
+const scale = 4;
 
 export default {
   components: { VideoGrid },
