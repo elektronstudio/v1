@@ -1,4 +1,4 @@
-import { ref, onMounted } from "../deps/vue.js";
+import { ref, onMounted, computed } from "../deps/vue.js";
 import { useLocalstorage } from "../hooks/index.js";
 import {
   safeJsonParse,
@@ -6,6 +6,7 @@ import {
   any,
   adjectives,
   animals,
+  useSetInterval,
 } from "../utils/index.js";
 
 import VideoGrid from "../components/VideoGrid.js";
@@ -31,6 +32,7 @@ export default {
     const context = ref(null);
     const image = ref(null);
     const images = ref({});
+    const imagesLength = computed(() => Object.entries(images.value).length);
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -63,12 +65,6 @@ export default {
         incomingMessage.type === "userImage" &&
         incomingMessage.channel == id
       ) {
-        // upsert(
-        //   images.value,
-        //   incomingMessage,
-        //   (image) => image.from.id === userId.value
-        // );
-        //console.log(incomingMessage);
         images.value[incomingMessage.from.id] = incomingMessage;
       }
     };
@@ -96,20 +92,21 @@ export default {
         },
         datetime: new Date().toISOString(),
       };
-
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    //setInterval(sendMessage, 1000);
+    socket.onopen = () => sendMessage();
 
-    return { videoEl, canvasEl, sendMessage, image, images };
+    useSetInterval(sendMessage, 1000, imagesLength);
+
+    return { videoEl, canvasEl, sendMessage, image, images, imagesLength };
   },
   template: `
   <div>
     <video ref="videoEl" autoplay style="display: none;" />
     <canvas ref="canvasEl" style="display: none;" />
     <button @click="sendMessage">Send</button>
-    <video-grid :length="Object.entries(images).length">
+    <video-grid :length="imagesLength">
       <img
         v-for="image in images"
         :key="image.value.split(',')[1].slice(0,10)" 

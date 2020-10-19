@@ -1,4 +1,4 @@
-import { ref, onMounted, computed } from "../deps/vue.js";
+import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
@@ -217,6 +217,23 @@ export const any = (arr) => shuffle(arr)[0];
 export const randomId = (length = 16) => {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
   return shuffle(letters).slice(0, length).join("");
+};
+
+// Time
+
+export const useSetInterval = (callback, timeout, nth) => {
+  let a = 0;
+  let interval = null;
+  onMounted(() => {
+    interval = setInterval(() => {
+      a = a >= nth.value - 1 ? 0 : a + 1;
+      if (a === 0) {
+        console.log(a, a === 0, new Date().getSeconds());
+        callback();
+      }
+    }, timeout);
+  });
+  onUnmounted(() => interval && cleanInterval(interval));
 };
 
 // Sample datata
