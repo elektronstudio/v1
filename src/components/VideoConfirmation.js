@@ -29,7 +29,7 @@ export default {
       justify-content: center;
       text-align: center;
       padding: 0 32px;
-      background: rgba(20, 20, 20, 0.2);
+      background: rgba(20, 20, 20, 0.75);
     "
   >
     <div>

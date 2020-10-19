@@ -10,12 +10,19 @@ import {
 } from "../utils/index.js";
 
 import VideoGrid from "../components/VideoGrid.js";
+import AspectRatio from "./AspectRatio.js";
+import VideoConfirmation from "./VideoConfirmation.js";
+
 import { chatUrl } from "../config/index.js";
 
 const scale = 4;
 
 export default {
-  components: { VideoGrid },
+  components: {
+    AspectRatio,
+    VideoConfirmation,
+    VideoGrid,
+  },
   setup() {
     const videoEl = ref(null);
     const canvasEl = ref(null);
@@ -89,20 +96,43 @@ export default {
 
     useSetInterval(sendMessage, 1000, imagesLength);
 
-    return { videoEl, canvasEl, sendMessage, image, images };
+    const videoStarted = ref(false);
+    const onStart = () => {
+      videoStarted.value = true;
+    };
+    const onStop = () => {
+      videoStarted.value = false;
+    };
+
+    return {
+      videoEl,
+      canvasEl,
+      sendMessage,
+      image,
+      images,
+      videoStarted,
+      onStart,
+      onStop,
+    };
   },
   template: `
-  <div>
-    <video-grid>
-      <img
-        v-for="image in images"
-        :key="image.value.split(',')[1].slice(0,10)" 
-        :src="image.value" 
-        style="width: 100%"
-      />
-    </video-grid>
-    <video ref="videoEl" autoplay style="display: none;" />
-    <canvas ref="canvasEl" style="display: none;" />
-  </div>
+  <aspect-ratio :ratio="1" style="border: 2px solid blue">
+    <video-confirmation
+      :started="videoStarted"
+      @start="startVideo"
+      @stop="stopVideo"
+    >
+      <video-grid>
+        <img
+          v-for="image in images"
+          :key="image.value.split(',')[1].slice(0,10)" 
+          :src="image.value" 
+          style="width: 100%"
+        />
+      </video-grid>
+    </video-confirmation>
+  </aspect-ratio>
+  <video ref="videoEl" autoplay style="display: none;" />
+  <canvas ref="canvasEl" style="display: none;" />
   `,
 };

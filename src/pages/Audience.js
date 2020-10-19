@@ -22,8 +22,8 @@ export default {
     <!-- <aspect-ratio style="border: 2px solid red">
       <video-confirmation @start="log('start')" @stop="log('stop')" style="border: 2px solid blue"></video-confirmation>
     </aspect-ratio> -->
-    <!-- <video-audience-images style="grid-area: spec" /> -->
-    <spec-video id="test" style="grid-area: spec" />
+    <video-audience-images style="grid-area: spec" />
+    <!-- <spec-video id="test" style="grid-area: spec" /> -->
     <!-- <experimental-spec-video id="test" style="grid-area: spec" /> -->
   </div>
   `,
