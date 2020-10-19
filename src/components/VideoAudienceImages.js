@@ -67,14 +67,21 @@ export default {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
-        incomingMessage.type === "userImage" &&
-        incomingMessage.channel == id
+        incomingMessage.channel === id &&
+        incomingMessage.type === "userImage"
       ) {
         images.value[incomingMessage.from.id] = incomingMessage;
       }
+      if (
+        incomingMessage &&
+        incomingMessage.channel === id &&
+        incomingMessage.type === "userStop"
+      ) {
+        delete images.value[incomingMessage.from.id];
+      }
     };
 
-    const sendMessage = () => {
+    const sendImageMessage = () => {
       context.value.drawImage(
         videoEl.value,
         0,
@@ -100,7 +107,26 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    useSetInterval(sendMessage, imagesLength, videoStarted, 1000);
+    const sendStopMessage = () => {
+      const outgoingMessage = {
+        id: randomId(),
+        channel: id,
+        type: "userStop",
+        value: null,
+        from: {
+          type: "user",
+          id: userId.value,
+          name: userName.value,
+        },
+        to: {
+          type: "all",
+        },
+        datetime: new Date().toISOString(),
+      };
+      socket.send(JSON.stringify(outgoingMessage));
+    };
+
+    useSetInterval(sendImageMessage, imagesLength, videoStarted, 1000);
 
     const onStart = () => {
       startVideo();
@@ -108,13 +134,14 @@ export default {
     };
     const onStop = () => {
       stopVideo();
+      sendStopMessage();
       videoStarted.value = false;
     };
 
     return {
       videoEl,
       canvasEl,
-      sendMessage,
+      sendImageMessage,
       image,
       images,
       videoStarted,
