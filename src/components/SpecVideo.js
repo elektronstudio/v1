@@ -4,7 +4,14 @@ import { Flussonic } from "../deps/flussonic.js";
 import { useHls } from "../hooks/index.js";
 import { specOutputUrl, specInputmUrl } from "../config/index.js";
 
+import AspectRatio from "./AspectRatio.js";
+import VideoConfirmation from "./VideoConfirmation.js";
+
 export default {
+  components: {
+    AspectRatio,
+    VideoConfirmation,
+  },
   setup() {
     // Set up spectator video input
 
@@ -49,54 +56,14 @@ export default {
     };
   },
   template: `
-  <div
-    style="
-      grid-area: spec;
-      height: 0;
-      max-width: 100%;
-      padding-bottom: 100%;
-      position: relative;
-    "
-  >
-    <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0; background: black">
+  <aspect-ratio :ratio="1">
+    <video-confirmation
+      :started="videoStarted"
+      @start="startVideo"
+      @stop="stopVideo"
+    >
       <video ref="specVideo" autoplay muted></video>
-    </div>
-    <div
-      v-show="!videoStarted"
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 0 32px;
-        background: rgba(20, 20, 20, 0.2);
-      "
-    >
-      <div>
-        <p>
-          Please allow access to your camera. By saying YES you become a
-          public audience member in our venue!
-        </p>
-        <button @click="startVideo">Start my camera</button>
-      </div>
-    </div>
-    <div
-      v-show="videoStarted"
-      style="
-        position: absolute;
-        right: 0;
-        left: 0;
-        bottom: 16px;
-        text-align: center;
-      "
-    >
-      <button @click="stopVideo">Stop my camera</button>
-    </div>
-  </div>
+    </video-confirmation>
+  </aspect-ratio>
   `,
 };
