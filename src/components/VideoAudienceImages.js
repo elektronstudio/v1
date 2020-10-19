@@ -93,9 +93,6 @@ export default {
   },
   template: `
   <div>
-    <video ref="videoEl" autoplay style="display: none;" />
-    <canvas ref="canvasEl" style="display: none;" />
-    <button @click="sendMessage">Send</button>
     <video-grid :length="imagesLength">
       <img
         v-for="image in images"
@@ -104,6 +101,8 @@ export default {
         style="width: 100%"
       />
     </div>
+    <video ref="videoEl" autoplay style="display: none;" />
+    <canvas ref="canvasEl" style="display: none;" />
   </div>
   `,
 };

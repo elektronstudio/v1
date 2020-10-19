@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from "./src/deps/router.js";
 
 import Live from "./src/pages/Live.js";
 import Index from "./src/pages/Index.js";
-import Spectators from "./src/pages/Spectators.js";
+import Audience from "./src/pages/Audience.js";
 
 const routes = [
-  { path: "/spectators", component: Spectators },
+  { path: "/audience", component: Audience },
   { path: "/:id", component: Live },
   { path: "/", component: Index },
 ];

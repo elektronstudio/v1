@@ -227,7 +227,6 @@ export const useSetInterval = (callback, timeout, nth) => {
   onMounted(() => {
     interval = setInterval(() => {
       a = a >= nth.value - 1 ? 0 : a + 1;
-      console.log(a === 0);
       if (a === 0) {
         callback();
       }
@@ -236,7 +235,8 @@ export const useSetInterval = (callback, timeout, nth) => {
   onUnmounted(() => interval && cleanInterval(interval));
 };
 
-// Sample datata
+// Sample data
+
 export const adjectives = [
   "Active",
   "Adored",
