@@ -221,18 +221,23 @@ export const randomId = (length = 16) => {
 
 // Time
 
-export const useSetInterval = (callback, timeout, nth) => {
+export const useSetInterval = (callback, nth, condition, timeout) => {
   let a = 0;
-  let interval = null;
+  const interval = ref(null);
   onMounted(() => {
-    interval = setInterval(() => {
+    interval.value = setInterval(() => {
       a = a >= nth.value - 1 ? 0 : a + 1;
-      if (a === 0) {
+      if (a === 0 && condition.value) {
         callback();
       }
     }, timeout);
   });
-  onUnmounted(() => interval && cleanInterval(interval));
+  onUnmounted(() => {
+    if (interval.value) {
+      cleanInterval(interval.value);
+    }
+  });
+  return interval;
 };
 
 // Sample data

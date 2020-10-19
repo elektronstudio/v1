@@ -30,6 +30,8 @@ export default {
     const image = ref(null);
     const images = ref({});
     const imagesLength = computed(() => Object.entries(images.value).length);
+    const videoStarted = ref(false);
+    const id = "test";
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -37,15 +39,16 @@ export default {
         canvasEl.value.width = srcElement.videoWidth * scale;
         canvasEl.value.height = srcElement.videoHeight * scale;
       });
+    });
+
+    const startVideo = () => {
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
           .getUserMedia({ video: true })
           .then((stream) => (videoEl.value.srcObject = stream))
           .catch((e) => console.log(e));
       }
-    });
-
-    const id = "test";
+    };
 
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
@@ -92,10 +95,10 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    useSetInterval(sendMessage, 1000, imagesLength);
+    useSetInterval(sendMessage, imagesLength, videoStarted, 1000);
 
-    const videoStarted = ref(false);
     const onStart = () => {
+      startVideo();
       videoStarted.value = true;
     };
     const onStop = () => {
@@ -117,8 +120,8 @@ export default {
   <aspect-ratio :ratio="1" style="border: 2px solid blue">
     <video-confirmation
       :started="videoStarted"
-      @start="startVideo"
-      @stop="stopVideo"
+      @start="onStart"
+      @stop="onStop"
     >
       <video-grid>
         <img
