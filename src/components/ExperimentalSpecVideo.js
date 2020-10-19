@@ -8,12 +8,14 @@ import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 import VideoGrid from "./VideoGrid.js";
 import PublisherVideoCard from "./PublisherVideoCard.js";
 import AspectRatio from "./AspectRatio.js";
+import VideoConfirmation from "./VideoConfirmation.js";
 
 export default {
   components: {
     VideoGrid,
     PublisherVideoCard,
     AspectRatio,
+    VideoConfirmation,
   },
   setup(props) {
     const session = ref(null);
@@ -88,18 +90,25 @@ export default {
     };
   },
   template: `
-  <aspect-ratio :ratio="4 / 3">
-    <div v-show="session">
-      <publisher-video-card
-        :publisher="publisher"
-      />
-      <publisher-video-card
-        v-for="(publisher, i) in subscribers"
-        :key="i"
-        :publisher="publisher"
-      />
-    </div>
-    <div
+    <aspect-ratio :ratio="1" style="border: 2px solid green">
+      <video-confirmation
+        :started="session"
+        @start="joinSession"
+        @stop="leaveSession"
+      >
+        <video-grid>
+          <publisher-video-card
+            :publisher="publisher"
+          />
+          <publisher-video-card
+            v-for="(publisher, i) in subscribers"
+            :key="i"
+            :publisher="publisher"
+          />
+        </video-grid>
+      </video-confirmation>
+    </aspect-ratio>
+    <!-- <div
       v-show="!session"
       style="
         position: absolute;
@@ -135,7 +144,7 @@ export default {
       "
     >
       <button v-if="session" @click="leaveSession">Stop my camera</button>
-    </div>
-  </aspect-ratio>
+    </div> -->
+  <!-- </aspect-ratio> -->
   `,
 };

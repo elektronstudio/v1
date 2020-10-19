@@ -19,12 +19,12 @@ export default {
   },
   template: `
   <div class="layout-live">
-    <aspect-ratio style="border: 2px solid red">
+    <!-- <aspect-ratio style="border: 2px solid red">
       <video-confirmation @start="log('start')" @stop="log('stop')" style="border: 2px solid blue"></video-confirmation>
-    </aspect-ratio>
+    </aspect-ratio> -->
     <!-- <video-audience-images style="grid-area: spec" /> -->
     <!-- <spec-video id="test" style="grid-area: spec" /> -->
-    <!-- <experimental-spec-video id="test" style="grid-area: spec" /> -->
+    <experimental-spec-video id="test" style="grid-area: spec" />
   </div>
   `,
 };

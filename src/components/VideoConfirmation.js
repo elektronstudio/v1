@@ -1,9 +1,23 @@
+import { ref } from "../deps/vue.js";
+
 export default {
-  props: ["started"],
+  props: { started: { default: false } },
+  setup(props, { emit }) {
+    const hasStarted = ref(props.started);
+    const onStart = () => {
+      hasStarted.value = true;
+      emit("start");
+    };
+    const onStop = () => {
+      hasStarted.value = false;
+      emit("stop");
+    };
+    return { hasStarted, onStart, onStop };
+  },
   template: `
   <slot />
   <div
-    v-if="!started"
+    v-if="!hasStarted"
     style="
       position: absolute;
       top: 0;
@@ -24,11 +38,11 @@ export default {
         public audience member in our venue. 
         Note that we do not use your microphone.
       </p>
-      <button @click="$emit('start')">Start my camera</button>
+      <button @click="onStart">Start my camera</button>
     </div>
   </div>
   <div
-    v-if="started"
+    v-if="hasStarted"
     style="
       position: absolute;
       right: 0;
@@ -37,7 +51,7 @@ export default {
       text-align: center;
     "
   >
-    <button v-if="session" @click="$emit('stop')">Stop my camera</button>
+    <button @click="onStop">Stop my camera</button>
   </div>
   `,
 };
