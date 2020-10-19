@@ -90,7 +90,7 @@ export default {
     };
   },
   template: `
-    <aspect-ratio :ratio="1" style="border: 2px solid green">
+    <aspect-ratio :ratio="1">
       <video-confirmation
         :started="session"
         @start="joinSession"

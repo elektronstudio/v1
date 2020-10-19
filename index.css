@@ -194,6 +194,21 @@ button:hover {
   }
 }
 
+.layout-videotest {
+  padding: 32px;
+  height: 100vh;
+  display: grid;
+  gap: 1.5vw;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 800px) {
+  .layout-videotest {
+    height: inherit;
+    grid-template-columns: 1fr;
+    gap: 2vw 1.5vw;
+  }
+}
+
 .flex {
   display: flex;
   align-items: center;

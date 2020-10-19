@@ -18,13 +18,10 @@ export default {
     return { log: console.log };
   },
   template: `
-  <div class="layout-live">
-    <!-- <aspect-ratio style="border: 2px solid red">
-      <video-confirmation @start="log('start')" @stop="log('stop')" style="border: 2px solid blue"></video-confirmation>
-    </aspect-ratio> -->
-    <video-audience-images style="grid-area: spec" />
-    <!-- <spec-video id="test" style="grid-area: spec" /> -->
-    <!-- <experimental-spec-video id="test" style="grid-area: spec" /> -->
+  <div class="layout-videotest">
+    <div><spec-video id="test" /><p><br/> Original  WebRTC + server video stitching (huge initial lag, medium update lag, very big number of participants. No audio support)</p></div>
+    <div><experimental-spec-video id="test" /><p><br/> WebRTC based on OpenVidu (minimum initial lag, minimum update lag, limited number of participants. Has audio support)</p></div>
+    <div><video-audience-images /><p><br/>Sending video still frames via websocket (small initial lag, 1sec update lag, medium number of participants). No audio support</p></div>
   </div>
   `,
 };

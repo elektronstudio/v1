@@ -15,7 +15,7 @@ import VideoConfirmation from "./VideoConfirmation.js";
 
 import { chatUrl } from "../config/index.js";
 
-const scale = 4;
+const scale = 8;
 
 export default {
   components: {
@@ -150,7 +150,7 @@ export default {
     };
   },
   template: `
-  <aspect-ratio :ratio="1" style="border: 2px solid blue">
+  <aspect-ratio :ratio="1">
     <video-confirmation
       :started="videoStarted"
       @start="onStart"
