@@ -13,6 +13,16 @@ import { chatUrl } from "../config/index.js";
 
 const scale = 0.25;
 
+const upsert = (arr, item, callback) => {
+  const index = arr.findIndex(callback);
+  if (index > -1) {
+    arr[index] = item;
+  } else {
+    arr.push(item);
+  }
+  //return arr;
+};
+
 export default {
   components: { VideoGrid },
   setup() {
@@ -20,7 +30,7 @@ export default {
     const canvasEl = ref(null);
     const context = ref(null);
     const image = ref(null);
-    const images = ref([]);
+    const images = ref({});
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -53,7 +63,13 @@ export default {
         incomingMessage.type === "userImage" &&
         incomingMessage.channel == id
       ) {
-        images.value.push(incomingMessage);
+        // upsert(
+        //   images.value,
+        //   incomingMessage,
+        //   (image) => image.from.id === userId.value
+        // );
+        //console.log(incomingMessage);
+        images.value[incomingMessage.from.id] = incomingMessage;
       }
     };
 
@@ -93,7 +109,7 @@ export default {
     <video ref="videoEl" autoplay style="display: none;" />
     <canvas ref="canvasEl" style="display: none;" />
     <button @click="sendMessage">Send</button>
-    <video-grid :length="images.length">
+    <video-grid :length="Object.entries(images).length">
       <img
         v-for="image in images"
         :key="image.value.split(',')[1].slice(0,10)" 

@@ -11,7 +11,6 @@ export default {
         Math.round(Math.sqrt(proportion * props.length + 1))
       )
     );
-    console.log(props.length);
     // const rows = computed(() =>
     //   Math.ceil((props.length + columns.value) / columns.value)
     // );
