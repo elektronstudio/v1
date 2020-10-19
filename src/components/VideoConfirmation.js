@@ -35,8 +35,7 @@ export default {
     <div>
       <p>
         Please allow access to your camera to be a
-        public audience member in our venue. 
-        Note that we do not use your microphone.
+        public audience member in our venue.
       </p>
       <button @click="onStart">Start my camera</button>
     </div>
