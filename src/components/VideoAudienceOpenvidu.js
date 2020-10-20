@@ -1,8 +1,9 @@
 import { ref, computed } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
-import { getToken } from "../utils/index.js";
 
+import { getToken } from "../utils/index.js";
+import { useState } from "../hooks/index.js";
 import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
 import VideoGrid from "./VideoGrid.js";
@@ -17,12 +18,16 @@ export default {
     AspectRatio,
     VideoConfirmation,
   },
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
   setup(props) {
     const session = ref(null);
     const publisher = ref(null);
     const subscribers = ref([]);
-    const mySessionId = ref("test");
-    const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
+    const { userId, userName } = useState();
 
     const joinSession = () => {
       const OV = new OpenVidu();
@@ -41,13 +46,13 @@ export default {
         }
       });
 
-      getToken(mySessionId.value).then(({ token }) => {
+      getToken(props.channel).then(({ token }) => {
         session.value
-          .connect(token, { userName: myUserName.value })
+          .connect(token, { userName })
           .then(() => {
             let newPublisher = OV.initPublisher(null, {
               publishVideo: true,
-              publishAudio: false,
+              publishAudio: true,
               resolution: `${openviduWidth}x${openviduHeight}`,
               frameRate: openviduFps,
               insertMode: "APPEND",
@@ -57,13 +62,7 @@ export default {
             publisher.value = newPublisher;
             session.value.publish(newPublisher);
           })
-          .catch((error) => {
-            console.log(
-              "There was an error connecting to the session:",
-              error.code,
-              error.message
-            );
-          });
+          .catch((e) => console.log(e));
       });
     };
 
@@ -77,14 +76,10 @@ export default {
 
     window.addEventListener("beforeunload", leaveSession);
 
-    // https://stackoverflow.com/a/51956837
-
     return {
       session,
       publisher,
       subscribers,
-      mySessionId,
-      myUserName,
       joinSession,
       leaveSession,
     };

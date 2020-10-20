@@ -1,9 +1,12 @@
 import { ref, onMounted } from "../deps/vue.js";
+
 import {
   useLocalstorage,
   useScrollToBottom,
   useTextarea,
+  useState,
 } from "../hooks/index.js";
+
 import {
   safeJsonParse,
   randomId,
@@ -12,18 +15,19 @@ import {
   animals,
 } from "../utils/index.js";
 
-import ChatMessage from "./ChatMessage.js";
 import { chatUrl } from "../config/index.js";
+
+import ChatMessage from "./ChatMessage.js";
 
 export default {
   components: { ChatMessage },
-  props: ["id"],
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
   setup(props) {
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
+    const { userId, userName } = useState();
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
@@ -34,7 +38,7 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.type === "message" &&
-        incomingMessage.channel === props.id
+        incomingMessage.channel === props.channel
       ) {
         messages.value = [...messages.value, incomingMessage];
       }
@@ -43,7 +47,7 @@ export default {
     const onNewMessage = () => {
       const outgoingMessage = {
         id: randomId(),
-        channel: props.id,
+        channel: props.channel,
         type: "message",
         value: newMessage.value,
         from: {
@@ -118,5 +122,3 @@ export default {
   </div>  
   `,
 };
-
-// Press Enter for sending, Shift+Enter for adding a new line

@@ -1,7 +1,14 @@
 import { ref, onMounted, onUnmounted, computed } from "../deps/vue.js";
 import { Hls } from "../deps/hls.js";
 
-import { safeJsonParse } from "../utils/index.js";
+import {
+  safeJsonParse,
+  randomId,
+  any,
+  adjectives,
+  animals,
+} from "../utils/index.js";
+
 import { chatUrl } from "../config/index.js";
 
 export const useHls = (url) => {
@@ -120,4 +127,13 @@ export const useClientsCount = () => {
   socket.onclose = () => clearInterval(interval);
 
   return clientsCount;
+};
+
+export const useState = () => {
+  const userId = useLocalstorage("elektron_user_id", randomId());
+  const userName = useLocalstorage(
+    "elektron_user_name",
+    `${any(adjectives)} ${any(animals)}`
+  );
+  return { userId, userName };
 };

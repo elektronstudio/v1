@@ -1,21 +1,16 @@
-import { ref, onMounted, computed } from "../deps/vue.js";
-import { useLocalstorage } from "../hooks/index.js";
+import { ref, onMounted, computed, TransitionGroup } from "../deps/vue.js";
+import { useState } from "../hooks/index.js";
+import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
 import {
-  safeJsonParse,
-  randomId,
-  any,
-  adjectives,
-  animals,
-  useSetInterval,
-} from "../utils/index.js";
+  chatUrl,
+  imageScale,
+  imageQuality,
+  imageUpdateFrequency,
+} from "../config/index.js";
 
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
-
-import { chatUrl } from "../config/index.js";
-
-const scale = 8;
 
 export default {
   components: {
@@ -23,7 +18,12 @@ export default {
     VideoConfirmation,
     VideoGrid,
   },
-  setup() {
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
+  setup(props) {
     const videoEl = ref(null);
     const canvasEl = ref(null);
     const context = ref(null);
@@ -31,13 +31,13 @@ export default {
     const images = ref({});
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
-    const id = "test";
+    const { userId, userName } = useState();
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
-        canvasEl.value.width = srcElement.videoWidth * scale;
-        canvasEl.value.height = srcElement.videoHeight * scale;
+        canvasEl.value.width = srcElement.videoWidth * imageScale;
+        canvasEl.value.height = srcElement.videoHeight * imageScale;
       });
     });
 
@@ -55,26 +55,20 @@ export default {
       delete images.value[userId.value];
     };
 
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
-
     const socket = new WebSocket(chatUrl);
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
-        incomingMessage.channel === id &&
+        incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
         images.value[incomingMessage.from.id] = incomingMessage;
       }
       if (
         incomingMessage &&
-        incomingMessage.channel === id &&
+        incomingMessage.channel === props.channel &&
         incomingMessage.type === "userStop"
       ) {
         delete images.value[incomingMessage.from.id];
@@ -86,14 +80,14 @@ export default {
         videoEl.value,
         0,
         0,
-        videoEl.value.videoWidth * scale,
-        videoEl.value.videoHeight * scale
+        videoEl.value.videoWidth * imageScale,
+        videoEl.value.videoHeight * imageScale
       );
       const outgoingMessage = {
         id: randomId(),
-        channel: id,
+        channel: props.channel,
         type: "userImage",
-        value: canvasEl.value.toDataURL("image/jpeg", 0.5),
+        value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
         from: {
           type: "user",
           id: userId.value,
@@ -110,7 +104,7 @@ export default {
     const sendStopMessage = () => {
       const outgoingMessage = {
         id: randomId(),
-        channel: id,
+        channel: props.channel,
         type: "userStop",
         value: null,
         from: {
@@ -126,7 +120,12 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    useSetInterval(sendImageMessage, imagesLength, videoStarted, 1000);
+    useSetInterval(
+      sendImageMessage,
+      imagesLength,
+      videoStarted,
+      imageUpdateFrequency
+    );
 
     const onStart = () => {
       startVideo();
@@ -159,8 +158,8 @@ export default {
       <video-grid>
         <img
           v-for="image in images"
-          :key="image.value.split(',')[1].slice(0,10)" 
           :src="image.value" 
+          :key="image.id"
           style="width: 100%"
         />
       </video-grid>
