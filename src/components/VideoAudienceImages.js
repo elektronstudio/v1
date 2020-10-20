@@ -14,7 +14,6 @@ import VideoConfirmation from "./VideoConfirmation.js";
 
 export default {
   components: {
-    TransitionGroup,
     AspectRatio,
     VideoConfirmation,
     VideoGrid,
@@ -152,14 +151,14 @@ export default {
       @start="onStart"
       @stop="onStop"
     >
-      <transition-group mode="out-in" name="videogrid" tag="video-grid">
+      <video-grid>
         <img
           v-for="image in images"
-          :key="image.id" 
           :src="image.value" 
-          style="position: absolute; width: 100%"
+          :key="image.id"
+          style="width: 100%"
         />
-      </transition-group>
+      </video-grid>
     </video-confirmation>
   </aspect-ratio>
   <video ref="videoEl" autoplay style="display: none;" />
