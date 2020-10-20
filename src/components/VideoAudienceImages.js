@@ -7,7 +7,7 @@ import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
 
-const scale = 1 / 8;
+const scale = 1 / 6;
 const quality = 0.8;
 
 export default {
