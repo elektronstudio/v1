@@ -1,21 +1,14 @@
 import { ref, onMounted, computed } from "../deps/vue.js";
 import { useLocalstorage } from "../hooks/index.js";
-import {
-  safeJsonParse,
-  randomId,
-  any,
-  adjectives,
-  animals,
-  useSetInterval,
-} from "../utils/index.js";
+import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
+import { chatUrl, useConfig } from "../config/index.js";
 
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
 
-import { chatUrl } from "../config/index.js";
-
-const scale = 8;
+const scale = 1 / 8;
+const quality = 0.8;
 
 export default {
   components: {
@@ -32,6 +25,7 @@ export default {
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
     const id = "test";
+    const { userId, userName } = useConfig();
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -54,12 +48,6 @@ export default {
       videoEl.value.srcObject.getTracks().forEach((track) => track.stop());
       delete images.value[userId.value];
     };
-
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
 
     const socket = new WebSocket(chatUrl);
 
@@ -93,7 +81,7 @@ export default {
         id: randomId(),
         channel: id,
         type: "userImage",
-        value: canvasEl.value.toDataURL("image/jpeg", 0.5),
+        value: canvasEl.value.toDataURL("image/jpeg", quality),
         from: {
           type: "user",
           id: userId.value,
