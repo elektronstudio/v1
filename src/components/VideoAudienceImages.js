@@ -1,15 +1,16 @@
 import { ref, onMounted, computed, TransitionGroup } from "../deps/vue.js";
-import { useLocalstorage } from "../hooks/index.js";
+import { useState } from "../hooks/index.js";
 import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
-import { chatUrl, useConfig } from "../config/index.js";
+import {
+  chatUrl,
+  imageScale,
+  imageQuality,
+  imageUpdateFrequency,
+} from "../config/index.js";
 
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
-
-const scale = 1 / 6;
-const quality = 0.8;
-const frequency = 500;
 
 export default {
   components: {
@@ -27,13 +28,13 @@ export default {
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
     const id = "test";
-    const { userId, userName } = useConfig();
+    const { userId, userName } = useState();
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
-        canvasEl.value.width = srcElement.videoWidth * scale;
-        canvasEl.value.height = srcElement.videoHeight * scale;
+        canvasEl.value.width = srcElement.videoWidth * imageScale;
+        canvasEl.value.height = srcElement.videoHeight * imageScale;
       });
     });
 
@@ -76,14 +77,14 @@ export default {
         videoEl.value,
         0,
         0,
-        videoEl.value.videoWidth * scale,
-        videoEl.value.videoHeight * scale
+        videoEl.value.videoWidth * imageScale,
+        videoEl.value.videoHeight * imageScale
       );
       const outgoingMessage = {
         id: randomId(),
         channel: id,
         type: "userImage",
-        value: canvasEl.value.toDataURL("image/jpeg", quality),
+        value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
         from: {
           type: "user",
           id: userId.value,
@@ -116,7 +117,12 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    useSetInterval(sendImageMessage, imagesLength, videoStarted, frequency);
+    useSetInterval(
+      sendImageMessage,
+      imagesLength,
+      videoStarted,
+      imageUpdateFrequency
+    );
 
     const onStart = () => {
       startVideo();

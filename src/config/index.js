@@ -1,6 +1,3 @@
-import { useLocalstorage } from "../hooks/index.js";
-import { randomId, any, adjectives, animals } from "../utils/index.js";
-
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -27,11 +24,6 @@ export const openviduWidth = 80;
 export const openviduHeight = 60;
 export const openviduFps = 12;
 
-export const useConfig = () => {
-  const userId = useLocalstorage("elektron_user_id", randomId());
-  const userName = useLocalstorage(
-    "elektron_user_name",
-    `${any(adjectives)} ${any(animals)}`
-  );
-  return { userId, userName };
-};
+export const imageScale = 1 / 6;
+export const imageQuality = 0.8;
+export const imageUpdateFrequency = 500;
