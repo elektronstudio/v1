@@ -61,14 +61,14 @@ export default {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
-        incomingMessage.channel === id &&
+        incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
         images.value[incomingMessage.from.id] = incomingMessage;
       }
       if (
         incomingMessage &&
-        incomingMessage.channel === id &&
+        incomingMessage.channel === props.channel &&
         incomingMessage.type === "userStop"
       ) {
         delete images.value[incomingMessage.from.id];
@@ -104,7 +104,7 @@ export default {
     const sendStopMessage = () => {
       const outgoingMessage = {
         id: randomId(),
-        channel: id,
+        channel: props.channel,
         type: "userStop",
         value: null,
         from: {
