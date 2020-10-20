@@ -5,7 +5,7 @@ import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 
 import SpecVideo from "../components/SpecVideo.js";
-import ExperimentalSpecVideo from "../components/ExperimentalSpecVideo.js";
+import VideoAudienceWebrtc from "../components/VideoAudienceWebrtc.js";
 import Chat from "../components/Chat.js";
 import ExperimentalChat from "../components/ExperimentalChat.js";
 import EventDetails from "../components/EventDetails.js";
@@ -16,7 +16,7 @@ export default {
   components: {
     EventDetails,
     SpecVideo,
-    ExperimentalSpecVideo,
+    VideoAudienceWebrtc,
     Chat,
     ExperimentalChat,
   },
@@ -100,7 +100,7 @@ export default {
       "
     >
       <component
-        :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'"
+        :is="event && event.experimental ? 'video-audience-webrtc' : 'spec-video'"
         :id="id"
         style="
           position: absolute;
