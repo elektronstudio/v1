@@ -270,3 +270,12 @@ button:hover {
   left: 0;
   bottom: 0;
 }
+.videogrid-enter-active,
+.videogrid-leave-active {
+  transition: all 0.5s linear;
+}
+
+.videogrid-enter-from,
+.videogrid-leave-to {
+  opacity: 0.7;
+}

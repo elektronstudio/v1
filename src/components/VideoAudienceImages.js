@@ -1,4 +1,4 @@
-import { ref, onMounted, computed } from "../deps/vue.js";
+import { ref, onMounted, computed, TransitionGroup } from "../deps/vue.js";
 import { useLocalstorage } from "../hooks/index.js";
 import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
 import { chatUrl, useConfig } from "../config/index.js";
@@ -9,9 +9,11 @@ import VideoConfirmation from "./VideoConfirmation.js";
 
 const scale = 1 / 6;
 const quality = 0.8;
+const frequency = 500;
 
 export default {
   components: {
+    TransitionGroup,
     AspectRatio,
     VideoConfirmation,
     VideoGrid,
@@ -114,7 +116,7 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
     };
 
-    useSetInterval(sendImageMessage, imagesLength, videoStarted, 1000);
+    useSetInterval(sendImageMessage, imagesLength, videoStarted, frequency);
 
     const onStart = () => {
       startVideo();
@@ -144,14 +146,14 @@ export default {
       @start="onStart"
       @stop="onStop"
     >
-      <video-grid>
+      <transition-group mode="out-in" name="videogrid" tag="video-grid">
         <img
           v-for="image in images"
-          :key="image.value.split(',')[1].slice(0,10)" 
+          :key="image.id" 
           :src="image.value" 
-          style="width: 100%"
+          style="position: absolute; width: 100%"
         />
-      </video-grid>
+      </transition-group>
     </video-confirmation>
   </aspect-ratio>
   <video ref="videoEl" autoplay style="display: none;" />
