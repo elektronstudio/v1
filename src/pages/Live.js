@@ -6,8 +6,8 @@ import { fetchEvents } from "../utils/index.js";
 
 import VideoAudienceMosaic from "../components/VideoAudienceMosaic.js";
 import VideoAudienceWebrtc from "../components/VideoAudienceWebrtc.js";
-import Chat from "../components/Chat.js";
-import ExperimentalChat from "../components/ExperimentalChat.js";
+import ChatAudienceEmbed from "../components/ChatAudienceEmbed.js";
+import ChatAudienceWebsocket from "../components/ChatAudienceWebsocket.js";
 import EventDetails from "../components/EventDetails.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
@@ -17,8 +17,8 @@ export default {
     EventDetails,
     VideoAudienceMosaic,
     VideoAudienceWebrtc,
-    Chat,
-    ExperimentalChat,
+    ChatAudienceEmbed,
+    ChatAudienceWebsocket,
   },
   setup() {
     const { params } = useRoute();
@@ -112,7 +112,7 @@ export default {
       />
     </div>
     <div style="grid-area: chat">
-      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
+      <component :is="event && event.experimental ? 'chat-audience-websocket' : 'chat-audience-embed'" :id="id" />
     </div>
   </div>
   `,
