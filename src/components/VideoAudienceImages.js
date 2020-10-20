@@ -18,7 +18,12 @@ export default {
     VideoConfirmation,
     VideoGrid,
   },
-  setup() {
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
+  setup(props) {
     const videoEl = ref(null);
     const canvasEl = ref(null);
     const context = ref(null);
@@ -26,7 +31,6 @@ export default {
     const images = ref({});
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
-    const id = "test";
     const { userId, userName } = useState();
 
     onMounted(() => {
@@ -81,7 +85,7 @@ export default {
       );
       const outgoingMessage = {
         id: randomId(),
-        channel: id,
+        channel: props.channel,
         type: "userImage",
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
         from: {

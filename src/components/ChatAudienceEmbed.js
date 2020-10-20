@@ -2,7 +2,12 @@ import { ref, onMounted } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 
 export default {
-  setup() {
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
+  setup(props) {
     onMounted(() =>
       postscribe(
         "#legacy-chat",

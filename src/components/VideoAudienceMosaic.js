@@ -12,7 +12,12 @@ export default {
     AspectRatio,
     VideoConfirmation,
   },
-  setup() {
+  props: {
+    channel: {
+      default: "test",
+    },
+  },
+  setup(props) {
     // Set up spectator video input
 
     const VideoAudienceMosaic = useHls(specOutputUrl);
