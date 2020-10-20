@@ -5,9 +5,9 @@ import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 
 import VideoAudienceMosaic from "../components/VideoAudienceMosaic.js";
-import VideoAudienceWebrtc from "../components/VideoAudienceWebrtc.js";
+import VideoAudienceOpenvidu from "../components/VideoAudienceOpenvidu.js";
 import ChatAudienceEmbed from "../components/ChatAudienceEmbed.js";
-import ChatAudienceWebsocket from "../components/ChatAudienceWebsocket.js";
+import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
 import EventDetails from "../components/EventDetails.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
@@ -16,9 +16,9 @@ export default {
   components: {
     EventDetails,
     VideoAudienceMosaic,
-    VideoAudienceWebrtc,
+    VideoAudienceOpenvidu,
     ChatAudienceEmbed,
-    ChatAudienceWebsocket,
+    ChatAudienceMessages,
   },
   setup() {
     const { params } = useRoute();
@@ -100,7 +100,7 @@ export default {
       "
     >
       <component
-        :is="event && event.experimental ? 'video-audience-webrtc' : 'video-audience-mosaic'"
+        :is="event && event.experimental ? 'video-audience-openvidu' : 'video-audience-mosaic'"
         :id="id"
         style="
           position: absolute;
@@ -112,7 +112,7 @@ export default {
       />
     </div>
     <div style="grid-area: chat">
-      <component :is="event && event.experimental ? 'chat-audience-websocket' : 'chat-audience-embed'" :id="id" />
+      <component :is="event && event.experimental ? 'chat-audience-messages' : 'chat-audience-embed'" :id="id" />
     </div>
   </div>
   `,
