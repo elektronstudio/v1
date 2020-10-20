@@ -4,10 +4,10 @@ import { useRoute } from "../deps/router.js";
 import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 
-import SpecVideo from "../components/SpecVideo.js";
-import ExperimentalSpecVideo from "../components/ExperimentalSpecVideo.js";
-import Chat from "../components/Chat.js";
-import ExperimentalChat from "../components/ExperimentalChat.js";
+import VideoAudienceMosaic from "../components/VideoAudienceMosaic.js";
+import VideoAudienceOpenvidu from "../components/VideoAudienceOpenvidu.js";
+import ChatAudienceEmbed from "../components/ChatAudienceEmbed.js";
+import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
 import EventDetails from "../components/EventDetails.js";
 
 import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
@@ -15,10 +15,10 @@ import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 export default {
   components: {
     EventDetails,
-    SpecVideo,
-    ExperimentalSpecVideo,
-    Chat,
-    ExperimentalChat,
+    VideoAudienceMosaic,
+    VideoAudienceOpenvidu,
+    ChatAudienceEmbed,
+    ChatAudienceMessages,
   },
   setup() {
     const { params } = useRoute();
@@ -100,7 +100,7 @@ export default {
       "
     >
       <component
-        :is="event && event.experimental ? 'experimental-spec-video' : 'spec-video'"
+        :is="event && event.experimental ? 'video-audience-openvidu' : 'video-audience-mosaic'"
         :id="id"
         style="
           position: absolute;
@@ -112,7 +112,7 @@ export default {
       />
     </div>
     <div style="grid-area: chat">
-      <component :is="event && event.experimental ? 'experimental-chat' : 'chat'" :id="id" />
+      <component :is="event && event.experimental ? 'chat-audience-messages' : 'chat-audience-embed'" :id="id" />
     </div>
   </div>
   `,

@@ -1,4 +1,4 @@
-import { ref, onMounted, computed } from "../deps/vue.js";
+import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
@@ -219,7 +219,29 @@ export const randomId = (length = 16) => {
   return shuffle(letters).slice(0, length).join("");
 };
 
-// Sample datata
+// Time
+
+export const useSetInterval = (callback, nth, condition, timeout) => {
+  let a = 0;
+  const interval = ref(null);
+  onMounted(() => {
+    interval.value = setInterval(() => {
+      a = a >= nth.value - 1 ? 0 : a + 1;
+      if (a === 0 && condition.value) {
+        callback();
+      }
+    }, timeout);
+  });
+  onUnmounted(() => {
+    if (interval.value) {
+      cleanInterval(interval.value);
+    }
+  });
+  return interval;
+};
+
+// Sample data
+
 export const adjectives = [
   "Active",
   "Adored",

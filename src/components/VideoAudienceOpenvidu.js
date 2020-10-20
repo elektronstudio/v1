@@ -5,18 +5,23 @@ import { getToken } from "../utils/index.js";
 
 import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
+import VideoGrid from "./VideoGrid.js";
 import PublisherVideoCard from "./PublisherVideoCard.js";
+import AspectRatio from "./AspectRatio.js";
+import VideoConfirmation from "./VideoConfirmation.js";
 
 export default {
   components: {
+    VideoGrid,
     PublisherVideoCard,
+    AspectRatio,
+    VideoConfirmation,
   },
-  props: ["id"],
   setup(props) {
     const session = ref(null);
     const publisher = ref(null);
     const subscribers = ref([]);
-    const mySessionId = ref(props.id);
+    const mySessionId = ref("test");
     const myUserName = ref("Participant" + Math.floor(Math.random() * 100));
 
     const joinSession = () => {
@@ -30,8 +35,7 @@ export default {
       });
 
       session.value.on("streamDestroyed", ({ stream }) => {
-        console.log("des");
-        const index = subscribers.value.indexOf(stream.streamManager, 0);
+        const index = subscribers.value.indexOf(stream.streamManager);
         if (index >= 0) {
           subscribers.value.splice(index, 1);
         }
@@ -75,17 +79,6 @@ export default {
 
     // https://stackoverflow.com/a/51956837
 
-    const proportion = 4 / 3;
-    const columns = computed(() =>
-      Math.min(
-        subscribers.value.length + 1,
-        Math.round(Math.sqrt(proportion * subscribers.value.length + 1))
-      )
-    );
-    // const rows = computed(() =>
-    //   Math.ceil((subscribers.value.length + columns.value) / columns)
-    // );
-
     return {
       session,
       publisher,
@@ -94,77 +87,27 @@ export default {
       myUserName,
       joinSession,
       leaveSession,
-      columns,
     };
   },
   template: `
-  <div
-    style="
-      position: relative;
-      overflow: auto;
-    "
-  ><div
-    v-show="session"
-    style="
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: grid;
-      align-items: flex-start;
-    "
-    :style="{
-      gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
-      gridAutoRows: 'max-content'
-    }"
-  >
-    <publisher-video-card
-      :publisher="publisher"
-    />
-    <publisher-video-card
-      v-for="(publisher, i) in subscribers"
-      :key="i"
-      :publisher="publisher"
-    />
-    </div>
-    <div
-      v-show="!session"
-      style="
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 0 32px;
-        background: rgba(20, 20, 20, 0.2);
-      "
-    >
-      <div>
-        <p>
-          Please allow access to your camera to be a
-          public audience member in our venue. 
-          Note that we do not use your microphone.
-        </p>
-        <button @click="joinSession">Start my camera</button>
-      </div>
-    </div>
-    <div
-      v-show="session"
-      style="
-        position: absolute;
-        right: 0;
-        left: 0;
-        bottom: 16px;
-        text-align: center;
-      "
-    >
-      <button v-if="session" @click="leaveSession">Stop my camera</button>
-    </div>
-  </div>
+    <aspect-ratio :ratio="1">
+      <video-confirmation
+        :started="session"
+        @start="joinSession"
+        @stop="leaveSession"
+      >
+        <video-grid>
+          <publisher-video-card
+            :publisher="publisher"
+          />
+          <publisher-video-card
+            v-for="(publisher, i) in subscribers"
+            :key="i"
+            :publisher="publisher"
+          />
+        </video-grid>
+      </video-confirmation>
+    </aspect-ratio>
+    
   `,
 };
