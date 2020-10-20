@@ -4,7 +4,7 @@ import { useRoute } from "../deps/router.js";
 import { useHls, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 
-import SpecVideo from "../components/SpecVideo.js";
+import VideoAudienceMosaic from "../components/VideoAudienceMosaic.js";
 import VideoAudienceWebrtc from "../components/VideoAudienceWebrtc.js";
 import Chat from "../components/Chat.js";
 import ExperimentalChat from "../components/ExperimentalChat.js";
@@ -15,7 +15,7 @@ import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
 export default {
   components: {
     EventDetails,
-    SpecVideo,
+    VideoAudienceMosaic,
     VideoAudienceWebrtc,
     Chat,
     ExperimentalChat,
@@ -100,7 +100,7 @@ export default {
       "
     >
       <component
-        :is="event && event.experimental ? 'video-audience-webrtc' : 'spec-video'"
+        :is="event && event.experimental ? 'video-audience-webrtc' : 'video-audience-mosaic'"
         :id="id"
         style="
           position: absolute;

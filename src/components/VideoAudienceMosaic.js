@@ -15,7 +15,7 @@ export default {
   setup() {
     // Set up spectator video input
 
-    const specVideo = useHls(specOutputUrl);
+    const VideoAudienceMosaic = useHls(specOutputUrl);
     const videoStarted = ref(false);
 
     // Set up spectator video output
@@ -52,7 +52,7 @@ export default {
       videoStarted,
       startVideo,
       stopVideo,
-      specVideo,
+      VideoAudienceMosaic,
     };
   },
   template: `
@@ -62,7 +62,7 @@ export default {
       @start="startVideo"
       @stop="stopVideo"
     >
-      <video ref="specVideo" autoplay muted></video>
+      <video ref="VideoAudienceMosaic" autoplay muted></video>
     </video-confirmation>
   </aspect-ratio>
   `,
