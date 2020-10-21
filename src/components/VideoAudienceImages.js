@@ -131,6 +131,7 @@ export default {
       startVideo();
       videoStarted.value = true;
     };
+
     const onStop = () => {
       stopVideo();
       sendStopMessage();
