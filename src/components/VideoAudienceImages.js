@@ -134,8 +134,12 @@ export default {
     const onStop = () => {
       stopVideo();
       sendStopMessage();
+      images.value = [];
       videoStarted.value = false;
+      window.removeEventListener("beforeunload", onStop);
     };
+
+    window.addEventListener("beforeunload", onStop);
 
     return {
       videoEl,
