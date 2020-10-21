@@ -133,12 +133,10 @@ export const parseEvent = (event) => {
 
   if (hasTags(rawDescription)) {
     const markdown = turndown.turndown(rawDescription);
-    const html = marked(markdown, { breaks: true });
-    description = html.split("---")[0];
+    description = marked(markdown.split("---")[0], { breaks: true });
     metadataDescription = markdown;
   } else {
-    const html = marked(rawDescription, { breaks: true });
-    description = html.split("---")[0];
+    description = marked(rawDescription.split("---")[0], { breaks: true });
     metadataDescription = rawDescription;
   }
 
