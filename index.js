@@ -7,7 +7,7 @@ import Videotest from "./src/pages/Videotest.js";
 
 const routes = [
   { path: "/videotest", component: Videotest },
-  { path: "/:id", component: Live },
+  { path: "/:channel", component: Live },
   { path: "/", component: Index },
 ];
 

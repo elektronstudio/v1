@@ -7,7 +7,7 @@ export default {
   components: { Youtube, DatetimeIndex },
   props: ["event"],
   setup(props) {
-    const isOpen = ref(true);
+    const isOpen = ref(false);
     const style = computed(() => {
       return {
         borderLeft: `3px solid ${
