@@ -98,6 +98,19 @@ export const formatAgo = (event) => {
 
 // Content utils
 
+const hasTags = (str) => !!str.match(/(<([^>]+)>)/gi);
+
+const stripTags = (str) => str.replace(/(<([^>]+)>)/gi, "");
+
+const findMetadata = (str, key) => {
+  const pattern = `\n\r?(${key}:\s?)(.*)`;
+  const matches = str.match(pattern);
+  if (matches && matches[2]) {
+    return stripTags(marked(matches[2])).trim();
+  }
+  return "";
+};
+
 const turndown = new TurndownService();
 
 export const parseEvent = (event) => {
@@ -113,41 +126,37 @@ export const parseEvent = (event) => {
     ? event.end.dateTime
     : "";
 
-  const markdown = turndown.turndown(event.description || "");
-  const description = event.description ? marked(markdown).split("---")[0] : "";
+  const rawDescription = event.description || "";
 
-  const teaser = event.description ? marked(markdown.split("\n\n")[0]) : "";
+  let description = "";
+  let metadataDescription = "";
 
-  const ids = markdown.match(/(\n\r?id:\s?)(.*)/);
-  const id = ids && ids[2] ? ids[2].trim() : "";
+  if (hasTags(rawDescription)) {
+    const markdown = turndown.turndown(rawDescription);
+    description = marked(markdown.split("---")[0], { breaks: true });
+    metadataDescription = markdown;
+  } else {
+    description = marked(rawDescription.split("---")[0], { breaks: true });
+    metadataDescription = rawDescription;
+  }
 
-  const youtubes = markdown.match(/(\n\r?youtube:\s?)(.*)/);
-  const youtube =
-    youtubes && youtubes[2]
-      ? youtubes[2].split("](")[0].replace("[", "").replace(")", "").trim()
-      : "";
-
-  const colors = markdown.match(/(\n\r?color:\s?)(.*)/);
-  const color = colors && colors[2] ? colors[2].trim() : "";
-
-  const experimentals = markdown.match(/(\n\r?experimental:\s?)(.*)/);
-  const experimental =
-    experimentals && experimentals[2]
-      ? experimentals[2].toLowerCase().trim() === "true"
-      : false;
+  const id = findMetadata(metadataDescription, "id");
+  const youtube = findMetadata(metadataDescription, "youtube");
+  const color = findMetadata(metadataDescription, "color");
+  const experimental = findMetadata(metadataDescription, "experimental");
 
   const diff = getDifference(start, end);
 
   return {
-    summary,
-    description,
-    teaser,
     id,
-    start,
-    end,
     youtube,
     color,
     experimental,
+    description,
+    summary,
+    description,
+    start,
+    end,
     ...diff,
   };
 };
