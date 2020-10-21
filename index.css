@@ -145,6 +145,78 @@ button:hover {
   display: none;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex > * {
+  margin-right: 8px;
+}
+
+@media (max-width: 800px) {
+  .flex {
+    display: block;
+  }
+  .flex > * {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  .flex > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flex-justified {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .flex-justified {
+    display: block;
+  }
+  .flex-justified > * {
+    margin-bottom: 12px;
+  }
+  .flex-justified > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+// Components
+
+.aspect-ratio > * {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+/* Layouts */
+
 .layout-index {
   padding: 32px;
   display: grid;
@@ -209,64 +281,26 @@ button:hover {
   }
 }
 
-.flex {
-  display: flex;
-  align-items: center;
+.layout-test {
+  padding: 32px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 3fr 1.5fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.5vw;
+  grid-template-areas:
+    "performer audience  chat"
+    "about     audience  chat";
 }
-.flex > * {
-  margin-right: 8px;
-}
-
 @media (max-width: 800px) {
-  .flex {
-    display: block;
+  .layout-live {
+    height: inherit;
+    grid-template-columns: 1fr;
+    gap: 2vw 1.5vw;
+    grid-template-areas:
+      "performer"
+      "audience"
+      "chat"
+      "about";
   }
-  .flex > * {
-    margin-right: 0;
-    margin-bottom: 12px;
-  }
-  .flex > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.flex-justified {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 800px) {
-  .flex-justified {
-    display: block;
-  }
-  .flex-justified > * {
-    margin-bottom: 12px;
-  }
-  .flex-justified > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.rotalic {
-  font-family: font-medium-rotalic;
-  letter-spacing: 0.1em;
-}
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// Components
-
-.aspect-ratio > * {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
 }
