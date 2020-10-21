@@ -32,7 +32,7 @@ export default {
     </div>
     <div style="grid-area: chat">
       <div @click="onClick" style="textAlign: right; cursor: pointer; border: 2px solid orange; position: sticky; top: 32px; padding: 15px; height: calc(100vh - 32px - 32px);">
-        Chat {{ chatOpen ? '→' : '←' }}
+        {{ chatOpen ? '→' : '←' }}
       </div>
     </div>
     <div style="border: 2px solid red; padding: 15px; grid-area: about">
