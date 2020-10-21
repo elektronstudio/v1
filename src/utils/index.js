@@ -102,11 +102,16 @@ const hasTags = (str) => !!str.match(/(<([^>]+)>)/gi);
 
 const stripTags = (str) => str.replace(/(<([^>]+)>)/gi, "");
 
+const htmlDecode = (str) => {
+  const doc = new DOMParser().parseFromString(str, "text/html");
+  return doc.documentElement.textContent;
+};
+
 const findMetadata = (str, key) => {
   const pattern = `\n\r?(${key}:\s?)(.*)`;
   const matches = str.match(pattern);
   if (matches && matches[2]) {
-    return stripTags(marked(matches[2])).trim();
+    return htmlDecode(stripTags(marked(matches[2])).trim());
   }
   return "";
 };
