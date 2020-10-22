@@ -3,10 +3,12 @@ import { ref, onMounted } from "../deps/vue.js";
 import { fetchEvents } from "../utils/index.js";
 
 import EventRow from "../components/EventRow.js";
+import Logo from "../components/Logo.js";
 
 export default {
   components: {
     EventRow,
+    Logo,
   },
   setup() {
     const eventsUrl =
@@ -31,7 +33,7 @@ export default {
   template: `
     <div class="layout-index">
     <div style="grid-area: header">
-      <img src="index.svg" style="width: 250px;" />
+      <logo />
       <br />
       <br />
     </div>
@@ -50,10 +52,6 @@ export default {
       </p>
       <p>
         Much like the first movies at the turn of 20'th century were just recordings of the theatre performances, so far the online shows of the  theatre are copies of the shows made in real life. It took Dziga Vertov and his "Man with the movie camera" to make movies look like movies. We are now creating a tool for artists to do the same for the online performances.
-      </p>
-      <p>
-        elektron.live is created by e⁻lektron team at <a href="https://elektron.art/">elektron.art</a>together with Stepan
-        Bolotnikov and <a href="https://babahh.com">Babahh Media</a>.
       </p>
       <p>
         All our code is freely available in <a href="https://github.com/elektronstudio">Github</a>

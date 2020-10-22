@@ -118,7 +118,7 @@ export default {
         <chat-message :message="message" :userId="userId">
       </div>
     </div>
-    <div>
+    <div style="margin-top: 8px;">
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
     <div style="display: flex; align-items: space-between; margin-top: 4px;">

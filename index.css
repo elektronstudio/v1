@@ -240,7 +240,7 @@ button:hover {
 /* Layouts */
 
 .layout-index {
-  padding: 32px;
+  padding: 24px;
   display: grid;
   grid-template-columns: 1.8fr 1fr;
   gap: 2vw 5vw;
