@@ -2,9 +2,11 @@ import { ref, computed } from "../deps/vue.js";
 
 import AspectRatio from "../components/AspectRatio.js";
 import VideoPerformer from "../components/VideoPerformer.js";
+import IconToLeft from "../components/IconToLeft.js";
+import IconToRight from "../components/IconToRight.js";
 
 export default {
-  components: { VideoPerformer },
+  components: { VideoPerformer, IconToLeft, IconToRight },
   setup() {
     const chatOpen = ref(true);
     const style = computed(() => {
@@ -27,9 +29,17 @@ export default {
         Audience
       </div>
     </div>
-    <div style="grid-area: chat">
-      <div @click="onClick" style="textAlign: right; cursor: pointer; border: 2px solid orange; position: sticky; top: 32px; padding: 15px; height: calc(100vh - 32px - 32px);">
-        {{ chatOpen ? '→' : '←' }}
+    <div
+      style="
+        grid-area: chat;
+        position: sticky;
+        top: 32px;
+        height: calc(100vh - 32px - 32px);
+      "
+    >
+      <div @click="onClick">
+        <icon-to-left v-if="!chatOpen" />
+        <icon-to-right v-if="chatOpen" />
       </div>
     </div>
     <div style="border: 2px solid red; padding: 15px; grid-area: about">
