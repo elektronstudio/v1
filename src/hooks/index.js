@@ -140,6 +140,5 @@ export const useState = () => {
     "elektron_user_name",
     `${any(adjectives)} ${any(animals)}`
   );
-  const chatVisible = useLocalstorage("elektron_chat_visible", true);
-  return { userId, userName, chatVisible };
+  return { userId, userName };
 };

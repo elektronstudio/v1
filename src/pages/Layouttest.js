@@ -44,15 +44,7 @@ export default {
 
     // Chat
 
-    const { chatVisible } = useState();
-
-    // const style = computed(() => {
-    //   return {
-    //     gridTemplateColumns: chatVisible.value
-    //       ? "1fr 350px 300px"
-    //       : "1fr 350px 40px",
-    //   };
-    // });
+    const chatVisible = ref(true);
 
     watch(
       chatVisible,

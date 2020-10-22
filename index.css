@@ -217,6 +217,16 @@ button:hover {
   }
 }
 
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
 // Components
 
 .aspect-ratio > * {
@@ -321,6 +331,16 @@ button:hover {
 }
 .icon:hover {
   filter: brightness(90%);
+}
+.icon-heart {
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.icon-heart:hover {
+  fill: red;
+}
+.icon-heart:active {
+  animation: explode 3s;
 }
 
 .panel-audience {

@@ -159,7 +159,8 @@ export default {
         );
       "
     >
-      <logo />
+     
+      <router-link to="/"><logo /></router-link>
       <icon-heart style="stroke: red" @click="onSendHeart" />
     </div>
   </transition> 
