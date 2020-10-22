@@ -112,7 +112,7 @@ export default {
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
-        images.value[incomingMessage.id] = incomingMessage;
+        images.value[incomingMessage.from.id] = incomingMessage;
       }
       if (
         incomingMessage &&
@@ -131,6 +131,16 @@ export default {
         videoEl.value.videoWidth * imageScale,
         videoEl.value.videoHeight * imageScale
       );
+
+      const buffer = new Uint32Array(
+        context.value.getImageData(
+          0,
+          0,
+          canvasEl.value.width,
+          canvasEl.value.width
+        ).data.buffer
+      );
+
       const outgoingMessage = {
         id: randomId(),
         channel: props.channel,
@@ -146,7 +156,9 @@ export default {
         },
         datetime: new Date().toISOString(),
       };
-      socket.send(JSON.stringify(outgoingMessage));
+      if (buffer.some((color) => color !== 0)) {
+        socket.send(JSON.stringify(outgoingMessage));
+      }
     };
 
     const sendStopMessage = () => {
@@ -183,7 +195,6 @@ export default {
     const onStop = () => {
       stopVideo();
       sendStopMessage();
-      images.value = [];
       videoStarted.value = false;
       window.removeEventListener("beforeunload", onStop);
     };
@@ -203,14 +214,13 @@ export default {
     };
   },
   template: `
-  {{ imagesLength }}
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
       @start="onStart"
       @stop="onStop"
     >
-      <video-grid :ratio="ratio">
+      <video-grid v-if="videoStarted" :ratio="ratio">
         <img
           v-for="image in images"
           :src="image.value" 

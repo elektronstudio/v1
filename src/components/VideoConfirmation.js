@@ -1,6 +1,7 @@
-import { ref } from "../deps/vue.js";
+import { ref, Transition } from "../deps/vue.js";
 
 export default {
+  components: { Transition },
   props: { started: { default: false } },
   setup(props, { emit }) {
     const hasStarted = ref(props.started);
@@ -16,6 +17,7 @@ export default {
   },
   template: `
   <slot />
+  <transition name="fade">
   <div
     v-if="!hasStarted"
     style="
@@ -39,6 +41,7 @@ export default {
       <button @click="onStart">Start camera</button>
     </div>
   </div>
+  </transition>
   <div
     v-if="hasStarted"
     style="
