@@ -1,6 +1,7 @@
-import { ref } from "../deps/vue.js";
+import { ref, Transition } from "../deps/vue.js";
 
 export default {
+  components: { Transition },
   props: { started: { default: false } },
   setup(props, { emit }) {
     const hasStarted = ref(props.started);
@@ -16,6 +17,7 @@ export default {
   },
   template: `
   <slot />
+  <transition name="fade">
   <div
     v-if="!hasStarted"
     style="
@@ -29,7 +31,6 @@ export default {
       justify-content: center;
       text-align: center;
       padding: 0 32px;
-      background: rgba(20, 20, 20, 0.75);
     "
   >
     <div>
@@ -37,9 +38,10 @@ export default {
         Please allow access to your camera to be a
         public audience member in our venue.
       </p>
-      <button @click="onStart">Start my camera</button>
+      <button @click="onStart">Start camera</button>
     </div>
   </div>
+  </transition>
   <div
     v-if="hasStarted"
     style="

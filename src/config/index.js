@@ -24,6 +24,6 @@ export const openviduWidth = 80;
 export const openviduHeight = 60;
 export const openviduFps = 12;
 
-export const imageScale = 1 / 6;
+export const imageScale = 1 / 4;
 export const imageQuality = 0.8;
-export const imageUpdateFrequency = 1000;
+export const imageUpdateFrequency = 500;

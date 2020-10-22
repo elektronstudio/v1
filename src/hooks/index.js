@@ -13,6 +13,7 @@ import { chatUrl } from "../config/index.js";
 
 export const useHls = (url) => {
   const el = ref(null);
+  const isHlsPlaying = ref(false);
   onMounted(() => {
     if (el.value.canPlayType("application/vnd.apple.mpegurl")) {
       el.value.src = url;
@@ -77,14 +78,18 @@ export const useTextarea = (callback) => {
   };
 
   onMounted(() => {
-    el.value.focus();
-    el.value.addEventListener("keydown", onKeydown);
-    onInput();
-    el.value.addEventListener("input", onInput);
+    if (el.value) {
+      el.value.focus();
+      el.value.addEventListener("keydown", onKeydown);
+      onInput();
+      el.value.addEventListener("input", onInput);
+    }
   });
 
   onUnmounted(() => {
-    el.value.removeEventListener("keydown", onKeydown);
+    if (el.value) {
+      el.value.removeEventListener("keydown", onKeydown);
+    }
   });
 
   return el;

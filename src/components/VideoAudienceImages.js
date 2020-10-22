@@ -1,6 +1,19 @@
-import { ref, onMounted, computed, TransitionGroup } from "../deps/vue.js";
-import { useState } from "../hooks/index.js";
-import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
+import {
+  ref,
+  watch,
+  onMounted,
+  computed,
+  TransitionGroup,
+} from "../deps/vue.js";
+import { useLocalstorage } from "../hooks/index.js";
+import {
+  safeJsonParse,
+  randomId,
+  useSetInterval,
+  any,
+  adjectives,
+  animals,
+} from "../utils/index.js";
 import {
   chatUrl,
   imageScale,
@@ -22,6 +35,9 @@ export default {
     channel: {
       default: "test",
     },
+    ratio: {
+      default: 1,
+    },
   },
   setup(props) {
     const videoEl = ref(null);
@@ -31,13 +47,19 @@ export default {
     const images = ref({});
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
-    const { userId, userName } = useState();
+    const userId = useLocalstorage("elektron_user_id", randomId());
+    const userName = useLocalstorage(
+      "elektron_user_name",
+      `${any(adjectives)} ${any(animals)}`
+    );
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
+        const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
         canvasEl.value.width = srcElement.videoWidth * imageScale;
-        canvasEl.value.height = srcElement.videoHeight * imageScale;
+        canvasEl.value.height =
+          (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
       });
     });
 
@@ -76,13 +98,24 @@ export default {
     };
 
     const sendImageMessage = () => {
+      const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
       context.value.drawImage(
         videoEl.value,
         0,
-        0,
+        videoEl.value.videoHeight * imageScale * (isPortrait ? -0.5 : 0),
         videoEl.value.videoWidth * imageScale,
         videoEl.value.videoHeight * imageScale
       );
+
+      const buffer = new Uint32Array(
+        context.value.getImageData(
+          0,
+          0,
+          canvasEl.value.width,
+          canvasEl.value.width
+        ).data.buffer
+      );
+
       const outgoingMessage = {
         id: randomId(),
         channel: props.channel,
@@ -98,7 +131,9 @@ export default {
         },
         datetime: new Date().toISOString(),
       };
-      socket.send(JSON.stringify(outgoingMessage));
+      if (buffer.some((color) => color !== 0)) {
+        socket.send(JSON.stringify(outgoingMessage));
+      }
     };
 
     const sendStopMessage = () => {
@@ -135,39 +170,61 @@ export default {
     const onStop = () => {
       stopVideo();
       sendStopMessage();
-      images.value = [];
       videoStarted.value = false;
       window.removeEventListener("beforeunload", onStop);
     };
 
     window.addEventListener("beforeunload", onStop);
 
+    const images2 = computed(() =>
+      Object.values(images.value).sort((a, b) => a.from.id > b.from.id)
+    );
     return {
       videoEl,
       canvasEl,
       sendImageMessage,
       image,
       images,
+      imagesLength,
       videoStarted,
       onStart,
       onStop,
+      images2,
     };
   },
   template: `
-  <aspect-ratio :ratio="1">
+  <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
       @start="onStart"
       @stop="onStop"
     >
-      <video-grid>
-        <img
-          v-for="image in images"
-          :src="image.value" 
+      <video-grid v-if="videoStarted" :ratio="ratio">
+        <div
+          v-for="image in images2"
           :key="image.id"
-          style="width: 100%"
-        />
-      </video-grid>
+          style="position: relative"
+        >
+          <img
+            :src="image.value" 
+            style="width: 100%"
+          />
+          <div class="user-image-name" style="
+            font-size: 0.8em;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 16px;
+            display: flex;
+            align-items: flex-end;
+            cursor: default;
+          ">
+            {{ image.from.name  }}
+          </div>
+        </div>
+      </video-grid2>
     </video-confirmation>
   </aspect-ratio>
   <video ref="videoEl" autoplay style="display: none;" />

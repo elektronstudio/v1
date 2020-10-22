@@ -1,38 +1,32 @@
-import { ref, computed } from "../deps/vue.js";
+import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useHls, useClientsCount } from "../hooks/index.js";
+import { useState, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
+import { mainInputUrl, eventsUrl } from "../config/index.js";
 
-import VideoAudienceMosaic from "../components/VideoAudienceMosaic.js";
-import VideoAudienceImages from "../components/VideoAudienceImages.js";
-import VideoAudienceOpenvidu from "../components/VideoAudienceOpenvidu.js";
-import ChatAudienceEmbed from "../components/ChatAudienceEmbed.js";
-import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
 import EventDetails from "../components/EventDetails.js";
-
-import { mainInputUrl, chatUrl, eventsUrl } from "../config/index.js";
+import AspectRatio from "../components/AspectRatio.js";
+import VideoPerformer from "../components/VideoPerformer.js";
+import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
+import VideoAudienceImages from "../components/VideoAudienceImages.js";
+import IconToLeft from "../components/IconToLeft.js";
+import IconToRight from "../components/IconToRight.js";
 
 export default {
   components: {
     EventDetails,
-    VideoAudienceMosaic,
-    VideoAudienceImages,
-    VideoAudienceOpenvidu,
-    ChatAudienceEmbed,
+    VideoPerformer,
+    IconToLeft,
+    IconToRight,
     ChatAudienceMessages,
+    VideoAudienceImages,
   },
   setup() {
+    const clientsCount = useClientsCount();
+
     const { params } = useRoute();
     const channel = params.channel;
-
-    // Set up main video input
-
-    const mainVideo = useHls(mainInputUrl(channel));
-
-    // Set up clients count
-
-    const clientsCount = useClientsCount();
 
     // Fetch and parse event
 
@@ -48,72 +42,70 @@ export default {
       }
     });
 
-    const audienceComponent = computed(() => {
-      const audienceComponents = {
-        mosaic: "VideoAudienceMosaic",
-        images: "VideoAudienceImages",
-        openvidu: "VideoAudienceOpenvidu",
-      };
-      if (
-        event.value &&
-        event.value.audience &&
-        audienceComponents[event.value.audience]
-      ) {
-        return audienceComponents[event.value.audience];
-      }
-      return audienceComponents.mosaic;
-    });
+    // Chat
 
-    return {
-      clientsCount,
-      mainVideo,
-      event,
-      channel,
-      audienceComponent,
+    const chatVisible = ref(true);
+
+    watch(
+      chatVisible,
+      (visible) => {
+        document.body.style.setProperty(
+          "--cols",
+          visible ? "1fr 350px 300px" : "1fr 350px 40px"
+        );
+      },
+      { immediate: true }
+    );
+
+    const onToggleChat = () => {
+      chatVisible.value = !chatVisible.value;
     };
+
+    return { channel, event, clientsCount, onToggleChat, chatVisible };
   },
   template: `
-  <div class="layout-live">
-    <div
-      class="flex"
-    >
-      <img src="../index.svg" style="width: 250px; display: block;" />
-      <router-link to="/"><div class="pill-gray">← Back to schedule</div></router-link>
+  <div class="layout-test">
+    <div style="grid-area: performer">
+      <video-performer :channel="channel" />
     </div>
     <div
+      class="panel-audience"
       style="
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        grid-area: count;
+        grid-area: audience;
+        background: rgba(255,255,255,0.075);
       "
     >
-      <h3 v-show="clientsCount > 0">
-        {{ clientsCount }} live viewer{{ clientsCount > 1 ? 's' : ''}}
-      </h3>
-    </div>
-
-    <div
-      style="
-        grid-area: main;
-        height: 0;
-        max-width: 100%;
-        padding-bottom: calc(9 / 16 * 100%);
-        position: relative;
-      "
-    >
-      <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
-        <video ref="mainVideo" controls autoplay muted></video>
+      <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
+        <h4>Live audience</h4>
+        <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
+      <video-audience-images :channel="channel" style="border: 2px solid blue" :ratio="1 / 2" />
     </div>
-    <div style="grid-area: title; padding-top: 16px;">
+    <div
+      class="panel-chat"
+      style="
+        grid-area: chat;
+        background: rgba(255,255,255,0.15);
+      "
+      :style="{padding: chatVisible ? '24px' : '24px 10px'}"
+    >
+      <div @click="onToggleChat"
+        style="
+          margin-bottom: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          min-height: 32px;
+        ">
+        <h4 v-if="chatVisible">Chat</h4>
+        <icon-to-left v-if="!chatVisible" />
+        <icon-to-right v-if="chatVisible" />
+      </div>
+      <chat-audience-messages :channel="channel" v-if="chatVisible" />
+    </div>
+    <div style="padding: 32px; grid-area: about">
       <event-details :event="event" />
-    </div>
-    <div style="grid-area: spec">
-      <component :is="audienceComponent" :channel="channel" />
-    </div>
-    <div style="grid-area: chat">
-      <chat-audience-messages :channel="channel" />
     </div>
   </div>
   `,

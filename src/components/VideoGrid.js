@@ -1,23 +1,33 @@
-import { ref, computed } from "../deps/vue.js";
+import { ref, computed, watch } from "../deps/vue.js";
 
 export default {
+  props: {
+    ratio: {
+      default: 1,
+    },
+  },
   setup(props, { slots }) {
-    const count = slots.default ? slots.default().length : 1;
-    // https://stackoverflow.com/a/51956837
-    const proportion = 4 / 3;
-    const columns = computed(() =>
-      Math.min(count + 1, Math.round(Math.sqrt(proportion * count + 1)))
+    const count = ref(1);
+    watch(
+      () => slots.default(),
+      (slots) => (count.value = slots[0].children.length)
     );
-    // const rows = computed(() =>
-    //   Math.ceil((props.length + columns.value) / columns.value)
-    // );
+    // https://stackoverflow.com/a/51956837
+    const columns = computed(() => {
+      const a = Math.min(
+        count.value + 1,
+        Math.round(Math.sqrt(props.ratio * count.value + 1))
+      );
+      return a;
+    });
     return { columns };
   },
   template: `
   <div
+    class="grid"
     style="
       display: grid;
-      align-items: flex-start;
+      grid-template-columns: 1fr 1fr;
       grid-auto-rows: max-content;
     "
     :style="{

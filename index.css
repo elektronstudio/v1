@@ -26,7 +26,7 @@
 }
 * {
   box-sizing: border-box;
-  transition: all 150ms;
+  transition: opacity 150ms;
 }
 body {
   margin: 0;
@@ -145,8 +145,102 @@ button:hover {
   display: none;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex > * {
+  margin-right: 8px;
+}
+
+@media (max-width: 800px) {
+  .flex {
+    display: block;
+  }
+  .flex > * {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  .flex > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.flex-justified {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .flex-justified {
+    display: block;
+  }
+  .flex-justified > * {
+    margin-bottom: 12px;
+  }
+  .flex-justified > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.fade-enter-active {
+  transition: opacity 0.1s;
+}
+.fade-leave-active {
+  transition: opacity 0.75s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+// Components
+
+.aspect-ratio > * {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+/* Layouts */
+
 .layout-index {
-  padding: 32px;
+  padding: 24px;
   display: grid;
   grid-template-columns: 1.8fr 1fr;
   gap: 2vw 5vw;
@@ -209,64 +303,82 @@ button:hover {
   }
 }
 
-.flex {
-  display: flex;
-  align-items: center;
+.layout-test {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--cols, 1fr 350px 300px);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "performer audience  chat"
+    "about     audience  chat";
 }
-.flex > * {
-  margin-right: 8px;
-}
-
 @media (max-width: 800px) {
-  .flex {
-    display: block;
-  }
-  .flex > * {
-    margin-right: 0;
-    margin-bottom: 12px;
-  }
-  .flex > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.flex-justified {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 800px) {
-  .flex-justified {
-    display: block;
-  }
-  .flex-justified > * {
-    margin-bottom: 12px;
-  }
-  .flex-justified > *:last-child {
-    margin-bottom: 0;
+  .layout-test {
+    height: inherit;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    grid-template-areas:
+      "performer"
+      "audience"
+      "chat"
+      "about";
   }
 }
 
-.rotalic {
-  font-family: font-medium-rotalic;
-  letter-spacing: 0.1em;
+.icon {
+  transform: scale(1.3);
+  cursor: pointer;
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.icon:hover {
+  filter: brightness(90%);
+}
+.icon-heart {
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.icon-heart:hover {
+  fill: red;
+}
+.icon-heart:active {
+  animation: explode 3s;
 }
 
-// Components
-
-.aspect-ratio > * {
-  position: absolute;
+.panel-audience {
+  position: sticky;
   top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  padding: 24px;
+}
+
+@media (max-width: 800px) {
+  .panel-audience {
+    position: inherit;
+    height: auto;
+  }
+}
+
+.panel-chat {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  padding: 24px;
+}
+
+@media (max-width: 800px) {
+  .panel-chat {
+    position: inherit;
+    height: auto;
+  }
+}
+
+.user-image-name {
+  opacity: 0;
+  transition: none;
+}
+.user-image-name:hover {
+  opacity: 0.8;
 }
