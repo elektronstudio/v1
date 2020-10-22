@@ -22,6 +22,9 @@ export default {
     channel: {
       default: "test",
     },
+    ratio: {
+      default: 1,
+    },
   },
   setup(props) {
     const videoEl = ref(null);
@@ -154,13 +157,13 @@ export default {
     };
   },
   template: `
-  <aspect-ratio :ratio="1">
+  <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
       @start="onStart"
       @stop="onStop"
     >
-      <video-grid>
+      <video-grid :ratio="ratio">
         <img
           v-for="image in images"
           :src="image.value" 

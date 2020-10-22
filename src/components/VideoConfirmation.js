@@ -29,7 +29,7 @@ export default {
       justify-content: center;
       text-align: center;
       padding: 0 32px;
-      background: rgba(20, 20, 20, 0.75);
+      background: rgba(0, 0, 0, 0.5);
     "
   >
     <div>
@@ -37,7 +37,7 @@ export default {
         Please allow access to your camera to be a
         public audience member in our venue.
       </p>
-      <button @click="onStart">Start my camera</button>
+      <button @click="onStart">Start camera</button>
     </div>
   </div>
   <div
