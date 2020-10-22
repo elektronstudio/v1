@@ -1,6 +1,6 @@
 import { ref, computed } from "../deps/vue.js";
 
-import { useState } from "../hooks/index.js";
+import { useState, useClientsCount } from "../hooks/index.js";
 
 import AspectRatio from "../components/AspectRatio.js";
 import VideoPerformer from "../components/VideoPerformer.js";
@@ -18,6 +18,8 @@ export default {
     VideoAudienceImages,
   },
   setup() {
+    const clientsCount = useClientsCount();
+
     const { chatVisible } = useState();
 
     const style = computed(() => {
@@ -31,7 +33,7 @@ export default {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { onClick, style, chatVisible };
+    return { clientsCount, onClick, style, chatVisible };
   },
   template: `
   <div class="layout-test" :style="style">
@@ -50,7 +52,10 @@ export default {
         padding: 24px;
       "
     >
-      <div style="margin-bottom: 16px; height: 32px;"><h4>Live audience</h4></div>
+      <div class="flex-justified" style="margin-bottom: 16px; height: 32px;">
+        <h4>Live audience</h4>
+        <div style="opacity: 0.5">{{ clientsCount }} online</div>
+      </div>
       <video-audience-images style="border: 2px solid blue" :ratio="1 / 2" />
     </div>
     <div
