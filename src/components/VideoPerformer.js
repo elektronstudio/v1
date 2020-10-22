@@ -1,7 +1,22 @@
 import { ref, onUnmounted } from "../deps/vue.js";
 import { useHls } from "../hooks/index.js";
 
+import IconPlay from "../components/IconPlay.js";
+import IconPause from "../components/IconPause.js";
+import IconMute from "../components/IconMute.js";
+import IconUnmute from "../components/IconUnmute.js";
+import IconFullscreen from "../components/IconFullscreen.js";
+import IconUnfullscreen from "../components/IconUnfullscreen.js";
+
 export default {
+  components: {
+    IconPlay,
+    IconPause,
+    IconMute,
+    IconUnmute,
+    IconFullscreen,
+    IconUnfullscreen,
+  },
   props: {
     channel: {
       default: "test",
@@ -17,14 +32,33 @@ export default {
     const isPlaying = ref(true);
     const isMuted = ref(true);
     const showControls = ref(true);
+    const isFullscreen = ref(false);
+
+    const controlsTimeout = ref(null);
+    const controlsShortDelay = 1000;
+    const controlsLongDelay = 4000;
+
+    const hideControls = () => {
+      if (controlsTimeout.value) {
+        clearTimeout(controlsTimeout.value);
+      }
+      controlsTimeout.value = setTimeout(
+        () => (showControls.value = false),
+        controlsLongDelay
+      );
+    };
+
+    hideControls();
 
     const play = () => {
       videoEl.value.play();
       isPlaying.value = true;
+      hideControls();
     };
     const pause = () => {
       videoEl.value.pause();
       isPlaying.value = false;
+      hideControls();
     };
     const mute = () => {
       isMuted.value = true;
@@ -34,28 +68,28 @@ export default {
     };
     const fullscreen = () => {
       playerEl.value.requestFullscreen();
+      isFullscreen.value = true;
+    };
+    const unfullscreen = () => {
+      document.exitFullscreen();
+      isFullscreen.value = false;
     };
 
-    const controlsTimeout = ref(null);
-    const controlsDelay = 1000;
-
-    const onMouseover = () => {
+    const onShowControls = () => {
       if (isPlaying.value) {
-        if (controlsTimeout.value) {
-          clearTimeout(controlsTimeout.value);
-        }
         showControls.value = true;
+        hideControls();
       }
     };
 
-    const onMouseout = () => {
+    const onHideControls = () => {
       if (isPlaying.value) {
         if (controlsTimeout.value) {
           clearTimeout(controlsTimeout.value);
         }
         controlsTimeout.value = setTimeout(
           () => (showControls.value = false),
-          controlsDelay
+          controlsShortDelay
         );
       }
     };
@@ -76,49 +110,57 @@ export default {
       isMuted,
       mute,
       unmute,
+      isFullscreen,
       fullscreen,
-      onMouseover,
-      onMouseout,
+      unfullscreen,
+      onShowControls,
+      onHideControls,
     };
   },
-  template: `
+  template: `<div
+  ref="playerEl"
+  style="
+    height: 0;
+    max-width: 100%;
+    padding-bottom: calc(9 / 16 * 100%);
+    position: relative;
+  "
+  @mousemove="onShowControls"
+  @mouseleave="onHideControls"
+>
+  <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
+    <video ref="videoEl" autoplay :muted="isMuted"></video>
+  </div>
+  <transition name="fade">
     <div
-      ref="playerEl"
+      v-show="showControls"
       style="
-        height: 0;
-        max-width: 100%;
-        padding-bottom: calc(9 / 16 * 100%);
-        position: relative;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        display: flex;
+        justify-content: space-between;
+        padding: 16px;
+        background: linear-gradient(
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.5) 100%
+        );
       "
-      @mouseover="onMouseover"
-      @mouseout="onMouseout"
     >
-      <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
-        <video ref="videoEl" autoplay :muted="isMuted"></video>
+      <icon-play v-if="!isPlaying" @click="play" />
+      <icon-pause v-if="isPlaying" @click="pause" />
+      <div>
+        <icon-unmute v-if="!isMuted" @click="mute" />
+        <icon-mute v-if="isMuted" @click="unmute" />
+        &nbsp;
+        &nbsp;
+        {{ isFullsceen }}
+        <icon-fullscreen v-if="!isFullscreen" @click="fullscreen" />
+        <icon-unfullscreen v-if="isFullscreen" @click="unfullscreen" />
       </div>
-      <transition name="fade">
-        <div
-          v-show="showControls"
-          style="
-            position: absolute;
-            left: 0px;
-            right: 0px;
-            bottom: 0px;
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
-          ">
-          <button v-if="!isPlaying" @click="play">play</button>
-          <button v-if="isPlaying" @click="pause">pause</button>
-          <div>
-            <button v-if="!isMuted" @click="mute">mute</button>
-            <button v-if="isMuted" @click="unmute">unmute</button>
-            &thinsp;
-            <button @click="fullscreen">fullscreen</button>
-          </div>
-        </div>
-      </transition>
     </div>
-  `,
+  </transition>
+</div>
+`,
 };
