@@ -1,5 +1,7 @@
 import { ref, computed } from "../deps/vue.js";
 
+import { useState } from "../hooks/index.js";
+
 import AspectRatio from "../components/AspectRatio.js";
 import VideoPerformer from "../components/VideoPerformer.js";
 import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
@@ -16,16 +18,20 @@ export default {
     VideoAudienceImages,
   },
   setup() {
-    const chatOpen = ref(true);
+    const { chatVisible } = useState();
+
     const style = computed(() => {
       return {
-        gridTemplateColumns: chatOpen.value
-          ? "3fr minmax(400px, auto) 300px"
-          : "3fr minmax(400px, auto) 40px",
+        gridTemplateColumns: chatVisible.value
+          ? "1fr 350px 300px"
+          : "1fr 350px 40px",
       };
     });
-    const onClick = () => (chatOpen.value = !chatOpen.value);
-    return { onClick, style, chatOpen };
+    const onClick = () => {
+      chatVisible.value = !chatVisible.value;
+    };
+
+    return { onClick, style, chatVisible };
   },
   template: `
   <div class="layout-test" :style="style">
@@ -58,7 +64,7 @@ export default {
         background: rgba(30,30,30,0.75);
         padding: 24px;
       "
-      :style="{padding: chatOpen ? '24px' : '24px 10px'}"
+      :style="{padding: chatVisible ? '24px' : '24px 10px'}"
     >
       <div @click="onClick"
         style="
@@ -69,11 +75,11 @@ export default {
           cursor: pointer;
           height: 32px;
         ">
-        <h4 v-if="chatOpen">Chat</h4>
-        <icon-to-left v-if="!chatOpen" />
-        <icon-to-right v-if="chatOpen" />
+        <h4 v-if="chatVisible">Chat</h4>
+        <icon-to-left v-if="!chatVisible" />
+        <icon-to-right v-if="chatVisible" />
       </div>
-      <chat-audience-messages v-if="chatOpen" />
+      <chat-audience-messages v-if="chatVisible" />
     </div>
     <div style="padding: 32px; grid-area: about">
       <p />

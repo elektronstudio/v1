@@ -77,14 +77,18 @@ export const useTextarea = (callback) => {
   };
 
   onMounted(() => {
-    el.value.focus();
-    el.value.addEventListener("keydown", onKeydown);
-    onInput();
-    el.value.addEventListener("input", onInput);
+    if (el.value) {
+      el.value.focus();
+      el.value.addEventListener("keydown", onKeydown);
+      onInput();
+      el.value.addEventListener("input", onInput);
+    }
   });
 
   onUnmounted(() => {
-    el.value.removeEventListener("keydown", onKeydown);
+    if (el.value) {
+      el.value.removeEventListener("keydown", onKeydown);
+    }
   });
 
   return el;
@@ -135,5 +139,6 @@ export const useState = () => {
     "elektron_user_name",
     `${any(adjectives)} ${any(animals)}`
   );
-  return { userId, userName };
+  const chatVisible = useLocalstorage("elektron_chat_visible", true);
+  return { userId, userName, chatVisible };
 };
