@@ -1,6 +1,7 @@
 import { ref, onUnmounted } from "../deps/vue.js";
 import { useHls } from "../hooks/index.js";
 
+import Logo from "../components/Logo.js";
 import IconPlay from "../components/IconPlay.js";
 import IconPause from "../components/IconPause.js";
 import IconMute from "../components/IconMute.js";
@@ -10,6 +11,7 @@ import IconUnfullscreen from "../components/IconUnfullscreen.js";
 
 export default {
   components: {
+    Logo,
     IconPlay,
     IconPause,
     IconMute,
@@ -55,21 +57,26 @@ export default {
       isPlaying.value = true;
       hideControls();
     };
+
     const pause = () => {
       videoEl.value.pause();
       isPlaying.value = false;
       hideControls();
     };
+
     const mute = () => {
       isMuted.value = true;
     };
+
     const unmute = () => {
       isMuted.value = false;
     };
+
     const fullscreen = () => {
       playerEl.value.requestFullscreen();
       isFullscreen.value = true;
     };
+
     const unfullscreen = () => {
       document.exitFullscreen();
       isFullscreen.value = false;
@@ -129,8 +136,20 @@ export default {
   @mouseleave="onHideControls"
 >
   <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
-    <video ref="videoEl" autoplay :muted="isMuted"></video>
+    <video ref="videoEl" inline autoplay :muted="isMuted"></video>
   </div>
+  <transition name="fade">
+    <logo
+      style="
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        padding: 16px;
+      "
+      v-show="showControls"
+    />
+  </transition> 
   <transition name="fade">
     <div
       v-show="showControls"
@@ -139,9 +158,9 @@ export default {
         left: 0px;
         right: 0px;
         bottom: 0px;
+        padding: 16px;
         display: flex;
         justify-content: space-between;
-        padding: 16px;
         background: linear-gradient(
           rgba(0, 0, 0, 0) 0%,
           rgba(0, 0, 0, 0.5) 100%
