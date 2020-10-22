@@ -1,9 +1,10 @@
 import { ref, computed } from "../deps/vue.js";
 
 import AspectRatio from "../components/AspectRatio.js";
+import VideoPerformer from "../components/VideoPerformer.js";
 
 export default {
-  components: { AspectRatio },
+  components: { VideoPerformer },
   setup() {
     const chatOpen = ref(true);
     const style = computed(() => {
@@ -19,11 +20,7 @@ export default {
   template: `
   <div class="layout-test" :style="style">
     <div style="border: 2px solid red; grid-area: performer">
-      <aspect-ratio>
-        <div style="padding: 15px">
-          <img src="../index.svg" style="width: 120px; display: block;" />
-        </div>
-      </aspect-ratio>
+      <video-performer></video-performer>
     </div>
     <div style="grid-area: audience">
       <div style="border: 2px solid yellow; position: sticky; top: 32px; padding: 15px; height: calc(100vh - 32px - 32px);">
