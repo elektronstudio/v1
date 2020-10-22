@@ -20,8 +20,8 @@ export default {
     const style = computed(() => {
       return {
         gridTemplateColumns: chatOpen.value
-          ? "3fr minmax(300px, auto) 300px"
-          : "3fr minmax(300px, auto) 40px",
+          ? "3fr minmax(400px, auto) 300px"
+          : "3fr minmax(400px, auto) 40px",
       };
     });
     const onClick = () => (chatOpen.value = !chatOpen.value);

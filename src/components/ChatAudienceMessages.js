@@ -97,26 +97,18 @@ export default {
       style="
         height: 100%;
         overflow: scroll;
-        background: rgba(20, 20, 20, 0.2);
-        padding: 16px;
+        background: rgba(20, 20, 20, 0.4);
       ">
       <div v-for="message in messages" style="margin-bottom: 24px" >
         <chat-message :message="message" :userId="userId">
       </div>
     </div>
     <div>
-      <div style="
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 4px;
-      ">
-        <textarea ref="textareaEl" v-model="newMessage" ></textarea>
-        <button @click="onNewMessage">Send</button>
-      </div>
-    <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.7">
-      Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a>
+      <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
+    </div>
+    <div style="display: flex; align-items: space-between">
+      <div style="font-size: 13px; opacity: 0.7">Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
+      <button @click="onNewMessage">Send</button>
     </div>
   </div>  
   `,
