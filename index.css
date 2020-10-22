@@ -184,6 +184,18 @@ button:hover {
   }
 }
 
+.fade-enter-active {
+  transition: opacity 0.1s;
+}
+.fade-leave-active {
+  transition: opacity 0.75s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

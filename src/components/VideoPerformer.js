@@ -93,27 +93,29 @@ export default {
       <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
         <video ref="videoEl" autoplay :muted="isMuted"></video>
       </div>
-      <div
-        v-show="showControls"
-        style="
-          position: absolute;
-          left: 0px;
-          right: 0px;
-          bottom: 0px;
-          display: flex;
-          justify-content: space-between;
-          padding: 12px;
-          background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
-        ">
-        <button v-if="!isPlaying" @click="play">play</button>
-        <button v-if="isPlaying" @click="pause">pause</button>
-        <div>
-          <button v-if="!isMuted" @click="mute">mute</button>
-          <button v-if="isMuted" @click="unmute">unmute</button>
-          &thinsp;
-          <button @click="fullscreen">fullscreen</button>
+      <transition name="fade">
+        <div
+          v-show="showControls"
+          style="
+            position: absolute;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+          ">
+          <button v-if="!isPlaying" @click="play">play</button>
+          <button v-if="isPlaying" @click="pause">pause</button>
+          <div>
+            <button v-if="!isMuted" @click="mute">mute</button>
+            <button v-if="isMuted" @click="unmute">unmute</button>
+            &thinsp;
+            <button @click="fullscreen">fullscreen</button>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   `,
 };
