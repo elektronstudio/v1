@@ -1,4 +1,4 @@
-import { ref, computed } from "../deps/vue.js";
+import { ref, computed, watch } from "../deps/vue.js";
 
 export default {
   props: {
@@ -7,26 +7,31 @@ export default {
     },
   },
   setup(props, { slots }) {
-    const count = slots.default ? slots.default().length : 1;
+    const count = ref(1);
+    watch(
+      () => slots.default(),
+      (slots) => (count.value = slots[0].children.length)
+    );
     // https://stackoverflow.com/a/51956837
-    const columns = computed(() =>
-      Math.min(count + 1, Math.round(Math.sqrt(props.ratio * count + 1)))
-    );
-    const rows = computed(() =>
-      Math.ceil((props.length + columns.value) / columns.value)
-    );
-    return { columns, rows };
+    const columns = computed(() => {
+      const a = Math.min(
+        count.value + 1,
+        Math.round(Math.sqrt(props.ratio * count.value + 1))
+      );
+      return a;
+    });
+    return { columns };
   },
   template: `
   <div
+    class="grid"
     style="
       display: grid;
-      align-items: flex-start;
+      grid-template-columns: 1fr 1fr;
       grid-auto-rows: max-content;
     "
     :style="{
       gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
-      gridTemplateRows: 'repeat(' + rows + ', 1fr)',
     }"
   >
     <slot />
