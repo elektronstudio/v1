@@ -1,10 +1,9 @@
 import { ref, onMounted } from "../deps/vue.js";
 
 import {
-  useLocalstorage,
   useScrollToBottom,
   useTextarea,
-  useState,
+  useLocalstorage,
 } from "../hooks/index.js";
 
 import {
@@ -28,7 +27,11 @@ export default {
     },
   },
   setup(props) {
-    const { userId, userName } = useState();
+    const userId = useLocalstorage("elektron_user_id", randomId());
+    const userName = useLocalstorage(
+      "elektron_user_name",
+      `${any(adjectives)} ${any(animals)}`
+    );
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
@@ -122,7 +125,7 @@ export default {
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
     <div style="display: flex; align-items: space-between; margin-top: 4px;">
-      <div style="font-size: 13px; opacity: 0.7">Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
+      <div style="font-size: 13px; opacity: 0.7">My username is currently {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
       &nbsp;
       <button @click="onNewMessage">Send</button>
     </div>

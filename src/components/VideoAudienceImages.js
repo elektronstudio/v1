@@ -5,8 +5,15 @@ import {
   computed,
   TransitionGroup,
 } from "../deps/vue.js";
-import { useState } from "../hooks/index.js";
-import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
+import { useLocalstorage } from "../hooks/index.js";
+import {
+  safeJsonParse,
+  randomId,
+  useSetInterval,
+  any,
+  adjectives,
+  animals,
+} from "../utils/index.js";
 import {
   chatUrl,
   imageScale,
@@ -17,45 +24,6 @@ import {
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
-
-// const VideoGrid2 = {
-//   props: {
-//     ratio: {
-//       default: 1,
-//     },
-//   },
-//   setup(props, { slots }) {
-//     const count = ref(1);
-//     watch(
-//       () => slots.default(),
-//       (slots) => (count.value = slots[0].children.length)
-//     );
-//     // https://stackoverflow.com/a/51956837
-//     const columns = computed(() => {
-//       const a = Math.min(
-//         count.value + 1,
-//         Math.round(Math.sqrt(props.ratio * count.value + 1))
-//       );
-//       return a;
-//     });
-//     return { columns };
-//   },
-//   template: `
-//   <div
-//     class="grid"
-//     style="
-//       display: grid;
-//       grid-template-columns: 1fr 1fr;
-//       grid-auto-rows: max-content;
-//     "
-//     :style="{
-//       gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
-//     }"
-//   >
-//     <slot />
-//   </div>
-//   `,
-// };
 
 export default {
   components: {
@@ -79,7 +47,11 @@ export default {
     const images = ref({});
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
-    const { userId, userName } = useState();
+    const userId = useLocalstorage("elektron_user_id", randomId());
+    const userName = useLocalstorage(
+      "elektron_user_name",
+      `${any(adjectives)} ${any(animals)}`
+    );
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -228,12 +200,30 @@ export default {
       @stop="onStop"
     >
       <video-grid v-if="videoStarted" :ratio="ratio">
-        <img
+        <div
           v-for="image in images2"
-          :src="image.value" 
           :key="image.id"
-          style="width: 100%"
-        />
+          style="position: relative"
+        >
+          <img
+            :src="image.value" 
+            style="width: 100%"
+          />
+          <div class="user-image-name" style="
+            font-size: 0.8em;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 16px;
+            display: flex;
+            align-items: flex-end;
+            cursor: default;
+          ">
+            {{ image.from.name  }}
+          </div>
+        </div>
       </video-grid2>
     </video-confirmation>
   </aspect-ratio>

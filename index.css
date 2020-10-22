@@ -374,3 +374,11 @@ button:hover {
     height: auto;
   }
 }
+
+.user-image-name {
+  opacity: 0;
+  transition: none;
+}
+.user-image-name:hover {
+  opacity: 0.8;
+}
