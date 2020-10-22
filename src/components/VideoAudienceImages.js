@@ -84,8 +84,10 @@ export default {
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
+        const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
         canvasEl.value.width = srcElement.videoWidth * imageScale;
-        canvasEl.value.height = srcElement.videoHeight * imageScale;
+        canvasEl.value.height =
+          (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
       });
     });
 
@@ -124,10 +126,11 @@ export default {
     };
 
     const sendImageMessage = () => {
+      const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
       context.value.drawImage(
         videoEl.value,
         0,
-        0,
+        videoEl.value.videoHeight * imageScale * (isPortrait ? -0.5 : 0),
         videoEl.value.videoWidth * imageScale,
         videoEl.value.videoHeight * imageScale
       );
