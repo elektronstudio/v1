@@ -76,7 +76,11 @@ export default {
     };
 
     const fullscreen = () => {
-      playerEl.value.requestFullscreen();
+      if (playerEl.value.requestFullscreen) {
+        playerEl.value.requestFullscreen();
+      } else {
+        playerEl.value.webkitRequestFullscreen();
+      }
       isFullscreen.value = true;
     };
 
@@ -140,7 +144,7 @@ export default {
   @mouseleave="onHideControls"
 >
   <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
-    <video ref="videoEl" autoplay :muted="isMuted"></video>
+    <video ref="videoEl" inline autoplay :muted="isMuted"></video>
   </div>
   <transition name="fade">
     <div
