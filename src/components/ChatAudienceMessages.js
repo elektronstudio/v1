@@ -121,7 +121,7 @@ export default {
     <div>
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
-    <div style="display: flex; align-items: space-between; margin-top: 8px;">
+    <div style="display: flex; align-items: space-between; margin-top: 4px;">
       <div style="font-size: 13px; opacity: 0.7">Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
       &nbsp;
       <button @click="onNewMessage">Send</button>
