@@ -57,12 +57,12 @@ export default {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { event, clientsCount, onToggleChat, style, chatVisible };
+    return { channel, event, clientsCount, onToggleChat, style, chatVisible };
   },
   template: `
   <div class="layout-test" :style="style">
     <div style="grid-area: performer">
-      <video-performer></video-performer>
+      <video-performer :channel="channel" />
     </div>
     <div
       style="
@@ -80,7 +80,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
-      <video-audience-images style="border: 2px solid blue" :ratio="1 / 2" />
+      <video-audience-images :channel="channel" style="border: 2px solid blue" :ratio="1 / 2" />
     </div>
     <div
       style="
@@ -108,7 +108,7 @@ export default {
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
-      <chat-audience-messages v-if="chatVisible" />
+      <chat-audience-messages :channel="channel" v-if="chatVisible" />
     </div>
     <div style="padding: 32px; grid-area: about">
       <event-details :event="event" />

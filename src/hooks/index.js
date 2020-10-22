@@ -13,6 +13,7 @@ import { chatUrl } from "../config/index.js";
 
 export const useHls = (url) => {
   const el = ref(null);
+  const isHlsPlaying = ref(false);
   onMounted(() => {
     if (el.value.canPlayType("application/vnd.apple.mpegurl")) {
       el.value.src = url;
