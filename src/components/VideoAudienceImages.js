@@ -201,6 +201,9 @@ export default {
 
     window.addEventListener("beforeunload", onStop);
 
+    const images2 = computed(() =>
+      Object.values(images.value).sort((a, b) => a.from.id > b.from.id)
+    );
     return {
       videoEl,
       canvasEl,
@@ -211,6 +214,7 @@ export default {
       videoStarted,
       onStart,
       onStop,
+      images2,
     };
   },
   template: `
@@ -222,7 +226,7 @@ export default {
     >
       <video-grid v-if="videoStarted" :ratio="ratio">
         <img
-          v-for="image in images"
+          v-for="image in images2"
           :src="image.value" 
           :key="image.id"
           style="width: 100%"
