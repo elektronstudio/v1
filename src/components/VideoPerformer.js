@@ -12,6 +12,7 @@ export default {
       "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8";
 
     const videoEl = useHls(mainInputUrl);
+    const playerEl = ref(null);
 
     const isPlaying = ref(true);
     const isMuted = ref(true);
@@ -32,7 +33,7 @@ export default {
       isMuted.value = false;
     };
     const fullscreen = () => {
-      videoEl.value.requestFullscreen();
+      playerEl.value.requestFullscreen();
     };
 
     const controlsTimeout = ref(null);
@@ -66,6 +67,7 @@ export default {
     });
 
     return {
+      playerEl,
       videoEl,
       showControls,
       isPlaying,
@@ -81,6 +83,7 @@ export default {
   },
   template: `
     <div
+      ref="playerEl"
       style="
         height: 0;
         max-width: 100%;
