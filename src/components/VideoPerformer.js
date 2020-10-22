@@ -86,10 +86,8 @@ export default {
     };
 
     const onShowControls = () => {
-      if (isPlaying.value) {
-        showControls.value = true;
-        hideControls();
-      }
+      showControls.value = true;
+      hideControls();
     };
 
     const onHideControls = () => {
