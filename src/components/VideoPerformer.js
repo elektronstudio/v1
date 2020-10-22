@@ -1,4 +1,4 @@
-import { ref } from "../deps/vue.js";
+import { ref, onUnmounted } from "../deps/vue.js";
 import { useHls } from "../hooks/index.js";
 
 export default {
@@ -58,6 +58,12 @@ export default {
         );
       }
     };
+
+    onUnmounted(() => {
+      if (controlsTimeout.value) {
+        clearTimeout(controlsTimeout.value);
+      }
+    });
 
     return {
       videoEl,
