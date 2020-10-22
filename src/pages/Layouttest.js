@@ -1,4 +1,4 @@
-import { ref, computed } from "../deps/vue.js";
+import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
 import { useState, useClientsCount } from "../hooks/index.js";
@@ -46,52 +46,54 @@ export default {
 
     const { chatVisible } = useState();
 
-    const style = computed(() => {
-      return {
-        gridTemplateColumns: chatVisible.value
-          ? "1fr 350px 300px"
-          : "1fr 350px 40px",
-      };
-    });
+    // const style = computed(() => {
+    //   return {
+    //     gridTemplateColumns: chatVisible.value
+    //       ? "1fr 350px 300px"
+    //       : "1fr 350px 40px",
+    //   };
+    // });
+
+    watch(
+      chatVisible,
+      (visible) => {
+        document.body.style.setProperty(
+          "--cols",
+          visible ? "1fr 350px 300px" : "1fr 350px 40px"
+        );
+      },
+      { immediate: true }
+    );
+
     const onToggleChat = () => {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { channel, event, clientsCount, onToggleChat, style, chatVisible };
+    return { channel, event, clientsCount, onToggleChat, chatVisible };
   },
   template: `
-  <div class="layout-test" :style="style">
+  <div class="layout-test">
     <div style="grid-area: performer">
       <video-performer :channel="channel" />
     </div>
     <div
+      class="panel-audience"
       style="
         grid-area: audience;
-        position: sticky;
-        top: 0;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        height: 100vh;
         background: rgba(255,255,255,0.075);
-        padding: 24px;
       "
     >
-      <div class="flex-justified" style="margin-bottom: 16px; height: 32px;">
+      <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
       <video-audience-images :channel="channel" style="border: 2px solid blue" :ratio="1 / 2" />
     </div>
     <div
+      class="panel-chat"
       style="
         grid-area: chat;
-        position: sticky;
-        top: 0;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        height: 100vh;
         background: rgba(255,255,255,0.15);
-        padding: 24px;
       "
       :style="{padding: chatVisible ? '24px' : '24px 10px'}"
     >
@@ -102,7 +104,7 @@ export default {
           justify-content: space-between;
           align-items: center;
           cursor: pointer;
-          height: 32px;
+          min-height: 32px;
         ">
         <h4 v-if="chatVisible">Chat</h4>
         <icon-to-left v-if="!chatVisible" />

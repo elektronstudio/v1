@@ -296,17 +296,17 @@ button:hover {
 .layout-test {
   min-height: 100vh;
   display: grid;
-  /*grid-template-columns: 3fr 1.5fr 1fr;*/
+  grid-template-columns: var(--cols, 1fr 350px 300px);
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "performer audience  chat"
     "about     audience  chat";
 }
 @media (max-width: 800px) {
-  .layout-live {
+  .layout-test {
     height: inherit;
     grid-template-columns: 1fr;
-    gap: 2vw 1.5vw;
+    gap: 16px;
     grid-template-areas:
       "performer"
       "audience"
@@ -321,4 +321,36 @@ button:hover {
 }
 .icon:hover {
   filter: brightness(90%);
+}
+
+.panel-audience {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  padding: 24px;
+}
+
+@media (max-width: 800px) {
+  .panel-audience {
+    position: inherit;
+    height: auto;
+  }
+}
+
+.panel-chat {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  padding: 24px;
+}
+
+@media (max-width: 800px) {
+  .panel-chat {
+    position: inherit;
+    height: auto;
+  }
 }
