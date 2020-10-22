@@ -79,7 +79,7 @@ export const useTextarea = (callback) => {
 
   onMounted(() => {
     if (el.value) {
-      el.value.focus();
+      //el.value.focus();
       el.value.addEventListener("keydown", onKeydown);
       onInput();
       el.value.addEventListener("input", onInput);
