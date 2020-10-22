@@ -322,3 +322,7 @@ button:hover {
 .icon:hover {
   filter: brightness(90%);
 }
+
+.grid > * {
+  border: 1px solid red;
+}

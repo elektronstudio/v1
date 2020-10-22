@@ -12,10 +12,10 @@ export default {
     const columns = computed(() =>
       Math.min(count + 1, Math.round(Math.sqrt(props.ratio * count + 1)))
     );
-    // const rows = computed(() =>
-    //   Math.ceil((props.length + columns.value) / columns.value)
-    // );
-    return { columns };
+    const rows = computed(() =>
+      Math.ceil((props.length + columns.value) / columns.value)
+    );
+    return { columns, rows };
   },
   template: `
   <div
@@ -26,6 +26,7 @@ export default {
     "
     :style="{
       gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
+      gridTemplateRows: 'repeat(' + rows + ', 1fr)',
     }"
   >
     <slot />

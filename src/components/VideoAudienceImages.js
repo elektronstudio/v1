@@ -1,4 +1,10 @@
-import { ref, onMounted, computed, TransitionGroup } from "../deps/vue.js";
+import {
+  ref,
+  watch,
+  onMounted,
+  computed,
+  TransitionGroup,
+} from "../deps/vue.js";
 import { useState } from "../hooks/index.js";
 import { safeJsonParse, randomId, useSetInterval } from "../utils/index.js";
 import {
@@ -12,11 +18,50 @@ import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
 
+const VideoGrid2 = {
+  props: {
+    ratio: {
+      default: 1,
+    },
+  },
+  setup(props, { slots }) {
+    const count = ref(1);
+    watch(
+      () => slots.default(),
+      (slots) => (count.value = slots[0].children.length)
+    );
+    // https://stackoverflow.com/a/51956837
+    const columns = computed(() => {
+      const a = Math.min(
+        count.value + 1,
+        Math.round(Math.sqrt(props.ratio * count.value + 1))
+      );
+      return a;
+    });
+    return { columns };
+  },
+  template: `
+  <div
+    class="grid"
+    style="
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-rows: max-content;
+    "
+    :style="{
+      gridTemplateColumns: 'repeat(' + columns + ', 1fr)',
+    }"
+  >
+    <slot />
+  </div>
+  `,
+};
 export default {
   components: {
     AspectRatio,
     VideoConfirmation,
     VideoGrid,
+    VideoGrid2,
   },
   props: {
     channel: {
@@ -67,7 +112,7 @@ export default {
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
-        images.value[incomingMessage.from.id] = incomingMessage;
+        images.value[incomingMessage.id] = incomingMessage;
       }
       if (
         incomingMessage &&
@@ -151,26 +196,28 @@ export default {
       sendImageMessage,
       image,
       images,
+      imagesLength,
       videoStarted,
       onStart,
       onStop,
     };
   },
   template: `
+  {{ imagesLength }}
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
       @start="onStart"
       @stop="onStop"
     >
-      <video-grid :ratio="ratio">
+      <video-grid2 :ratio="ratio">
         <img
           v-for="image in images"
           :src="image.value" 
           :key="image.id"
           style="width: 100%"
         />
-      </video-grid>
+      </video-grid2>
     </video-confirmation>
   </aspect-ratio>
   <video ref="videoEl" autoplay style="display: none;" />
