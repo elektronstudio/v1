@@ -16,10 +16,11 @@ export default {
     style="
       display: inline-block;
       borderRadius: 8px;
-      padding: 12px;
+      padding: 8px 10px;
       gap: 7px;
       font-size: 15px;
       line-height: 1.5em;
+      border: 2px solid rgba(255,255,255,0.2);
     "
     :style="{
       background: isMyMessage ? 'rgba(25,25,25,0.5)' : 'rgba(25,25,25,0.8)'

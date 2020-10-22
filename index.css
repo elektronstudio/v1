@@ -26,7 +26,7 @@
 }
 * {
   box-sizing: border-box;
-  transition: all 150ms;
+  transition: opacity 150ms;
 }
 body {
   margin: 0;
@@ -294,12 +294,10 @@ button:hover {
 }
 
 .layout-test {
-  padding: 32px;
   min-height: 100vh;
   display: grid;
   /*grid-template-columns: 3fr 1.5fr 1fr;*/
   grid-template-rows: auto 1fr;
-  gap: 1.5vw;
   grid-template-areas:
     "performer audience  chat"
     "about     audience  chat";

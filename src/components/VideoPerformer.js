@@ -145,7 +145,7 @@ export default {
         left: 0px;
         right: 0px;
         top: 0px;
-        padding: 16px;
+        padding: 24px;
       "
       v-show="showControls"
     />
@@ -158,7 +158,7 @@ export default {
         left: 0px;
         right: 0px;
         bottom: 0px;
-        padding: 16px;
+        padding: 24px;
         display: flex;
         justify-content: space-between;
         background: linear-gradient(
