@@ -56,16 +56,15 @@ export default {
       "
     >
       <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
-        <video ref="videoEl" controls autoplay :muted="isMuted"></video>
+        <video ref="videoEl" autoplay :muted="isMuted"></video>
       </div>
       <div style="
         position: absolute;
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
         display: flex;
         justify-content: space-between;
-        gap: 10px;
       ">
         <button v-if="!isPlaying" @click="play">play</button>
         <button v-if="isPlaying" @click="pause">pause</button>
