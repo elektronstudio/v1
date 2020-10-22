@@ -107,17 +107,12 @@ export default {
     };
   },
   template: `
-  <div style="
-    display: grid;
-    grid-template-rows: 1fr auto;
-    height: 100%;
-    gap: 8px;
-  ">
+  <div style="height: 100%">
     <div
       ref="scrollEl"
       style="
-        height: 100%;
-        overflow: scroll;
+        max-height: 70vh;
+        overflow: auto;
         background: rgba(20, 20, 20, 0.4);
       ">
       <div v-for="message in messages" style="margin-bottom: 24px" >

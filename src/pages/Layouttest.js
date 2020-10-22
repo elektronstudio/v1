@@ -1,7 +1,11 @@
 import { ref, computed } from "../deps/vue.js";
+import { useRoute } from "../deps/router.js";
 
 import { useState, useClientsCount } from "../hooks/index.js";
+import { fetchEvents } from "../utils/index.js";
+import { mainInputUrl, eventsUrl } from "../config/index.js";
 
+import EventDetails from "../components/EventDetails.js";
 import AspectRatio from "../components/AspectRatio.js";
 import VideoPerformer from "../components/VideoPerformer.js";
 import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
@@ -11,6 +15,7 @@ import IconToRight from "../components/IconToRight.js";
 
 export default {
   components: {
+    EventDetails,
     VideoPerformer,
     IconToLeft,
     IconToRight,
@@ -19,6 +24,25 @@ export default {
   },
   setup() {
     const clientsCount = useClientsCount();
+
+    const { params } = useRoute();
+    const channel = params.channel;
+
+    // Fetch and parse event
+
+    const event = ref(null);
+
+    fetchEvents(eventsUrl).then((events) => {
+      const e = events.filter(({ id }) => {
+        return id === channel;
+      });
+      event.value = e[0];
+      if (event.value && event.value.color) {
+        document.body.style.setProperty("background", event.value.color);
+      }
+    });
+
+    // Chat
 
     const { chatVisible } = useState();
 
@@ -29,11 +53,11 @@ export default {
           : "1fr 350px 40px",
       };
     });
-    const onClick = () => {
+    const onToggleChat = () => {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { clientsCount, onClick, style, chatVisible };
+    return { event, clientsCount, onToggleChat, style, chatVisible };
   },
   template: `
   <div class="layout-test" :style="style">
@@ -71,7 +95,7 @@ export default {
       "
       :style="{padding: chatVisible ? '24px' : '24px 10px'}"
     >
-      <div @click="onClick"
+      <div @click="onToggleChat"
         style="
           margin-bottom: 16px;
           display: flex;
@@ -87,15 +111,8 @@ export default {
       <chat-audience-messages v-if="chatVisible" />
     </div>
     <div style="padding: 32px; grid-area: about">
-      <p />
-      <h1>Eesti kooliteatrite festival</h1>
-      <p />
-      <p>Kooliteater 2020" põhikoolide kooliteatrite riigifestival toimub reedel, 23. oktoobril.</p>
-<p>Festivali korraldab Eesti Harrastusteatrite Liit koostöös kunstirühmitusega eˉlektron. 
-Elektron.live kahesuunaline veebistriimimisplatvorm on loodud kunstirühmituse eˉlektron poolt.  
-Festivali etendustele annavad tagasisidet Lennart Peep (TÜVKA lavastajaõppe õppejõud, vabakutseline lavastaja) ja Maret Oomer (õpetaja, kooliteatrite juhendaja ja harrastusteatri lavastaja).</p>
+      <event-details :event="event" />
     </div>
-
   </div>
   `,
 };

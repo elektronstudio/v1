@@ -9,7 +9,7 @@ import Layouttest from "./src/pages/Layouttest.js";
 const routes = [
   { path: "/videotest", component: Videotest },
   { path: "/layouttest", component: Layouttest },
-  { path: "/:channel", component: Live },
+  { path: "/:channel", component: Layouttest },
   { path: "/", component: Index },
 ];
 
