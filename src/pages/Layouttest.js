@@ -72,7 +72,7 @@ export default {
         display: grid;
         grid-template-rows: auto 1fr;
         height: 100vh;
-        background: rgba(30,30,30,0.5);
+        background: rgba(255,255,255,0.075);
         padding: 24px;
       "
     >
@@ -90,7 +90,7 @@ export default {
         display: grid;
         grid-template-rows: auto 1fr;
         height: 100vh;
-        background: rgba(30,30,30,0.75);
+        background: rgba(255,255,255,0.15);
         padding: 24px;
       "
       :style="{padding: chatVisible ? '24px' : '24px 10px'}"

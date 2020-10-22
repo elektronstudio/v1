@@ -23,7 +23,7 @@ export default {
       border: 2px solid rgba(255,255,255,0.2);
     "
     :style="{
-      background: isMyMessage ? 'rgba(25,25,25,0.5)' : 'rgba(25,25,25,0.8)'
+      background: isMyMessage ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)'
     }"
   >
     <div v-html="message.value"></div>

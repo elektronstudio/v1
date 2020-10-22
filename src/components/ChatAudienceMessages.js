@@ -111,9 +111,8 @@ export default {
     <div
       ref="scrollEl"
       style="
-        max-height: 70vh;
+        height: 70vh;
         overflow: auto;
-        background: rgba(20, 20, 20, 0.4);
       ">
       <div v-for="message in messages" style="margin-bottom: 24px" >
         <chat-message :message="message" :userId="userId">
@@ -122,8 +121,9 @@ export default {
     <div>
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
-    <div style="display: flex; align-items: space-between">
+    <div style="display: flex; align-items: space-between; margin-top: 8px;">
       <div style="font-size: 13px; opacity: 0.7">Sending message as {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
+      &nbsp;
       <button @click="onNewMessage">Send</button>
     </div>
   </div>  
