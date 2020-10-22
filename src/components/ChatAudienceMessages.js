@@ -13,6 +13,7 @@ import {
   any,
   adjectives,
   animals,
+  events,
 } from "../utils/index.js";
 
 import { chatUrl } from "../config/index.js";
@@ -63,6 +64,50 @@ export default {
       socket.send(JSON.stringify(outgoingMessage));
       newMessage.value = "";
     };
+
+    events.on("heart", () => {
+      const outgoingMessage = {
+        id: randomId(),
+        channel: props.channel,
+        type: "message",
+        value: "❤️",
+        from: {
+          type: "user",
+          id: userId.value,
+          name: userName.value,
+        },
+        to: {
+          type: "all",
+        },
+        datetime: new Date().toISOString(),
+      };
+      console.log(outgoingMessage);
+      socket.send(JSON.stringify(outgoingMessage));
+    });
+
+    /*
+
+        events.on("*", () => () => {
+      const outgoingMessage = {
+        id: randomId(),
+        channel: props.channel,
+        type: "message",
+        value: "❤️",
+        from: {
+          type: "user",
+          id: userId.value,
+          name: userName.value,
+        },
+        to: {
+          type: "all",
+        },
+        datetime: new Date().toISOString(),
+      };
+      console.log(outgoingMessage);
+      socket.send(JSON.stringify(outgoingMessage));
+    });
+
+    */
 
     const onNameChange = () => {
       const newName = window.prompt("Enter your name", userName.value);

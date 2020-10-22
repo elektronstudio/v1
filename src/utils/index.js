@@ -2,12 +2,14 @@ import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
+
 import {
   compareDesc,
   differenceInHours,
   formatDistanceToNowStrict,
 } from "../deps/date-fns.js";
 import { zonedTimeToUtc, utcToZonedTime, format } from "../deps/date-fns-tz.js";
+import mitt from "https://cdn.skypack.dev/pin/mitt@v2.1.0-kXa6tLmCOzfamk79MfN2/min/mitt.js";
 
 import {
   openviduUrl,
@@ -257,6 +259,26 @@ export const useSetInterval = (callback, nth, condition, timeout) => {
   });
   return interval;
 };
+
+function Events() {
+  return {
+    all: (n = n || new Map()),
+    on: function (t, e) {
+      var i = n.get(t);
+      (i && i.push(e)) || n.set(t, [e]);
+    },
+    emit: function (t, e) {
+      (n.get(t) || []).slice().map(function (n) {
+        n(e);
+      }),
+        (n.get("*") || []).slice().map(function (n) {
+          n(t, e);
+        });
+    },
+  };
+}
+
+export const events = mitt();
 
 // Sample data
 

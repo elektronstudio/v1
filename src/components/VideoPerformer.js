@@ -1,5 +1,6 @@
 import { ref, onUnmounted } from "../deps/vue.js";
 import { useHls } from "../hooks/index.js";
+import { events } from "../utils/index.js";
 
 import Logo from "../components/Logo.js";
 import IconPlay from "../components/IconPlay.js";
@@ -8,6 +9,7 @@ import IconMute from "../components/IconMute.js";
 import IconUnmute from "../components/IconUnmute.js";
 import IconFullscreen from "../components/IconFullscreen.js";
 import IconUnfullscreen from "../components/IconUnfullscreen.js";
+import IconHeart from "../components/IconHeart.js";
 
 export default {
   components: {
@@ -18,6 +20,7 @@ export default {
     IconUnmute,
     IconFullscreen,
     IconUnfullscreen,
+    IconHeart,
   },
   props: {
     channel: {
@@ -107,6 +110,8 @@ export default {
       }
     });
 
+    const onSendHeart = () => events.emit("heart");
+
     return {
       playerEl,
       videoEl,
@@ -122,6 +127,7 @@ export default {
       unfullscreen,
       onShowControls,
       onHideControls,
+      onSendHeart,
     };
   },
   template: `<div
@@ -139,16 +145,25 @@ export default {
     <video ref="videoEl" inline autoplay :muted="isMuted"></video>
   </div>
   <transition name="fade">
-    <logo
+    <div
+      v-show="showControls"
       style="
         position: absolute;
         left: 0px;
         right: 0px;
         top: 0px;
         padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        background: linear-gradient(
+          rgba(0, 0, 0, 0.5) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
       "
-      v-show="showControls"
-    />
+    >
+      <logo />
+      <icon-heart style="stroke: red" @click="onSendHeart" />
+    </div>
   </transition> 
   <transition name="fade">
     <div
