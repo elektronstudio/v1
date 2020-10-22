@@ -15,6 +15,7 @@ export default {
 
     const isPlaying = ref(true);
     const isMuted = ref(true);
+    const showControls = ref(true);
 
     const play = () => {
       videoEl.value.play();
@@ -25,18 +26,42 @@ export default {
       isPlaying.value = false;
     };
     const mute = () => {
-      //videoEl.value.volume = 0;
       isMuted.value = true;
     };
     const unmute = () => {
-      //videoEl.value.volume = 1;
       isMuted.value = false;
     };
     const fullscreen = () => {
       videoEl.value.requestFullscreen();
     };
+
+    const controlsTimeout = ref(null);
+    const controlsDelay = 1000;
+
+    const onMouseover = () => {
+      if (isPlaying.value) {
+        if (controlsTimeout.value) {
+          clearTimeout(controlsTimeout.value);
+        }
+        showControls.value = true;
+      }
+    };
+
+    const onMouseout = () => {
+      if (isPlaying.value) {
+        if (controlsTimeout.value) {
+          clearTimeout(controlsTimeout.value);
+        }
+        controlsTimeout.value = setTimeout(
+          () => (showControls.value = false),
+          controlsDelay
+        );
+      }
+    };
+
     return {
       videoEl,
+      showControls,
       isPlaying,
       play,
       pause,
@@ -44,6 +69,8 @@ export default {
       mute,
       unmute,
       fullscreen,
+      onMouseover,
+      onMouseout,
     };
   },
   template: `
@@ -54,18 +81,24 @@ export default {
         padding-bottom: calc(9 / 16 * 100%);
         position: relative;
       "
+      @mouseover="onMouseover"
+      @mouseout="onMouseout"
     >
       <div style="position: absolute; top: 0; right: 0; left: 0; bottom: 0">
         <video ref="videoEl" autoplay :muted="isMuted"></video>
       </div>
-      <div style="
-        position: absolute;
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-      ">
+      <div
+        v-show="showControls"
+        style="
+          position: absolute;
+          left: 0px;
+          right: 0px;
+          bottom: 0px;
+          display: flex;
+          justify-content: space-between;
+          padding: 12px;
+          background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+        ">
         <button v-if="!isPlaying" @click="play">play</button>
         <button v-if="isPlaying" @click="pause">pause</button>
         <div>
