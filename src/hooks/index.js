@@ -134,40 +134,6 @@ export const useClientsCount = () => {
   return clientsCount;
 };
 
-/*
-curl -i -H "Accept: application/json" 
--H "Content-Type: application/json" 
--H "x-api-key: ftLPhkyMwY8ilqqrmzd9n9HyeYsgXKq7aROIucY9" 
-https://vds27aojo9.execute-api.eu-north-1.amazonaws.com/default/GetElektronStats
-*/
-
-export const useClientsCountNew = () => {
-  const clientsCount = ref(null);
-
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("x-api-key", "ftLPhkyMwY8ilqqrmzd9n9HyeYsgXKq7aROIucY9");
-  myHeaders.append("X-Requested-With", "fetch");
-
-  var requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow",
-  };
-
-  setInterval(() => {
-    fetch(
-      "https://cors-anywhere.herokuapp.com/https://vds27aojo9.execute-api.eu-north-1.amazonaws.com/default/GetElektronStats",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => (clientsCount.value = result[0].count))
-      .catch((error) => console.log("error", error));
-  }, 1000);
-
-  return clientsCount;
-};
-
 export const useState = () => {
   const userId = useLocalstorage("elektron_user_id", randomId());
   const userName = useLocalstorage(
