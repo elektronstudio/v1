@@ -157,10 +157,7 @@ export default {
         padding: 24px;
         display: flex;
         justify-content: space-between;
-        background: linear-gradient(
-          rgba(0, 0, 0, 0.5) 0%,
-          rgba(0, 0, 0, 0) 100%
-        );
+        background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0));
       "
     >
      
@@ -179,10 +176,7 @@ export default {
         padding: 24px;
         display: flex;
         justify-content: space-between;
-        background: linear-gradient(
-          rgba(0, 0, 0, 0) 0%,
-          rgba(0, 0, 0, 0.5) 100%
-        );
+        background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.3))
       "
     >
       <icon-play v-if="!isPlaying" @click="play" />
