@@ -44,7 +44,13 @@ export default {
         incomingMessage.type === "message" &&
         incomingMessage.channel === props.channel
       ) {
-        messages.value = [...messages.value, incomingMessage];
+        if (incomingMessage.value === "/reload") {
+          window.location.reload();
+        } else if (incomingMessage.value === "/clear") {
+          messages.value = [];
+        } else {
+          messages.value = [...messages.value, incomingMessage];
+        }
       }
     };
 
