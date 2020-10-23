@@ -1,7 +1,11 @@
-import { ref, computed, watch } from "../deps/vue.js";
+import { ref, computed, watch, watchEffect } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useState, useClientsCount } from "../hooks/index.js";
+import {
+  useState,
+  useClientsCount,
+  useClientsCountNew,
+} from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
 import { mainInputUrl, eventsUrl } from "../config/index.js";
 
@@ -23,7 +27,7 @@ export default {
     VideoAudienceImages,
   },
   setup() {
-    const clientsCount = useClientsCount();
+    const clientsCount = useClientsCountNew();
 
     const { params } = useRoute();
     const channel = params.channel;
