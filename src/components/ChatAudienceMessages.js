@@ -88,7 +88,6 @@ export default {
         },
         datetime: new Date().toISOString(),
       };
-      console.log(outgoingMessage);
       socket.send(JSON.stringify(outgoingMessage));
     });
 

@@ -79,7 +79,6 @@ export default {
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
-        console.log(incomingMessage);
         images.value[incomingMessage.from.id] = incomingMessage;
       }
       if (
