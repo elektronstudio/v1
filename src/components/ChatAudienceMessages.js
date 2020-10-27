@@ -35,7 +35,7 @@ export default {
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
-    socket.onmessage = ({ data }) => {
+    socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
@@ -50,7 +50,7 @@ export default {
           messages.value = [...messages.value, incomingMessage];
         }
       }
-    };
+    });
 
     const onNewMessage = () => {
       const outgoingMessage = {

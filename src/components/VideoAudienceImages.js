@@ -1,10 +1,4 @@
-import {
-  ref,
-  watch,
-  onMounted,
-  computed,
-  TransitionGroup,
-} from "../deps/vue.js";
+import { ref, watch, onMounted, computed } from "../deps/vue.js";
 import { useLocalstorage } from "../hooks/index.js";
 import {
   safeJsonParse,
@@ -78,13 +72,14 @@ export default {
       delete images.value[userId.value];
     };
 
-    socket.onmessage = ({ data }) => {
+    socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "userImage"
       ) {
+        console.log(incomingMessage);
         images.value[incomingMessage.from.id] = incomingMessage;
       }
       if (
@@ -94,7 +89,7 @@ export default {
       ) {
         delete images.value[incomingMessage.from.id];
       }
-    };
+    });
 
     const sendImageMessage = () => {
       const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
