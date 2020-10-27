@@ -15,7 +15,7 @@ import {
   events,
 } from "../utils/index.js";
 
-import { chatUrl } from "../config/index.js";
+import { socket } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
 
@@ -34,8 +34,6 @@ export default {
     );
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
-
-    const socket = new WebSocket(chatUrl);
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);

@@ -15,6 +15,7 @@ import {
   openviduUrl,
   openviduUsername,
   openviduPassword,
+  chatUrl,
 } from "../config/index.js";
 
 // Json utils
@@ -279,6 +280,10 @@ function Events() {
 }
 
 export const events = mitt();
+
+// Websockets
+
+export const socket = new WebSocket(chatUrl);
 
 // Sample data
 
