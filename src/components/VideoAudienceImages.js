@@ -13,6 +13,7 @@ import {
   any,
   adjectives,
   animals,
+  socket,
 } from "../utils/index.js";
 import {
   chatUrl,
@@ -76,8 +77,6 @@ export default {
       videoEl.value.srcObject.getTracks().forEach((track) => track.stop());
       delete images.value[userId.value];
     };
-
-    const socket = new WebSocket(chatUrl);
 
     socket.onmessage = ({ data }) => {
       const incomingMessage = safeJsonParse(data);

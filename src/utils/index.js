@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
+import { ReconnectingWebsocket } from "../deps/reconnecting-websocket.js";
 
 import {
   compareDesc,
@@ -284,6 +285,7 @@ export const events = mitt();
 // Websockets
 
 export const socket = new WebSocket(chatUrl);
+socket.debug = true;
 
 // Sample data
 
