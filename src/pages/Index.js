@@ -27,7 +27,6 @@ export default {
         pastEvents.value = events.filter(({ diff }) => diff == "past");
       })
     );
-    document.body.style.setProperty("background", "black");
     return { currentEvents, pastEvents };
   },
   template: `
@@ -35,7 +34,9 @@ export default {
     <div style="grid-area: events; display: grid;">
       <div style="padding: 24px"><logo /></div>
       <event-row v-for="event in currentEvents" :event="event"></event-row>
-      <h2>Past events</h2>
+      <br />
+      <br />
+      <h4 style="padding: 24px">Past events</h4>
       <event-row v-for="event in pastEvents" :event="event"></event-row>
     </div>
     <div style="grid-area: about; padding: 24px; background: rgba(255,255,255,0.075);">

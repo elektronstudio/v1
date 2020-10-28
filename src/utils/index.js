@@ -115,7 +115,9 @@ const findMetadata = (str, key) => {
   const pattern = `\n\r?(${key}:\s?)(.*)`;
   const matches = str.match(pattern);
   if (matches && matches[2]) {
-    return htmlDecode(stripTags(marked(matches[2])).trim());
+    return htmlDecode(stripTags(marked(matches[2])).trim())
+      .replace("/_", "_")
+      .replace(/\\_/g, "_");
   }
   return "";
 };
