@@ -75,7 +75,7 @@ export default {
       const payload = {
         uuid,
         feed: props.channel,
-        // imgFull: imageData, // TODO: Why need this?
+        imgFull: imageData, // TODO: remove scaling
         imgScaled: imageData,
       };
 
