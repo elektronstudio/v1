@@ -103,20 +103,11 @@ export default {
         videoEl.value.videoHeight * imageScale
       );
 
-      const buffer = new Uint32Array(
-        context.value.getImageData(
-          0,
-          0,
-          canvasEl.value.width,
-          canvasEl.value.width
-        ).data.buffer
-      );
-
       const imageData = canvasEl.value.toDataURL("image/jpeg", imageQuality);
 
       const payload = {
         uuid,
-        feed: "mystreamkey", // TODO: replace with real stream key
+        feed: props.channel,
         imgFull: imageData,
         imgScaled: imageData, // TODO: provide scaled image
       };
@@ -130,55 +121,6 @@ export default {
           images.value = res.images ? res.images : [];
         });
     };
-
-    // json.uuid = uuid;
-    // json.feed = 'mystreamkey';
-    // json.imgFull = canvas.toDataURL( 'image/jpeg', 0.5 /*0.92*/ );
-    // json.imgScaled = canvas.toDataURL( 'image/jpeg', 0.5 /*0.92*/ );
-
-    // xhr.open( 'POST', "upload.php", true );
-    //xhr.setRequestHeader( 'X-Client-ID', uuid );
-
-    //  xhr.send(JSON.stringify(json));
-
-    // const outgoingMessage = {
-    //   id: randomId(),
-    //   channel: props.channel,
-    //   type: "userImage",
-    //   value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
-    //   from: {
-    //     type: "user",
-    //     id: userId.value,
-    //     name: userName.value,
-    //   },
-    //   to: {
-    //     type: "all",
-    //   },
-    //   datetime: new Date().toISOString(),
-    // };
-    // if (buffer.some((color) => color !== 0)) {
-    //   socket.send(JSON.stringify(outgoingMessage));
-    // }
-    //};
-
-    // const sendStopMessage = () => {
-    //   const outgoingMessage = {
-    //     id: randomId(),
-    //     channel: props.channel,
-    //     type: "userStop",
-    //     value: null,
-    //     from: {
-    //       type: "user",
-    //       id: userId.value,
-    //       name: userName.value,
-    //     },
-    //     to: {
-    //       type: "all",
-    //     },
-    //     datetime: new Date().toISOString(),
-    //   };
-    //   socket.send(JSON.stringify(outgoingMessage));
-    // };
 
     useSetInterval(
       sendImageMessage,
@@ -194,7 +136,6 @@ export default {
 
     const onStop = () => {
       stopVideo();
-      sendStopMessage();
       videoStarted.value = false;
       window.removeEventListener("beforeunload", onStop);
     };
