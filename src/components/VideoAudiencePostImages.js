@@ -73,8 +73,8 @@ export default {
       const payload = {
         uuid,
         feed: props.channel,
-        imgFull: imageData,
-        imgScaled: imageData, // TODO: provide scaled image
+        // imgFull: imageData, // TODO: Why need this?
+        imgScaled: imageData,
       };
 
       fetch("https://elektron.live/area51/upload.php", {
@@ -89,7 +89,7 @@ export default {
 
     useSetInterval(
       sendImageMessage,
-      ref(1),
+      ref(1), // TODO: Clean this up
       videoStarted,
       imageUpdateFrequency
     );
