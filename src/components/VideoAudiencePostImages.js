@@ -25,6 +25,8 @@ export default {
     },
   },
   setup(props) {
+    // Set up reactive variables
+
     const videoEl = ref(null);
     const canvasEl = ref(null);
     const context = ref(null);
@@ -58,7 +60,7 @@ export default {
 
     const uuid = uuidv4();
 
-    const sendImageMessage = () => {
+    const sendImage = () => {
       const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
       context.value.drawImage(
         videoEl.value,
@@ -88,7 +90,7 @@ export default {
     };
 
     useSetInterval(
-      sendImageMessage,
+      sendImage,
       ref(1), // TODO: Clean this up
       videoStarted,
       imageUpdateFrequency
@@ -110,7 +112,7 @@ export default {
     return {
       videoEl,
       canvasEl,
-      sendImageMessage,
+      sendImage,
       image,
       images,
       imagesLength,
