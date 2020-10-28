@@ -1,17 +1,6 @@
 import { ref, watch, onMounted, computed } from "../deps/vue.js";
-import { useLocalstorage } from "../hooks/index.js";
+import { useSetInterval, socket, uuidv4 } from "../utils/index.js";
 import {
-  safeJsonParse,
-  randomId,
-  useSetInterval,
-  any,
-  adjectives,
-  animals,
-  socket,
-  uuidv4,
-} from "../utils/index.js";
-import {
-  chatUrl,
   imageScale,
   imageQuality,
   imageUpdateFrequency,
@@ -43,11 +32,6 @@ export default {
     const images = ref([]);
     const imagesLength = computed(() => Object.entries(images.value).length);
     const videoStarted = ref(false);
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
 
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
@@ -70,26 +54,7 @@ export default {
 
     const stopVideo = () => {
       videoEl.value.srcObject.getTracks().forEach((track) => track.stop());
-      delete images.value[userId.value];
     };
-
-    // socket.addEventListener("message", ({ data }) => {
-    //   const incomingMessage = safeJsonParse(data);
-    //   if (
-    //     incomingMessage &&
-    //     incomingMessage.channel === props.channel &&
-    //     incomingMessage.type === "userImage"
-    //   ) {
-    //     images.value[incomingMessage.from.id] = incomingMessage;
-    //   }
-    //   if (
-    //     incomingMessage &&
-    //     incomingMessage.channel === props.channel &&
-    //     incomingMessage.type === "userStop"
-    //   ) {
-    //     delete images.value[incomingMessage.from.id];
-    //   }
-    // });
 
     const uuid = uuidv4();
 
