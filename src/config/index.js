@@ -26,4 +26,4 @@ export const openviduFps = 12;
 
 export const imageScale = 1 / 4;
 export const imageQuality = 0.8;
-export const imageUpdateFrequency = 500;
+export const imageUpdateFrequency = 1000;
