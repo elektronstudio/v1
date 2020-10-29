@@ -15,7 +15,7 @@ import {
   events,
 } from "../utils/index.js";
 
-import { chatUrl } from "../config/index.js";
+import { socket } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
 
@@ -35,9 +35,7 @@ export default {
     const messages = useLocalstorage("elektron_messages", []);
     const newMessage = ref("");
 
-    const socket = new WebSocket(chatUrl);
-
-    socket.onmessage = ({ data }) => {
+    socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
@@ -52,7 +50,7 @@ export default {
           messages.value = [...messages.value, incomingMessage];
         }
       }
-    };
+    });
 
     const onNewMessage = () => {
       const outgoingMessage = {
@@ -90,7 +88,6 @@ export default {
         },
         datetime: new Date().toISOString(),
       };
-      console.log(outgoingMessage);
       socket.send(JSON.stringify(outgoingMessage));
     });
 

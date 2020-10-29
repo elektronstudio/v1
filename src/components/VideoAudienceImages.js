@@ -1,10 +1,4 @@
-import {
-  ref,
-  watch,
-  onMounted,
-  computed,
-  TransitionGroup,
-} from "../deps/vue.js";
+import { ref, watch, onMounted, computed } from "../deps/vue.js";
 import { useLocalstorage } from "../hooks/index.js";
 import {
   safeJsonParse,
@@ -13,6 +7,7 @@ import {
   any,
   adjectives,
   animals,
+  socket,
 } from "../utils/index.js";
 import {
   chatUrl,
@@ -77,9 +72,7 @@ export default {
       delete images.value[userId.value];
     };
 
-    const socket = new WebSocket(chatUrl);
-
-    socket.onmessage = ({ data }) => {
+    socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
@@ -95,7 +88,7 @@ export default {
       ) {
         delete images.value[incomingMessage.from.id];
       }
-    };
+    });
 
     const sendImageMessage = () => {
       const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;

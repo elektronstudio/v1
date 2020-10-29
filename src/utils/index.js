@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
+import { ReconnectingWebsocket } from "../deps/reconnecting-websocket.js";
 
 import {
   compareDesc,
@@ -15,6 +16,7 @@ import {
   openviduUrl,
   openviduUsername,
   openviduPassword,
+  chatUrl,
 } from "../config/index.js";
 
 // Json utils
@@ -113,7 +115,9 @@ const findMetadata = (str, key) => {
   const pattern = `\n\r?(${key}:\s?)(.*)`;
   const matches = str.match(pattern);
   if (matches && matches[2]) {
-    return htmlDecode(stripTags(marked(matches[2])).trim());
+    return htmlDecode(stripTags(marked(matches[2])).trim())
+      .replace("/_", "_")
+      .replace(/\\_/g, "_");
   }
   return "";
 };
@@ -254,7 +258,7 @@ export const useSetInterval = (callback, nth, condition, timeout) => {
   });
   onUnmounted(() => {
     if (interval.value) {
-      cleanInterval(interval.value);
+      clearInterval(interval.value);
     }
   });
   return interval;
@@ -280,6 +284,14 @@ function Events() {
 
 export const events = mitt();
 
+// Websockets
+
+export const socket = new ReconnectingWebsocket(chatUrl);
+socket.debug = true;
+socket.addEventListener("open", () => console.log("socket opened", new Date()));
+socket.addEventListener("close", () =>
+  console.log("socket closed", new Date())
+);
 // Sample data
 
 export const adjectives = [

@@ -13,6 +13,7 @@ export default {
   <datetime-live v-if="event" :event="event"></datetime-live>
   <br />
   <h3>{{ event ? event.summary : '' }}</h3>
+  <img v-if="event && event.image" style="width: 100%; margin: 16px 0;" :src="event.image" />
   <p style="margin-bottom: 8px"></p>
   <div
     v-if="!isSummary"
