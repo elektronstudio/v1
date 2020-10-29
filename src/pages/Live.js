@@ -10,6 +10,7 @@ import AspectRatio from "../components/AspectRatio.js";
 import VideoPerformer from "../components/VideoPerformer.js";
 import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
 import VideoAudienceImages from "../components/VideoAudienceImages.js";
+import VideoAudiencePostImages from "../components/VideoAudiencePostImages.js";
 import IconToLeft from "../components/IconToLeft.js";
 import IconToRight from "../components/IconToRight.js";
 
@@ -21,6 +22,7 @@ export default {
     IconToRight,
     ChatAudienceMessages,
     VideoAudienceImages,
+    VideoAudiencePostImages,
   },
   setup() {
     const clientsCount = useClientsCount();
@@ -79,7 +81,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
-      <video-audience-images :channel="channel" style="border: 2px solid blue" :ratio="1 / 2" />
+      <video-audience-post-images :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"
