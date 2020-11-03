@@ -39,7 +39,7 @@ export default {
       const incomingMessage = safeJsonParse(data);
       if (
         incomingMessage &&
-        incomingMessage.type === "message" &&
+        incomingMessage.type === "chat" &&
         incomingMessage.channel === props.channel
       ) {
         if (incomingMessage.value === "/reload") {
@@ -56,7 +56,7 @@ export default {
       const outgoingMessage = {
         id: randomId(),
         channel: props.channel,
-        type: "message",
+        type: "chat",
         value: newMessage.value,
         from: {
           type: "user",
