@@ -22,7 +22,7 @@ export const useHls = (url) => {
       };
     } else if (Hls.isSupported()) {
       const hls = new Hls({
-        manifestLoadingRetryDelay: 5000,
+        manifestLoadingRetryDelay: 2000,
         manifestLoadingMaxRetry: Infinity,
       });
       hls.attachMedia(el.value);

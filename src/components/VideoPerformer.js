@@ -32,12 +32,10 @@ export default {
     },
   },
   setup(props) {
-    //const mainInputUrl = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8";
-
     const videoEl = useHls(
       props.experimental
-        ? mainInputUrl(props.channel)
-        : experimentalInputUrl(props.channel)
+        ? experimentalInputUrl(props.channel)
+        : mainInputUrl(props.channel)
     );
     const playerEl = ref(null);
 

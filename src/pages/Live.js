@@ -3,7 +3,7 @@ import { useRoute } from "../deps/router.js";
 
 import { useState, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
-import { mainInputUrl, eventsUrl } from "../config/index.js";
+import { eventsUrl } from "../config/index.js";
 
 import EventDetails from "../components/EventDetails.js";
 import AspectRatio from "../components/AspectRatio.js";
@@ -48,7 +48,6 @@ export default {
       }
       if (event.value && event.value.experimental) {
         experimental.value = true;
-        console.log(event.value.experimental, !!event.value.experimental);
       }
     });
 
@@ -83,7 +82,7 @@ export default {
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <video-performer :channel="channel" :experimental="experimental" />
+      <video-performer v-if="event" :channel="channel" :experimental="experimental" />
     </div>
     <div
       class="panel-audience"
