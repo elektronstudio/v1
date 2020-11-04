@@ -186,7 +186,6 @@ export default {
     };
   },
   template: `
-  aa
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
