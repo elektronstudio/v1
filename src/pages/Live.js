@@ -95,7 +95,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
-      <video-audience-post-images :channel="channel" :ratio="1 / 2" />
+      <component :is="experimental ? 'video-audience-images' : 'video-audience-post-images'" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"

@@ -186,6 +186,7 @@ export default {
     };
   },
   template: `
+  aa
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
@@ -196,11 +197,11 @@ export default {
         <div
           v-for="image in images2"
           :key="image.id"
-          style="position: relative"
+          style="position: relative; width: 100%;"
         >
           <img
             :src="image.value" 
-            style="width: 100%"
+            style="display: block;"
           />
           <div class="user-image-name" style="
             font-size: 0.8em;
