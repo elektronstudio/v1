@@ -210,7 +210,7 @@ export default {
             align-items: flex-end;
             cursor: default;
           ">
-            {{ image.username  }}
+            {{ image.username }}
           </div>
         </div>
       </video-grid2>
