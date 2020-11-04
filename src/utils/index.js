@@ -297,11 +297,7 @@ export const events = mitt();
 // Websockets
 
 export const socket = new ReconnectingWebsocket(chatUrl);
-socket.debug = true;
-socket.addEventListener("open", () => console.log("socket opened", new Date()));
-socket.addEventListener("close", () =>
-  console.log("socket closed", new Date())
-);
+
 // Sample data
 
 export const adjectives = [

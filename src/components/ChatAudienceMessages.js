@@ -19,6 +19,19 @@ import { socket } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
 
+const createMessage = (message) => {
+  return {
+    id: randomId(),
+    datetime: new Date().toISOString(),
+    type: "",
+    channel: "",
+    userid: "",
+    username: "",
+    value: "",
+    ...message,
+  };
+};
+
 export default {
   components: { ChatMessage },
   props: {
@@ -37,56 +50,44 @@ export default {
 
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
-      if (
-        incomingMessage &&
-        incomingMessage.type === "chat" &&
-        incomingMessage.channel === props.channel
-      ) {
-        if (incomingMessage.value === "/reload") {
-          window.location.reload();
-        } else if (incomingMessage.value === "/clear") {
-          messages.value = [];
-        } else {
-          messages.value = [...messages.value, incomingMessage];
+      if (incomingMessage && incomingMessage.channel === props.channel) {
+        if (incomingMessage.type === "chat") {
+          if (incomingMessage.value === "/reload") {
+            window.location.reload();
+          } else if (incomingMessage.value === "/clear") {
+            messages.value = [];
+          } else {
+            messages.value = [...messages.value, incomingMessage];
+          }
+        }
+        // TODO: Move heart handling to a separate component
+        if (incomingMessage.type === "heart") {
+          messages.value = [
+            ...messages.value,
+            { ...incomingMessage, value: "❤️" },
+          ];
         }
       }
     });
 
     const onNewMessage = () => {
-      const outgoingMessage = {
-        id: randomId(),
-        channel: props.channel,
+      const outgoingMessage = createMessage({
         type: "chat",
+        channel: props.channel,
+        userid: userId.value,
+        username: userName.value,
         value: newMessage.value,
-        from: {
-          type: "user",
-          id: userId.value,
-          name: userName.value,
-        },
-        to: {
-          type: "all",
-        },
-        datetime: new Date().toISOString(),
-      };
+      });
       socket.send(JSON.stringify(outgoingMessage));
       newMessage.value = "";
     };
 
     events.on("heart", () => {
       const outgoingMessage = {
-        id: randomId(),
+        type: "heart",
         channel: props.channel,
-        type: "message",
-        value: "❤️",
-        from: {
-          type: "user",
-          id: userId.value,
-          name: userName.value,
-        },
-        to: {
-          type: "all",
-        },
-        datetime: new Date().toISOString(),
+        userid: userId.value,
+        username: userName.value,
       };
       socket.send(JSON.stringify(outgoingMessage));
     });
