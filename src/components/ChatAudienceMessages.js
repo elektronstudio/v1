@@ -13,24 +13,11 @@ import {
   adjectives,
   animals,
   events,
+  socket,
+  createMessage,
 } from "../utils/index.js";
 
-import { socket } from "../utils/index.js";
-
 import ChatMessage from "./ChatMessage.js";
-
-const createMessage = (message) => {
-  return {
-    id: randomId(),
-    datetime: new Date().toISOString(),
-    type: "",
-    channel: "",
-    userid: "",
-    username: "",
-    value: "",
-    ...message,
-  };
-};
 
 export default {
   components: { ChatMessage },

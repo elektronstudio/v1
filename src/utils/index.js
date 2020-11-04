@@ -296,6 +296,21 @@ export const events = mitt();
 
 export const socket = new ReconnectingWebsocket(chatUrl);
 
+// Create message
+
+export const createMessage = (message) => {
+  return {
+    id: randomId(),
+    datetime: new Date().toISOString(),
+    type: "",
+    channel: "",
+    userid: "",
+    username: "",
+    value: "",
+    ...message,
+  };
+};
+
 // Sample data
 
 export const adjectives = [

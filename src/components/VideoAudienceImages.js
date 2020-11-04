@@ -8,6 +8,7 @@ import {
   adjectives,
   animals,
   socket,
+  createMessage,
 } from "../utils/index.js";
 import {
   chatUrl,
@@ -77,16 +78,16 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "userImage"
+        incomingMessage.type === "userimage"
       ) {
-        images.value[incomingMessage.from.id] = incomingMessage;
+        images.value[incomingMessage.userid] = incomingMessage;
       }
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "userStop"
+        incomingMessage.type === "stopimage"
       ) {
-        delete images.value[incomingMessage.from.id];
+        delete images.value[incomingMessage.userid];
       }
     });
 
@@ -109,42 +110,36 @@ export default {
         ).data.buffer
       );
 
-      const outgoingMessage = {
+      const outgoingMessage = createMessage({
         id: randomId(),
         channel: props.channel,
-        type: "userImage",
+        type: "userimage",
+        userid: userId.value,
+        username: userName.value,
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
-        from: {
-          type: "user",
-          id: userId.value,
-          name: userName.value,
-        },
-        to: {
-          type: "all",
-        },
-        datetime: new Date().toISOString(),
-      };
+      });
       if (buffer.some((color) => color !== 0)) {
         socket.send(JSON.stringify(outgoingMessage));
       }
     };
 
-    const sendStopMessage = () => {
-      const outgoingMessage = {
-        id: randomId(),
+    const sendStartMessage = () => {
+      const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "userStop",
-        value: null,
-        from: {
-          type: "user",
-          id: userId.value,
-          name: userName.value,
-        },
-        to: {
-          type: "all",
-        },
-        datetime: new Date().toISOString(),
-      };
+        type: "startimage",
+        userid: userId.value,
+        username: userName.value,
+      });
+      socket.send(JSON.stringify(outgoingMessage));
+    };
+
+    const sendStopMessage = () => {
+      const outgoingMessage = createMessage({
+        channel: props.channel,
+        type: "stopimage",
+        userid: userId.value,
+        username: userName.value,
+      });
       socket.send(JSON.stringify(outgoingMessage));
     };
 
@@ -157,6 +152,7 @@ export default {
 
     const onStart = () => {
       startVideo();
+      sendStartMessage();
       videoStarted.value = true;
     };
 
@@ -170,7 +166,7 @@ export default {
     window.addEventListener("beforeunload", onStop);
 
     const images2 = computed(() =>
-      Object.values(images.value).sort((a, b) => a.from.id > b.from.id)
+      Object.values(images.value).sort((a, b) => a.userid > b.userid)
     );
     return {
       videoEl,
@@ -214,7 +210,7 @@ export default {
             align-items: flex-end;
             cursor: default;
           ">
-            {{ image.from.name  }}
+            {{ image.username  }}
           </div>
         </div>
       </video-grid2>
