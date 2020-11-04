@@ -165,8 +165,7 @@ export const parseEvent = (event) => {
   const youtube = findMetadata(metadataDescription, "youtube");
   const image = findMetadata(metadataDescription, "image");
   const color = findMetadata(metadataDescription, "color");
-  const audience = findMetadata(metadataDescription, "audience");
-  const layout = findMetadata(metadataDescription, "layout");
+  const experimental = !!findMetadata(metadataDescription, "experimental");
 
   const diff = getDifference(start, end);
 
@@ -175,8 +174,7 @@ export const parseEvent = (event) => {
     youtube,
     image,
     color,
-    audience,
-    layout,
+    experimental,
     description,
     summary,
     description,
@@ -297,11 +295,22 @@ export const events = mitt();
 // Websockets
 
 export const socket = new ReconnectingWebsocket(chatUrl);
-socket.debug = true;
-socket.addEventListener("open", () => console.log("socket opened", new Date()));
-socket.addEventListener("close", () =>
-  console.log("socket closed", new Date())
-);
+
+// Create message
+
+export const createMessage = (message) => {
+  return {
+    id: randomId(),
+    datetime: new Date().toISOString(),
+    type: "",
+    channel: "",
+    userid: "",
+    username: "",
+    value: "",
+    ...message,
+  };
+};
+
 // Sample data
 
 export const adjectives = [

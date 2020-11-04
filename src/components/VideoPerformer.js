@@ -1,7 +1,7 @@
 import { ref, onUnmounted } from "../deps/vue.js";
 import { useHls } from "../hooks/index.js";
 import { events } from "../utils/index.js";
-import { mainInputUrl } from "../config/index.js";
+import { mainInputUrl, experimentalInputUrl } from "../config/index.js";
 
 import Logo from "../components/Logo.js";
 import IconPlay from "../components/IconPlay.js";
@@ -27,11 +27,16 @@ export default {
     channel: {
       default: "test",
     },
+    experimental: {
+      default: false,
+    },
   },
   setup(props) {
-    //const mainInputUrl = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8";
-
-    const videoEl = useHls(mainInputUrl(props.channel));
+    const videoEl = useHls(
+      props.experimental
+        ? experimentalInputUrl(props.channel)
+        : mainInputUrl(props.channel)
+    );
     const playerEl = ref(null);
 
     const isPlaying = ref(true);

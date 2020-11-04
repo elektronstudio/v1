@@ -3,7 +3,7 @@ import { useRoute } from "../deps/router.js";
 
 import { useState, useClientsCount } from "../hooks/index.js";
 import { fetchEvents } from "../utils/index.js";
-import { mainInputUrl, eventsUrl } from "../config/index.js";
+import { eventsUrl } from "../config/index.js";
 
 import EventDetails from "../components/EventDetails.js";
 import AspectRatio from "../components/AspectRatio.js";
@@ -30,6 +30,10 @@ export default {
     const { params } = useRoute();
     const channel = params.channel;
 
+    //
+
+    const experimental = ref(false);
+
     // Fetch and parse event
 
     const event = ref(null);
@@ -41,6 +45,9 @@ export default {
       event.value = e[0];
       if (event.value && event.value.color) {
         document.body.style.setProperty("background", event.value.color);
+      }
+      if (event.value && event.value.experimental) {
+        experimental.value = true;
       }
     });
 
@@ -63,12 +70,19 @@ export default {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { channel, event, clientsCount, onToggleChat, chatVisible };
+    return {
+      channel,
+      event,
+      clientsCount,
+      onToggleChat,
+      chatVisible,
+      experimental,
+    };
   },
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <video-performer :channel="channel" />
+      <video-performer v-if="event" :channel="channel" :experimental="experimental" />
     </div>
     <div
       class="panel-audience"
@@ -81,7 +95,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ clientsCount }} online</div>
       </div>
-      <video-audience-post-images :channel="channel" :ratio="1 / 2" />
+      <component :is="experimental ? 'video-audience-images' : 'video-audience-post-images'" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"

@@ -7,6 +7,7 @@ import {
   any,
   adjectives,
   animals,
+  socket,
 } from "../utils/index.js";
 
 import { chatUrl } from "../config/index.js";
@@ -22,7 +23,7 @@ export const useHls = (url) => {
       };
     } else if (Hls.isSupported()) {
       const hls = new Hls({
-        manifestLoadingRetryDelay: 5000,
+        manifestLoadingRetryDelay: 2000,
         manifestLoadingMaxRetry: Infinity,
       });
       hls.attachMedia(el.value);
@@ -110,24 +111,22 @@ export const useScrollToBottom = () => {
 export const useClientsCount = () => {
   const clientsCount = ref(false);
 
-  const socket = new WebSocket(chatUrl);
-
   let interval = null;
 
-  socket.onopen = () => {
+  socket.addEventListener("open", ({ data }) => {
     socket.send(JSON.stringify({ type: "statsRequest" }));
     interval = setInterval(
       () => socket.send(JSON.stringify({ type: "statsRequest" })),
       8000
     );
-  };
+  });
 
-  socket.onmessage = ({ data }) => {
+  socket.addEventListener("message", ({ data }) => {
     const message = safeJsonParse(data);
     if (message && message.type === "statsResponse") {
       clientsCount.value = message.clientsCount;
     }
-  };
+  });
 
   socket.onclose = () => clearInterval(interval);
 
