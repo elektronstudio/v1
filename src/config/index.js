@@ -8,6 +8,10 @@ const uuidv4 = () => {
 
 export const mainInputUrl = (id) =>
   `https://elektron-live.babahhcdn.com/bb1150-le/${id}/index.m3u8`;
+
+export const experimentalInputUrl = (id) =>
+  `http://165.227.149.4:8080/live/${id}.m3u8`;
+
 export const specOutputUrl =
   "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
 export const specInputmUrl =

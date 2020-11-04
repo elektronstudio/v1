@@ -30,6 +30,10 @@ export default {
     const { params } = useRoute();
     const channel = params.channel;
 
+    //
+
+    const experimental = ref(false);
+
     // Fetch and parse event
 
     const event = ref(null);
@@ -41,6 +45,10 @@ export default {
       event.value = e[0];
       if (event.value && event.value.color) {
         document.body.style.setProperty("background", event.value.color);
+      }
+      if (event.value && event.value.experimental) {
+        experimental.value = true;
+        console.log(event.value.experimental, !!event.value.experimental);
       }
     });
 
@@ -63,12 +71,19 @@ export default {
       chatVisible.value = !chatVisible.value;
     };
 
-    return { channel, event, clientsCount, onToggleChat, chatVisible };
+    return {
+      channel,
+      event,
+      clientsCount,
+      onToggleChat,
+      chatVisible,
+      experimental,
+    };
   },
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <video-performer :channel="channel" />
+      <video-performer :channel="channel" :experimental="experimental" />
     </div>
     <div
       class="panel-audience"
