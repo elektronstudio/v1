@@ -62,7 +62,7 @@ export default {
     const startVideo = () => {
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
-          .getUserMedia({ video: true })
+          .getUserMedia({ video: { frameRate: 10 } })
           .then((stream) => (videoEl.value.srcObject = stream))
           .catch((e) => console.log(e));
       }
