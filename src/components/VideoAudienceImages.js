@@ -78,25 +78,31 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "userimage"
+        incomingMessage.type === "IMAGE"
       ) {
         images.value[incomingMessage.userId] = incomingMessage;
       }
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "leaveImage"
+        incomingMessage.type === "IMAGE_LEAVE"
       ) {
         delete images.value[incomingMessage.userId];
       }
-      // if (incomingMessage && incomingMessage.type === "updateUsername") {
-      //   images.value = images.value.map((m) => {
-      //     if (m.userId === incomingMessage.userId) {
-      //       m.userName = incomingMessage.userName;
-      //     }
-      //     return m
-      //   });
-      // }
+      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
+        // TODO: Rework this
+        if (userId.value === incomingMessage.userId) {
+          userName.value = incomingMessage.userName;
+        }
+        images.value = Object.fromEntries(
+          Object.entries(images.value).map(([key, value]) => {
+            if (value.userId === incomingMessage.userId) {
+              value.userName = incomingMessage.userName;
+            }
+            return [key, value];
+          })
+        );
+      }
     });
 
     const sendImageMessage = () => {
@@ -121,7 +127,7 @@ export default {
       const outgoingMessage = createMessage({
         id: randomId(),
         channel: props.channel,
-        type: "userimage",
+        type: "IMAGE",
         userId: userId.value,
         userName: userName.value,
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
@@ -134,7 +140,7 @@ export default {
     const sendStartMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "joinImage",
+        type: "IMAGE_JOIN",
         userId: userId.value,
         userName: userName.value,
       });
@@ -144,7 +150,7 @@ export default {
     const sendStopMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "leaveImage",
+        type: "IMAGE_LEAVE",
         userId: userId.value,
         userName: userName.value,
       });
@@ -213,7 +219,7 @@ export default {
             right: 0;
             bottom: 0;
             left: 0;
-            padding: 16px;
+            padding: 8px;
             display: flex;
             align-items: flex-end;
             cursor: default;

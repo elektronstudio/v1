@@ -116,7 +116,7 @@ export const useClientsCount = (channel, userId, userName) => {
     const message = safeJsonParse(data);
     if (
       message &&
-      message.type === "channelsInfo" &&
+      message.type === "CHANNEL_INFO" &&
       message.value &&
       message.value[channel] &&
       message.value[channel].users
@@ -127,7 +127,7 @@ export const useClientsCount = (channel, userId, userName) => {
 
   const onJoinChannel = () => {
     const outgoingMessage = createMessage({
-      type: "joinChannel",
+      type: "CHANNEL_JOIN",
       channel: channel,
       userId: userId.value,
       userName: userName.value,
@@ -137,7 +137,7 @@ export const useClientsCount = (channel, userId, userName) => {
 
   const onLeaveChannel = () => {
     const outgoingMessage = createMessage({
-      type: "leaveChannel",
+      type: "CHANNEL_LEAVE",
       channel: channel,
       userId: userId.value,
       userName: userName.value,

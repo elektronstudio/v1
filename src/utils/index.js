@@ -265,6 +265,15 @@ export const removeFromArray = (arr, callback) => {
   }
 };
 
+export const upsertArray = (arr, callback, newItem) => {
+  const index = arr.findIndex(callback);
+  if (index > -1) {
+    return arr.splice(index, 1, newItem);
+  } else {
+    return [...arr, newItem];
+  }
+};
+
 // Strings
 
 export const randomId = (length = 16) => {

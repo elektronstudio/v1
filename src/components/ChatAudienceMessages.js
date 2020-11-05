@@ -39,7 +39,7 @@ export default {
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
 
-      if (incomingMessage && incomingMessage.type === "updateUsername") {
+      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
         messages.value = messages.value.map((m) => {
           if (m.userId === incomingMessage.userId) {
             m.userName = incomingMessage.userName;
@@ -49,7 +49,7 @@ export default {
       }
 
       if (incomingMessage && incomingMessage.channel === props.channel) {
-        if (incomingMessage.type === "chat") {
+        if (incomingMessage.type === "CHAT") {
           if (incomingMessage.value === "/reload") {
             window.location.reload();
           } else if (incomingMessage.value === "/clear") {
@@ -59,7 +59,7 @@ export default {
           }
         }
         // TODO: Move heart handling to a separate component
-        if (incomingMessage.type === "heart") {
+        if (incomingMessage.type === "HEART") {
           messages.value = [
             ...messages.value,
             { ...incomingMessage, value: "❤️" },
@@ -67,7 +67,7 @@ export default {
         }
         // Sync the archive
 
-        if (incomingMessage.type === "syncChat") {
+        if (incomingMessage.type === "CHAT_SYNC") {
           const syncedMessages = uniqueCollection(
             [...messages.value, ...incomingMessage.value],
             "id"
@@ -79,7 +79,7 @@ export default {
 
     const onNewMessage = () => {
       const outgoingMessage = createMessage({
-        type: "chat",
+        type: "CHAT",
         channel: props.channel,
         userId: userId.value,
         userName: userName.value,
@@ -91,7 +91,7 @@ export default {
 
     events.on("heart", () => {
       const outgoingMessage = {
-        type: "heart",
+        type: "HEART",
         channel: props.channel,
         userId: userId.value,
         userName: userName.value,
@@ -104,7 +104,7 @@ export default {
       if (newName) {
         userName.value = newName;
         const outgoingMessage = createMessage({
-          type: "updateUsername",
+          type: "USERNAME_UPDATE",
           userId: userId.value,
           userName: userName.value,
         });
