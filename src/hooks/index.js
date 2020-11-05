@@ -8,22 +8,22 @@ import {
   adjectives,
   animals,
   socket,
+  createMessage,
+  debounce,
 } from "../utils/index.js";
 
 import { chatUrl } from "../config/index.js";
 
 export const useHls = (url) => {
+  const retryDelay = 4000;
   const el = ref(null);
-  const isHlsPlaying = ref(false);
   onMounted(() => {
     if (el.value.canPlayType("application/vnd.apple.mpegurl")) {
       el.value.src = url;
-      el.value.onerror = (e) => {
-        el.value.src = url;
-      };
+      el.value.onerror = debounce(() => (el.value.src = url), retryDelay);
     } else if (Hls.isSupported()) {
       const hls = new Hls({
-        manifestLoadingRetryDelay: 2000,
+        manifestLoadingRetryDelay: retryDelay,
         manifestLoadingMaxRetry: Infinity,
       });
       hls.attachMedia(el.value);
@@ -108,27 +108,50 @@ export const useScrollToBottom = () => {
   return el;
 };
 
-export const useClientsCount = () => {
-  const clientsCount = ref(false);
-
-  let interval = null;
-
-  socket.addEventListener("open", ({ data }) => {
-    socket.send(JSON.stringify({ type: "statsRequest" }));
-    interval = setInterval(
-      () => socket.send(JSON.stringify({ type: "statsRequest" })),
-      8000
-    );
-  });
+export const useClientsCount = (channel, userId, userName) => {
+  const clientsCount = ref(0);
 
   socket.addEventListener("message", ({ data }) => {
     const message = safeJsonParse(data);
-    if (message && message.type === "statsResponse") {
-      clientsCount.value = message.clientsCount;
+    if (
+      message &&
+      message.type === "CHANNEL_INFO" &&
+      message.value &&
+      message.value[channel] &&
+      message.value[channel].users
+    ) {
+      clientsCount.value = message.value[channel].users.length;
     }
   });
 
-  socket.onclose = () => clearInterval(interval);
+  const onJoinChannel = () => {
+    const outgoingMessage = createMessage({
+      type: "CHANNEL_JOIN",
+      channel: channel,
+      userId: userId.value,
+      userName: userName.value,
+    });
+    socket.send(JSON.stringify(outgoingMessage));
+  };
+
+  const onLeaveChannel = () => {
+    const outgoingMessage = createMessage({
+      type: "CHANNEL_LEAVE",
+      channel: channel,
+      userId: userId.value,
+      userName: userName.value,
+    });
+    socket.send(JSON.stringify(outgoingMessage));
+  };
+
+  onMounted(() => {
+    onJoinChannel();
+    window.addEventListener("beforeunload", onLeaveChannel);
+  });
+
+  onUnmounted(() => window.removeEventListener("beforeunload", onStop));
+
+  //socket.onclose = () => clearInterval(interval);
 
   return clientsCount;
 };

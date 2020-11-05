@@ -19,6 +19,39 @@ import {
   chatUrl,
 } from "../config/index.js";
 
+// Fit
+
+// https://github.com/fregante/intrinsic-scale/blob/master/index.js
+export const fit = (parentWidth, parentHeight, childWidth, childHeight) => {
+  const doRatio = childWidth / childHeight;
+  const cRatio = parentWidth / parentHeight;
+  let width = parentWidth;
+  let height = parentHeight;
+
+  if (doRatio < cRatio) {
+    height = width / doRatio;
+  } else {
+    width = height * doRatio;
+  }
+
+  return {
+    x: (parentWidth - width) / 2,
+    y: (parentHeight - height) / 2,
+    width,
+    height,
+  };
+};
+
+// Debounce
+
+export function debounce(fn, timeout) {
+  let t;
+  return function () {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, arguments), timeout);
+  };
+}
+
 // ID
 
 export const uuidv4 = () => {
@@ -199,14 +232,14 @@ export const fetchEvents = (url) => {
 export const fetchAuth = ({
   url,
   payload = null,
-  username,
+  userName,
   password,
   method = "POST",
 }) => {
   let headers = new Headers();
   headers.set("content-type", "application/json");
-  if (username && password) {
-    headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
+  if (userName && password) {
+    headers.set("Authorization", "Basic " + btoa(`${userName}:${password}`));
   }
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -227,13 +260,13 @@ export const getToken = (id) =>
   fetchAuth({
     url: `${openviduUrl}/api/sessions`,
     payload: { customSessionId: id },
-    username: openviduUsername,
+    userName: openviduUsername,
     password: openviduPassword,
   }).then(() =>
     fetchAuth({
       url: `${openviduUrl}/api/tokens`,
       payload: { session: id },
-      username: openviduUsername,
+      userName: openviduUsername,
       password: openviduPassword,
     })
   );
@@ -243,6 +276,36 @@ export const getToken = (id) =>
 export const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
 
 export const any = (arr) => shuffle(arr)[0];
+
+export const uniqueArray = (arr) => [...new Set(arr)];
+
+export const uniqueCollection = (arr, key) => {
+  const result = [];
+  const map = new Map();
+  for (const item of arr) {
+    if (!map.has(item[key])) {
+      map.set(item[key], true);
+      result.push(item);
+    }
+  }
+  return result;
+};
+
+export const removeFromArray = (arr, callback) => {
+  const index = arr.findIndex(callback);
+  if (index > -1) {
+    return arr.splice(index, 1);
+  }
+};
+
+export const upsertArray = (arr, callback, newItem) => {
+  const index = arr.findIndex(callback);
+  if (index > -1) {
+    return arr.splice(index, 1, newItem);
+  } else {
+    return [...arr, newItem];
+  }
+};
 
 // Strings
 
@@ -304,8 +367,8 @@ export const createMessage = (message) => {
     datetime: new Date().toISOString(),
     type: "",
     channel: "",
-    userid: "",
-    username: "",
+    userId: "",
+    userName: "",
     value: "",
     ...message,
   };

@@ -9,6 +9,7 @@ import {
   animals,
   socket,
   createMessage,
+  fit,
 } from "../utils/index.js";
 import {
   chatUrl,
@@ -20,6 +21,9 @@ import {
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
+
+const imageWidth = 150;
+const imageHeight = 120;
 
 export default {
   components: {
@@ -52,17 +56,19 @@ export default {
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
-        const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
-        canvasEl.value.width = srcElement.videoWidth * imageScale;
-        canvasEl.value.height =
-          (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
+        // const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
+        // canvasEl.value.width = srcElement.videoWidth * imageScale;
+        // canvasEl.value.height =
+        //   (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
+        canvasEl.value.width = imageWidth;
+        canvasEl.value.height = imageHeight;
       });
     });
 
     const startVideo = () => {
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
-          .getUserMedia({ video: true })
+          .getUserMedia({ video: { frameRate: 10 } })
           .then((stream) => (videoEl.value.srcObject = stream))
           .catch((e) => console.log(e));
       }
@@ -78,28 +84,42 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "userimage"
+        incomingMessage.type === "IMAGE"
       ) {
-        images.value[incomingMessage.userid] = incomingMessage;
+        images.value[incomingMessage.userId] = incomingMessage;
       }
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "stopimage"
+        incomingMessage.type === "IMAGE_LEAVE"
       ) {
-        delete images.value[incomingMessage.userid];
+        delete images.value[incomingMessage.userId];
+      }
+      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
+        // TODO: Rework this
+        if (userId.value === incomingMessage.userId) {
+          userName.value = incomingMessage.userName;
+        }
+        images.value = Object.fromEntries(
+          Object.entries(images.value).map(([key, value]) => {
+            if (value.userId === incomingMessage.userId) {
+              value.userName = incomingMessage.userName;
+            }
+            return [key, value];
+          })
+        );
       }
     });
 
     const sendImageMessage = () => {
-      const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
-      context.value.drawImage(
-        videoEl.value,
-        0,
-        videoEl.value.videoHeight * imageScale * (isPortrait ? -0.5 : 0),
-        videoEl.value.videoWidth * imageScale,
-        videoEl.value.videoHeight * imageScale
+      //const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
+      const { x, y, width, height } = fit(
+        imageWidth,
+        imageHeight,
+        videoEl.value.videoWidth,
+        videoEl.value.videoHeight
       );
+      context.value.drawImage(videoEl.value, x, y, width, height);
 
       const buffer = new Uint32Array(
         context.value.getImageData(
@@ -113,9 +133,9 @@ export default {
       const outgoingMessage = createMessage({
         id: randomId(),
         channel: props.channel,
-        type: "userimage",
-        userid: userId.value,
-        username: userName.value,
+        type: "IMAGE",
+        userId: userId.value,
+        userName: userName.value,
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       });
       if (buffer.some((color) => color !== 0)) {
@@ -126,9 +146,9 @@ export default {
     const sendStartMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "startimage",
-        userid: userId.value,
-        username: userName.value,
+        type: "IMAGE_JOIN",
+        userId: userId.value,
+        userName: userName.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
     };
@@ -136,9 +156,9 @@ export default {
     const sendStopMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "stopimage",
-        userid: userId.value,
-        username: userName.value,
+        type: "IMAGE_LEAVE",
+        userId: userId.value,
+        userName: userName.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
     };
@@ -166,7 +186,7 @@ export default {
     window.addEventListener("beforeunload", onStop);
 
     const images2 = computed(() =>
-      Object.values(images.value).sort((a, b) => a.userid > b.userid)
+      Object.values(images.value).sort((a, b) => a.userId > b.userId)
     );
     return {
       videoEl,
@@ -182,6 +202,8 @@ export default {
     };
   },
   template: `
+  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0;" />
+  <canvas ref="canvasEl" style="display: none;" />
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
@@ -192,11 +214,11 @@ export default {
         <div
           v-for="image in images2"
           :key="image.id"
-          style="position: relative; width: 100%;"
+          style="position: relative"
         >
           <img
             :src="image.value" 
-            style="display: block;"
+            style="display: block; width: 100%;"
           />
           <div class="user-image-name" style="
             font-size: 0.8em;
@@ -205,18 +227,16 @@ export default {
             right: 0;
             bottom: 0;
             left: 0;
-            padding: 16px;
+            padding: 8px;
             display: flex;
             align-items: flex-end;
             cursor: default;
           ">
-            {{ image.username }}
+            {{ image.userName }}
           </div>
         </div>
       </video-grid2>
     </video-confirmation>
   </aspect-ratio>
-  <video ref="videoEl" autoplay style="display: none;" />
-  <canvas ref="canvasEl" style="display: none;" />
   `,
 };

@@ -15,6 +15,7 @@ import {
   events,
   socket,
   createMessage,
+  uniqueCollection,
 } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
@@ -37,8 +38,18 @@ export default {
 
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
+
+      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
+        messages.value = messages.value.map((m) => {
+          if (m.userId === incomingMessage.userId) {
+            m.userName = incomingMessage.userName;
+          }
+          return m;
+        });
+      }
+
       if (incomingMessage && incomingMessage.channel === props.channel) {
-        if (incomingMessage.type === "chat") {
+        if (incomingMessage.type === "CHAT") {
           if (incomingMessage.value === "/reload") {
             window.location.reload();
           } else if (incomingMessage.value === "/clear") {
@@ -48,21 +59,30 @@ export default {
           }
         }
         // TODO: Move heart handling to a separate component
-        if (incomingMessage.type === "heart") {
+        if (incomingMessage.type === "HEART") {
           messages.value = [
             ...messages.value,
             { ...incomingMessage, value: "❤️" },
           ];
+        }
+        // Sync the archive
+
+        if (incomingMessage.type === "CHAT_SYNC") {
+          const syncedMessages = uniqueCollection(
+            [...messages.value, ...incomingMessage.value],
+            "id"
+          );
+          messages.value = syncedMessages;
         }
       }
     });
 
     const onNewMessage = () => {
       const outgoingMessage = createMessage({
-        type: "chat",
+        type: "CHAT",
         channel: props.channel,
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
         value: newMessage.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
@@ -71,10 +91,10 @@ export default {
 
     events.on("heart", () => {
       const outgoingMessage = {
-        type: "heart",
+        type: "HEART",
         channel: props.channel,
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
       };
       socket.send(JSON.stringify(outgoingMessage));
     });
@@ -83,6 +103,12 @@ export default {
       const newName = window.prompt("Enter your name", userName.value);
       if (newName) {
         userName.value = newName;
+        const outgoingMessage = createMessage({
+          type: "USERNAME_UPDATE",
+          userId: userId.value,
+          userName: userName.value,
+        });
+        socket.send(JSON.stringify(outgoingMessage));
       }
     };
 
@@ -116,7 +142,7 @@ export default {
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
     <div style="display: flex; align-items: space-between; margin-top: 24px; transform: translateY(-24px);">
-      <div style="font-size: 13px; opacity: 0.7">My username is currently {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
+      <div style="font-size: 13px; opacity: 0.7">My userName is currently {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
       &nbsp;
       <button @click="onNewMessage">Send</button>
     </div>
