@@ -19,6 +19,16 @@ import {
   chatUrl,
 } from "../config/index.js";
 
+// Debounce
+
+export function debounce(fn, timeout) {
+  let t;
+  return function () {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, arguments), timeout);
+  };
+}
+
 // ID
 
 export const uuidv4 = () => {

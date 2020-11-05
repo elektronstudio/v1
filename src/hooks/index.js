@@ -9,22 +9,21 @@ import {
   animals,
   socket,
   createMessage,
+  debounce,
 } from "../utils/index.js";
 
 import { chatUrl } from "../config/index.js";
 
 export const useHls = (url) => {
+  const retryDelay = 4000;
   const el = ref(null);
-  const isHlsPlaying = ref(false);
   onMounted(() => {
     if (el.value.canPlayType("application/vnd.apple.mpegurl")) {
       el.value.src = url;
-      el.value.onerror = (e) => {
-        el.value.src = url;
-      };
+      el.value.onerror = debounce(() => (el.value.src = url), retryDelay);
     } else if (Hls.isSupported()) {
       const hls = new Hls({
-        manifestLoadingRetryDelay: 2000,
+        manifestLoadingRetryDelay: retryDelay,
         manifestLoadingMaxRetry: Infinity,
       });
       hls.attachMedia(el.value);
