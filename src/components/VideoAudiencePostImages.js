@@ -122,6 +122,8 @@ export default {
     };
   },
   template: `
+  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0;" />
+  <canvas ref="canvasEl" style="display: none;" />
   <aspect-ratio :ratio="ratio">
     <video-confirmation
       :started="videoStarted"
@@ -138,7 +140,5 @@ export default {
       </video-grid>
     </video-confirmation>
   </aspect-ratio>
-  <video ref="videoEl" autoplay style="display: none;" />
-  <canvas ref="canvasEl" style="display: none;" />
   `,
 };
