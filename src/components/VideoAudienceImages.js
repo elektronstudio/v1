@@ -9,6 +9,7 @@ import {
   animals,
   socket,
   createMessage,
+  fit,
 } from "../utils/index.js";
 import {
   chatUrl,
@@ -20,6 +21,9 @@ import {
 import VideoGrid from "../components/VideoGrid.js";
 import AspectRatio from "./AspectRatio.js";
 import VideoConfirmation from "./VideoConfirmation.js";
+
+const imageWidth = 150;
+const imageHeight = 120;
 
 export default {
   components: {
@@ -52,10 +56,12 @@ export default {
     onMounted(() => {
       context.value = canvasEl.value.getContext("2d");
       videoEl.value.addEventListener("loadedmetadata", ({ srcElement }) => {
-        const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
-        canvasEl.value.width = srcElement.videoWidth * imageScale;
-        canvasEl.value.height =
-          (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
+        // const isPortrait = srcElement.videoHeight > srcElement.videoWidth;
+        // canvasEl.value.width = srcElement.videoWidth * imageScale;
+        // canvasEl.value.height =
+        //   (srcElement.videoHeight * imageScale) / (isPortrait ? 2 : 1);
+        canvasEl.value.width = imageWidth;
+        canvasEl.value.height = imageHeight;
       });
     });
 
@@ -106,14 +112,14 @@ export default {
     });
 
     const sendImageMessage = () => {
-      const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
-      context.value.drawImage(
-        videoEl.value,
-        0,
-        videoEl.value.videoHeight * imageScale * (isPortrait ? -0.5 : 0),
-        videoEl.value.videoWidth * imageScale,
-        videoEl.value.videoHeight * imageScale
+      //const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
+      const { x, y, width, height } = fit(
+        imageWidth,
+        imageHeight,
+        videoEl.value.videoWidth,
+        videoEl.value.videoHeight
       );
+      context.value.drawImage(videoEl.value, x, y, width, height);
 
       const buffer = new Uint32Array(
         context.value.getImageData(
@@ -133,9 +139,6 @@ export default {
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       });
       if (buffer.some((color) => color !== 0)) {
-        console.log(
-          canvasEl.value.toDataURL("image/jpeg", imageQuality).slice(-100)
-        );
         socket.send(JSON.stringify(outgoingMessage));
       }
     };
@@ -211,11 +214,11 @@ export default {
         <div
           v-for="image in images2"
           :key="image.id"
-          style="position: relative; width: 100%;"
+          style="position: relative"
         >
           <img
             :src="image.value" 
-            style="display: block;"
+            style="display: block; width: 100%;"
           />
           <div class="user-image-name" style="
             font-size: 0.8em;

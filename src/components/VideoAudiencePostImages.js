@@ -132,7 +132,7 @@ export default {
         <div v-for="image in images">
           <img
             :src="image.imgData" 
-            style="display: block;"
+            style="display: block; width: 100%;"
           />
         </div>
       </video-grid>

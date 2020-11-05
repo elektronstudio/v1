@@ -18,7 +18,7 @@ export default {
         count.value + 1,
         Math.round(Math.sqrt(props.ratio * count.value + 1))
       );
-      return a;
+      return Math.max(2, a);
     });
     return { columns };
   },
