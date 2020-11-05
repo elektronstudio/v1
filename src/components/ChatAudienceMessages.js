@@ -38,7 +38,15 @@ export default {
 
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
-      console.log(incomingMessage);
+
+      if (incomingMessage && incomingMessage.type === "updateUsername") {
+        messages.value = messages.value.map((m) => {
+          if (m.userId === incomingMessage.userId) {
+            m.userName = incomingMessage.userName;
+          }
+          return m;
+        });
+      }
 
       if (incomingMessage && incomingMessage.channel === props.channel) {
         if (incomingMessage.type === "chat") {
@@ -95,6 +103,12 @@ export default {
       const newName = window.prompt("Enter your name", userName.value);
       if (newName) {
         userName.value = newName;
+        const outgoingMessage = createMessage({
+          type: "updateUsername",
+          userId: userId.value,
+          userName: userName.value,
+        });
+        socket.send(JSON.stringify(outgoingMessage));
       }
     };
 

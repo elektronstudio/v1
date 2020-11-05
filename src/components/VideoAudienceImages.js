@@ -85,10 +85,18 @@ export default {
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
-        incomingMessage.type === "stopimage"
+        incomingMessage.type === "leaveImage"
       ) {
         delete images.value[incomingMessage.userId];
       }
+      // if (incomingMessage && incomingMessage.type === "updateUsername") {
+      //   images.value = images.value.map((m) => {
+      //     if (m.userId === incomingMessage.userId) {
+      //       m.userName = incomingMessage.userName;
+      //     }
+      //     return m
+      //   });
+      // }
     });
 
     const sendImageMessage = () => {
@@ -126,7 +134,7 @@ export default {
     const sendStartMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "startimage",
+        type: "joinImage",
         userId: userId.value,
         userName: userName.value,
       });
@@ -136,7 +144,7 @@ export default {
     const sendStopMessage = () => {
       const outgoingMessage = createMessage({
         channel: props.channel,
-        type: "stopimage",
+        type: "leaveImage",
         userId: userId.value,
         userName: userName.value,
       });
