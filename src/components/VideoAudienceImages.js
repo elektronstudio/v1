@@ -80,14 +80,14 @@ export default {
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "userimage"
       ) {
-        images.value[incomingMessage.userid] = incomingMessage;
+        images.value[incomingMessage.userId] = incomingMessage;
       }
       if (
         incomingMessage &&
         incomingMessage.channel === props.channel &&
         incomingMessage.type === "stopimage"
       ) {
-        delete images.value[incomingMessage.userid];
+        delete images.value[incomingMessage.userId];
       }
     });
 
@@ -114,8 +114,8 @@ export default {
         id: randomId(),
         channel: props.channel,
         type: "userimage",
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       });
       if (buffer.some((color) => color !== 0)) {
@@ -127,8 +127,8 @@ export default {
       const outgoingMessage = createMessage({
         channel: props.channel,
         type: "startimage",
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
     };
@@ -137,8 +137,8 @@ export default {
       const outgoingMessage = createMessage({
         channel: props.channel,
         type: "stopimage",
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
     };
@@ -166,7 +166,7 @@ export default {
     window.addEventListener("beforeunload", onStop);
 
     const images2 = computed(() =>
-      Object.values(images.value).sort((a, b) => a.userid > b.userid)
+      Object.values(images.value).sort((a, b) => a.userId > b.userId)
     );
     return {
       videoEl,
@@ -210,7 +210,7 @@ export default {
             align-items: flex-end;
             cursor: default;
           ">
-            {{ image.username }}
+            {{ image.userName }}
           </div>
         </div>
       </video-grid2>

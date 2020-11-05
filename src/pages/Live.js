@@ -1,8 +1,14 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useState, useClientsCount } from "../hooks/index.js";
-import { fetchEvents } from "../utils/index.js";
+import { useState, useClientsCount, useLocalstorage } from "../hooks/index.js";
+import {
+  fetchEvents,
+  randomId,
+  any,
+  adjectives,
+  animals,
+} from "../utils/index.js";
 import { eventsUrl } from "../config/index.js";
 
 import EventDetails from "../components/EventDetails.js";
@@ -25,12 +31,16 @@ export default {
     VideoAudiencePostImages,
   },
   setup() {
-    const clientsCount = useClientsCount();
+    const userId = useLocalstorage("elektron_user_id", randomId());
+    const userName = useLocalstorage(
+      "elektron_user_name",
+      `${any(adjectives)} ${any(animals)}`
+    );
 
     const { params } = useRoute();
     const channel = params.channel;
 
-    //
+    const clientsCount = useClientsCount(channel, userId, userName);
 
     const experimental = ref(false);
 

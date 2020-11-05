@@ -4,12 +4,12 @@ import { formatAgo } from "../utils/index.js";
 export default {
   props: ["message", "userId"],
   setup(props) {
-    const isMyMessage = computed(() => props.message.userid === props.userId);
+    const isMyMessage = computed(() => props.message.userId === props.userId);
     return { formatAgo, isMyMessage };
   },
   template: `
   <div style="display: flex; font-size: 13px; margin-bottom: 8px;">
-      <div :style="{opacity: isMyMessage ? 0.5 : 0.75}">{{ message.username }}</div>&emsp;
+      <div :style="{opacity: isMyMessage ? 0.5 : 0.75}">{{ message.userName }}</div>&emsp;
       <!-- <div style="opacity: 0.25">{{formatAgo(message.datetime) }}</div> -->
     </div>
   <div

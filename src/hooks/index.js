@@ -8,6 +8,7 @@ import {
   adjectives,
   animals,
   socket,
+  createMessage,
 } from "../utils/index.js";
 
 import { chatUrl } from "../config/index.js";
@@ -108,27 +109,50 @@ export const useScrollToBottom = () => {
   return el;
 };
 
-export const useClientsCount = () => {
-  const clientsCount = ref(false);
-
-  let interval = null;
-
-  socket.addEventListener("open", ({ data }) => {
-    socket.send(JSON.stringify({ type: "statsRequest" }));
-    interval = setInterval(
-      () => socket.send(JSON.stringify({ type: "statsRequest" })),
-      8000
-    );
-  });
+export const useClientsCount = (channel, userId, userName) => {
+  const clientsCount = ref(0);
 
   socket.addEventListener("message", ({ data }) => {
     const message = safeJsonParse(data);
-    if (message && message.type === "statsResponse") {
-      clientsCount.value = message.clientsCount;
+    if (
+      message &&
+      message.type === "channelsInfo" &&
+      message.value &&
+      message.value[channel] &&
+      message.value[channel].users
+    ) {
+      clientsCount.value = message.value[channel].users.length;
     }
   });
 
-  socket.onclose = () => clearInterval(interval);
+  const onJoinChannel = () => {
+    const outgoingMessage = createMessage({
+      type: "joinChannel",
+      channel: channel,
+      userId: userId.value,
+      userName: userName.value,
+    });
+    socket.send(JSON.stringify(outgoingMessage));
+  };
+
+  const onLeaveChannel = () => {
+    const outgoingMessage = createMessage({
+      type: "leaveChannel",
+      channel: channel,
+      userId: userId.value,
+      userName: userName.value,
+    });
+    socket.send(JSON.stringify(outgoingMessage));
+  };
+
+  onMounted(() => {
+    onJoinChannel();
+    window.addEventListener("beforeunload", onLeaveChannel);
+  });
+
+  onUnmounted(() => window.removeEventListener("beforeunload", onStop));
+
+  //socket.onclose = () => clearInterval(interval);
 
   return clientsCount;
 };

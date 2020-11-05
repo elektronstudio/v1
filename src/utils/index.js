@@ -199,14 +199,14 @@ export const fetchEvents = (url) => {
 export const fetchAuth = ({
   url,
   payload = null,
-  username,
+  userName,
   password,
   method = "POST",
 }) => {
   let headers = new Headers();
   headers.set("content-type", "application/json");
-  if (username && password) {
-    headers.set("Authorization", "Basic " + btoa(`${username}:${password}`));
+  if (userName && password) {
+    headers.set("Authorization", "Basic " + btoa(`${userName}:${password}`));
   }
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -227,13 +227,13 @@ export const getToken = (id) =>
   fetchAuth({
     url: `${openviduUrl}/api/sessions`,
     payload: { customSessionId: id },
-    username: openviduUsername,
+    userName: openviduUsername,
     password: openviduPassword,
   }).then(() =>
     fetchAuth({
       url: `${openviduUrl}/api/tokens`,
       payload: { session: id },
-      username: openviduUsername,
+      userName: openviduUsername,
       password: openviduPassword,
     })
   );
@@ -243,6 +243,27 @@ export const getToken = (id) =>
 export const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
 
 export const any = (arr) => shuffle(arr)[0];
+
+export const uniqueArray = (arr) => [...new Set(arr)];
+
+export const uniqueCollection = (arr, key) => {
+  const result = [];
+  const map = new Map();
+  for (const item of arr) {
+    if (!map.has(item[key])) {
+      map.set(item[key], true);
+      result.push(item);
+    }
+  }
+  return result;
+};
+
+export const removeFromArray = (arr, callback) => {
+  const index = arr.findIndex(callback);
+  if (index > -1) {
+    return arr.splice(index, 1);
+  }
+};
 
 // Strings
 
@@ -304,8 +325,8 @@ export const createMessage = (message) => {
     datetime: new Date().toISOString(),
     type: "",
     channel: "",
-    userid: "",
-    username: "",
+    userId: "",
+    userName: "",
     value: "",
     ...message,
   };

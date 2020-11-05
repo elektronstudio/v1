@@ -15,6 +15,7 @@ import {
   events,
   socket,
   createMessage,
+  uniqueCollection,
 } from "../utils/index.js";
 
 import ChatMessage from "./ChatMessage.js";
@@ -37,6 +38,8 @@ export default {
 
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
+      console.log(incomingMessage);
+
       if (incomingMessage && incomingMessage.channel === props.channel) {
         if (incomingMessage.type === "chat") {
           if (incomingMessage.value === "/reload") {
@@ -54,6 +57,15 @@ export default {
             { ...incomingMessage, value: "❤️" },
           ];
         }
+        // Sync the archive
+
+        if (incomingMessage.type === "syncChat") {
+          const syncedMessages = uniqueCollection(
+            [...messages.value, ...incomingMessage.value],
+            "id"
+          );
+          messages.value = syncedMessages;
+        }
       }
     });
 
@@ -61,8 +73,8 @@ export default {
       const outgoingMessage = createMessage({
         type: "chat",
         channel: props.channel,
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
         value: newMessage.value,
       });
       socket.send(JSON.stringify(outgoingMessage));
@@ -73,8 +85,8 @@ export default {
       const outgoingMessage = {
         type: "heart",
         channel: props.channel,
-        userid: userId.value,
-        username: userName.value,
+        userId: userId.value,
+        userName: userName.value,
       };
       socket.send(JSON.stringify(outgoingMessage));
     });
@@ -116,7 +128,7 @@ export default {
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
     <div style="display: flex; align-items: space-between; margin-top: 24px; transform: translateY(-24px);">
-      <div style="font-size: 13px; opacity: 0.7">My username is currently {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
+      <div style="font-size: 13px; opacity: 0.7">My userName is currently {{ userName }}. <a href="" @click.prevent="onNameChange">Change</a></div>
       &nbsp;
       <button @click="onNewMessage">Send</button>
     </div>
