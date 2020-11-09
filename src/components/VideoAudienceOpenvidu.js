@@ -6,18 +6,7 @@ import { getToken, useState } from "../lib/index.js";
 
 import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
-import VideoGrid from "./VideoGrid.js";
-import PublisherVideoCard from "./PublisherVideoCard.js";
-import AspectRatio from "./AspectRatio.js";
-import VideoConfirmation from "./VideoConfirmation.js";
-
 export default {
-  components: {
-    VideoGrid,
-    PublisherVideoCard,
-    AspectRatio,
-    VideoConfirmation,
-  },
   props: {
     channel: {
       default: "test",

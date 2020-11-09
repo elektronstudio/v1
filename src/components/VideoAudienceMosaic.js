@@ -4,14 +4,7 @@ import { Flussonic } from "../deps/flussonic.js";
 import { useHls } from "../lib/index.js";
 import { specOutputUrl, specInputmUrl } from "../config/index.js";
 
-import AspectRatio from "./AspectRatio.js";
-import VideoConfirmation from "./VideoConfirmation.js";
-
 export default {
-  components: {
-    AspectRatio,
-    VideoConfirmation,
-  },
   props: {
     channel: {
       default: "test",

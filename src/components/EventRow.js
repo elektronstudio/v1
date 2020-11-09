@@ -1,10 +1,6 @@
 import { ref, computed } from "../deps/vue.js";
 
-import Youtube from "./Youtube.js";
-import DatetimeIndex from "./DatetimeIndex.js";
-
 export default {
-  components: { Youtube, DatetimeIndex },
   props: ["event"],
   setup(props) {
     const isOpen = ref(false);

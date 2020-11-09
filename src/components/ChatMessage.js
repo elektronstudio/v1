@@ -1,4 +1,5 @@
 import { computed } from "../deps/vue.js";
+
 import { formatAgo } from "../lib/index.js";
 
 export default {

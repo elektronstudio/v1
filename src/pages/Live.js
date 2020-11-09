@@ -14,25 +14,7 @@ import {
 
 import { eventsUrl } from "../config/index.js";
 
-import EventDetails from "../components/EventDetails.js";
-import AspectRatio from "../components/AspectRatio.js";
-import VideoPerformer from "../components/VideoPerformer.js";
-import ChatAudienceMessages from "../components/ChatAudienceMessages.js";
-import VideoAudienceImages from "../components/VideoAudienceImages.js";
-import VideoAudiencePostImages from "../components/VideoAudiencePostImages.js";
-import IconToLeft from "../components/IconToLeft.js";
-import IconToRight from "../components/IconToRight.js";
-
 export default {
-  components: {
-    EventDetails,
-    VideoPerformer,
-    IconToLeft,
-    IconToRight,
-    ChatAudienceMessages,
-    VideoAudienceImages,
-    VideoAudiencePostImages,
-  },
   setup() {
     const userId = useLocalstorage("elektron_user_id", randomId());
     const userName = useLocalstorage(
