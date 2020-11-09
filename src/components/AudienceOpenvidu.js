@@ -81,10 +81,10 @@ export default {
         @stop="leaveSession"
       >
         <video-grid>
-          <publisher-video-card
+          <openvidu-video
             :publisher="publisher"
           />
-          <publisher-video-card
+          <openvidu-video
             v-for="(publisher, i) in subscribers"
             :key="i"
             :publisher="publisher"
