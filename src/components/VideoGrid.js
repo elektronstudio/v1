@@ -10,7 +10,8 @@ export default {
     const count = ref(1);
     watch(
       () => slots.default(),
-      (slots) => (count.value = slots[0].children.length)
+      (slots) =>
+        (count.value = slots[0].children ? slots[0].children.length : 0)
     );
     // https://stackoverflow.com/a/51956837
     const columns = computed(() => {

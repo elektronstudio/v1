@@ -1,28 +1,10 @@
 import { ref, onUnmounted } from "../deps/vue.js";
-import { useHls } from "../hooks/index.js";
-import { events } from "../utils/index.js";
-import { mainInputUrl, experimentalInputUrl } from "../config/index.js";
 
-import Logo from "../components/Logo.js";
-import IconPlay from "../components/IconPlay.js";
-import IconPause from "../components/IconPause.js";
-import IconMute from "../components/IconMute.js";
-import IconUnmute from "../components/IconUnmute.js";
-import IconFullscreen from "../components/IconFullscreen.js";
-import IconUnfullscreen from "../components/IconUnfullscreen.js";
-import IconHeart from "../components/IconHeart.js";
+import { useHls, events } from "../lib/index.js";
+
+import { mainInputUrl, experimentalInputUrl } from "../../config.js";
 
 export default {
-  components: {
-    Logo,
-    IconPlay,
-    IconPause,
-    IconMute,
-    IconUnmute,
-    IconFullscreen,
-    IconUnfullscreen,
-    IconHeart,
-  },
   props: {
     channel: {
       default: "test",

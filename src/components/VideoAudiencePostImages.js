@@ -1,21 +1,14 @@
 import { ref, watch, onMounted, computed } from "../deps/vue.js";
-import { useSetInterval, socket, uuidv4 } from "../utils/index.js";
+
+import { useSetInterval, socket, uuidv4 } from "../lib/index.js";
+
 import {
   imageScale,
   imageQuality,
   imageUpdateFrequency,
-} from "../config/index.js";
-
-import VideoGrid from "../components/VideoGrid.js";
-import AspectRatio from "./AspectRatio.js";
-import VideoConfirmation from "./VideoConfirmation.js";
+} from "../../config.js";
 
 export default {
-  components: {
-    AspectRatio,
-    VideoConfirmation,
-    VideoGrid,
-  },
   props: {
     channel: {
       default: "test",
@@ -122,7 +115,7 @@ export default {
     };
   },
   template: `
-  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0;" />
+  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0; pointer-events: none;" />
   <canvas ref="canvasEl" style="display: none;" />
   <aspect-ratio :ratio="ratio">
     <video-confirmation

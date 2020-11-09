@@ -1,5 +1,5 @@
 import { ref, watch, onMounted, computed } from "../deps/vue.js";
-import { useLocalstorage } from "../hooks/index.js";
+
 import {
   safeJsonParse,
   randomId,
@@ -10,27 +10,20 @@ import {
   socket,
   createMessage,
   fit,
-} from "../utils/index.js";
+  useLocalstorage,
+} from "../lib/index.js";
+
 import {
   chatUrl,
   imageScale,
   imageQuality,
   imageUpdateFrequency,
-} from "../config/index.js";
-
-import VideoGrid from "../components/VideoGrid.js";
-import AspectRatio from "./AspectRatio.js";
-import VideoConfirmation from "./VideoConfirmation.js";
+} from "../../config.js";
 
 const imageWidth = 150;
 const imageHeight = 120;
 
 export default {
-  components: {
-    AspectRatio,
-    VideoConfirmation,
-    VideoGrid,
-  },
   props: {
     channel: {
       default: "test",
@@ -202,7 +195,7 @@ export default {
     };
   },
   template: `
-  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0;" />
+  <video ref="videoEl" autoplay playsinline style="position: fixed; top: 0; left: 0; opacity: 0; pointer-events: none;" />
   <canvas ref="canvasEl" style="display: none;" />
   <aspect-ratio :ratio="ratio">
     <video-confirmation

@@ -1,22 +1,19 @@
 import { ref, onMounted } from "../deps/vue.js";
 
 import {
-  useScrollToBottom,
-  useTextarea,
-  useLocalstorage,
-} from "../hooks/index.js";
-
-import {
-  safeJsonParse,
-  randomId,
-  any,
   adjectives,
   animals,
-  events,
-  socket,
+  any,
   createMessage,
+  events,
+  randomId,
+  safeJsonParse,
+  socket,
   uniqueCollection,
-} from "../utils/index.js";
+  useLocalstorage,
+  useScrollToBottom,
+  useTextarea,
+} from "../lib/index.js";
 
 import ChatMessage from "./ChatMessage.js";
 

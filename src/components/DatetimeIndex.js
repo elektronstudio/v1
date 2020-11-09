@@ -1,5 +1,6 @@
 import { computed } from "../deps/vue.js";
-import { formatAgo, formatDate } from "../utils/index.js";
+
+import { formatAgo, formatDate } from "../lib/index.js";
 
 export default {
   props: ["event"],

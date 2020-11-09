@@ -17,7 +17,7 @@ import {
   openviduUsername,
   openviduPassword,
   chatUrl,
-} from "../config/index.js";
+} from "../../config.js";
 
 // Fit
 
