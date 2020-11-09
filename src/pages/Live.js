@@ -77,7 +77,7 @@ export default {
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <video-performer v-if="event" :channel="channel" :experimental="experimental" />
+      <performer-video v-if="event" :channel="channel" :experimental="experimental" />
     </div>
     <div
       class="panel-audience"

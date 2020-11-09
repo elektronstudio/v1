@@ -22,6 +22,6 @@ export { default as OpenviduVideo } from "./OpenviduVideo.js";
 export { default as Spinner } from "./Spinner.js";
 export { default as VideoConfirmation } from "./VideoConfirmation.js";
 export { default as VideoGrid } from "./VideoGrid.js";
-export { default as VideoPerformer } from "./VideoPerformer.js";
+export { default as PerformerVideo } from "./PerformerVideo.js";
 export { default as VideoStream } from "./VideoStream.js";
 export { default as Youtube } from "./Youtube.js";
