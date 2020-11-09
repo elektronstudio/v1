@@ -1,5 +1,5 @@
 import { ref, watch, onMounted, computed } from "../deps/vue.js";
-import { useLocalstorage } from "../hooks/index.js";
+
 import {
   safeJsonParse,
   randomId,
@@ -10,7 +10,9 @@ import {
   socket,
   createMessage,
   fit,
-} from "../utils/index.js";
+  useLocalstorage,
+} from "../lib/index.js";
+
 import {
   chatUrl,
   imageScale,

@@ -1,6 +1,6 @@
 import { ref, onMounted } from "../deps/vue.js";
 
-import { fetchEvents } from "../utils/index.js";
+import { fetchEvents } from "../lib/index.js";
 
 import EventRow from "../components/EventRow.js";
 import Logo from "../components/Logo.js";

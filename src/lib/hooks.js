@@ -10,7 +10,7 @@ import {
   socket,
   createMessage,
   debounce,
-} from "../utils/index.js";
+} from "./index.js";
 
 import { chatUrl } from "../config/index.js";
 
@@ -150,8 +150,6 @@ export const useClientsCount = (channel, userId, userName) => {
   });
 
   onUnmounted(() => window.removeEventListener("beforeunload", onStop));
-
-  //socket.onclose = () => clearInterval(interval);
 
   return clientsCount;
 };

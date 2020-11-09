@@ -1,14 +1,17 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useState, useClientsCount, useLocalstorage } from "../hooks/index.js";
 import {
   fetchEvents,
   randomId,
   any,
   adjectives,
   animals,
-} from "../utils/index.js";
+  useState,
+  useClientsCount,
+  useLocalstorage,
+} from "../lib/index.js";
+
 import { eventsUrl } from "../config/index.js";
 
 import EventDetails from "../components/EventDetails.js";

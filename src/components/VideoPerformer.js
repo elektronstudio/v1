@@ -1,6 +1,7 @@
 import { ref, onUnmounted } from "../deps/vue.js";
-import { useHls } from "../hooks/index.js";
-import { events } from "../utils/index.js";
+
+import { useHls, events } from "../lib/index.js";
+
 import { mainInputUrl, experimentalInputUrl } from "../config/index.js";
 
 import Logo from "../components/Logo.js";

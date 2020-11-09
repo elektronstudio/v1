@@ -2,8 +2,8 @@ import { ref, computed } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 
-import { getToken } from "../utils/index.js";
-import { useState } from "../hooks/index.js";
+import { getToken, useState } from "../lib/index.js";
+
 import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
 
 import VideoGrid from "./VideoGrid.js";

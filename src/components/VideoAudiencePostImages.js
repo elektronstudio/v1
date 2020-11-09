@@ -1,5 +1,7 @@
 import { ref, watch, onMounted, computed } from "../deps/vue.js";
-import { useSetInterval, socket, uuidv4 } from "../utils/index.js";
+
+import { useSetInterval, socket, uuidv4 } from "../lib/index.js";
+
 import {
   imageScale,
   imageQuality,

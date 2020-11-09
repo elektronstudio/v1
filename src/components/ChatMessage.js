@@ -1,5 +1,5 @@
 import { computed } from "../deps/vue.js";
-import { formatAgo } from "../utils/index.js";
+import { formatAgo } from "../lib/index.js";
 
 export default {
   props: ["message", "userId"],
