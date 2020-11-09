@@ -12,7 +12,7 @@ import {
   debounce,
 } from "./index.js";
 
-import { chatUrl } from "../config/index.js";
+import { chatUrl } from "../../config.js";
 
 export const useHls = (url) => {
   const retryDelay = 4000;

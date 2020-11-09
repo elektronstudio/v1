@@ -2,7 +2,7 @@ import { ref, onMounted } from "../deps/vue.js";
 
 import { fetchEvents } from "../lib/index.js";
 
-import { eventsUrl } from "../config/index.js";
+import { eventsUrl } from "../../config.js";
 
 export default {
   setup() {

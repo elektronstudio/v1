@@ -6,7 +6,7 @@ import {
   imageScale,
   imageQuality,
   imageUpdateFrequency,
-} from "../config/index.js";
+} from "../../config.js";
 
 export default {
   props: {

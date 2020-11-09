@@ -18,7 +18,7 @@ import {
   imageScale,
   imageQuality,
   imageUpdateFrequency,
-} from "../config/index.js";
+} from "../../config.js";
 
 const imageWidth = 150;
 const imageHeight = 120;

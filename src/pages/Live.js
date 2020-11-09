@@ -12,7 +12,7 @@ import {
   useLocalstorage,
 } from "../lib/index.js";
 
-import { eventsUrl } from "../config/index.js";
+import { eventsUrl } from "../../config.js";
 
 export default {
   setup() {

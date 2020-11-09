@@ -4,7 +4,7 @@ const { OpenVidu } = OpenviduBrowser.default;
 
 import { getToken, useState } from "../lib/index.js";
 
-import { openviduWidth, openviduHeight, openviduFps } from "../config/index.js";
+import { openviduWidth, openviduHeight, openviduFps } from "../../config.js";
 
 export default {
   props: {

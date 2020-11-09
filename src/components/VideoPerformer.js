@@ -2,7 +2,7 @@ import { ref, onUnmounted } from "../deps/vue.js";
 
 import { useHls, events } from "../lib/index.js";
 
-import { mainInputUrl, experimentalInputUrl } from "../config/index.js";
+import { mainInputUrl, experimentalInputUrl } from "../../config.js";
 
 export default {
   props: {

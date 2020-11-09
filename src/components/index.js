@@ -19,7 +19,6 @@ export { default as PublisherVideo } from "./PublisherVideo.js";
 export { default as PublisherVideoCard } from "./PublisherVideoCard.js";
 export { default as Spinner } from "./Spinner.js";
 export { default as VideoAudienceImages } from "./VideoAudienceImages.js";
-export { default as VideoAudienceMosaic } from "./VideoAudienceMosaic.js";
 export { default as VideoAudienceOpenvidu } from "./VideoAudienceOpenvidu.js";
 export { default as VideoAudiencePostImages } from "./VideoAudiencePostImages.js";
 export { default as VideoConfirmation } from "./VideoConfirmation.js";
