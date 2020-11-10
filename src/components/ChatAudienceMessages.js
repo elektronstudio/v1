@@ -63,6 +63,7 @@ export default {
           }
         }
         // TODO: Move heart handling to a separate component
+
         if (incomingMessage.type === "HEART") {
           messages.value = [
             ...messages.value,
