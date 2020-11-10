@@ -36,10 +36,17 @@ export default {
     socket.addEventListener("message", ({ data }) => {
       const incomingMessage = safeJsonParse(data);
 
-      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
+      if (
+        incomingMessage &&
+        incomingMessage.type === "USERS_UPDATE" &&
+        incomingMessage.value
+      ) {
         messages.value = messages.value.map((m) => {
-          if (m.userId === incomingMessage.userId) {
-            m.userName = incomingMessage.userName;
+          const updatedUser = incomingMessage.value.find(
+            ({ userId }) => userId === m.userId
+          );
+          if (m.userId === updatedUser.userId) {
+            m.userName = updatedUser.userName;
           }
           return m;
         });
@@ -82,7 +89,7 @@ export default {
         userName: userName.value,
         value: newMessage.value,
       });
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
       newMessage.value = "";
     };
 
@@ -93,7 +100,7 @@ export default {
         userId: userId.value,
         userName: userName.value,
       };
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
     });
 
     const onNameChange = () => {
@@ -101,11 +108,11 @@ export default {
       if (newName) {
         userName.value = newName;
         const outgoingMessage = createMessage({
-          type: "USERNAME_UPDATE",
+          type: "USER_UPDATE",
           userId: userId.value,
-          userName: userName.value,
+          value: { userName: userName.value },
         });
-        socket.send(JSON.stringify(outgoingMessage));
+        socket.send(outgoingMessage);
       }
     };
 

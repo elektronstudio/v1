@@ -88,7 +88,7 @@ export default {
       ) {
         delete images.value[incomingMessage.userId];
       }
-      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
+      if (incomingMessage && incomingMessage.type === "USERS_UPDATE") {
         // TODO: Rework this
         if (userId.value === incomingMessage.userId) {
           userName.value = incomingMessage.userName;
@@ -132,7 +132,7 @@ export default {
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       });
       if (buffer.some((color) => color !== 0)) {
-        socket.send(JSON.stringify(outgoingMessage));
+        socket.send(outgoingMessage);
       }
     };
 
@@ -143,7 +143,7 @@ export default {
         userId: userId.value,
         userName: userName.value,
       });
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
     };
 
     const sendStopMessage = () => {
@@ -153,7 +153,7 @@ export default {
         userId: userId.value,
         userName: userName.value,
       });
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
     };
 
     useSetInterval(
