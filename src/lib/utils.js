@@ -362,7 +362,7 @@ export const socket = new ReconnectingWebsocket(chatUrl);
 // Create message
 
 export const createMessage = (message) => {
-  return {
+  return JSON.stringify({
     id: randomId(),
     datetime: new Date().toISOString(),
     type: "",
@@ -371,7 +371,7 @@ export const createMessage = (message) => {
     userName: "",
     value: "",
     ...message,
-  };
+  });
 };
 
 // Sample data

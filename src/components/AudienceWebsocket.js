@@ -88,20 +88,24 @@ export default {
       ) {
         delete images.value[incomingMessage.userId];
       }
-      if (incomingMessage && incomingMessage.type === "USERNAME_UPDATE") {
-        // TODO: Rework this
+      // TODO: Rework this
+      /*
+      if (incomingMessage && incomingMessage.type === "USERS_UPDATE") {
+        console.log(incomingMessage.value);
         if (userId.value === incomingMessage.userId) {
-          userName.value = incomingMessage.userName;
+          userName.value = incomingMessage.value.userName;
         }
         images.value = Object.fromEntries(
           Object.entries(images.value).map(([key, value]) => {
+            console.log(value.userId, incomingMessage.userId);
             if (value.userId === incomingMessage.userId) {
-              value.userName = incomingMessage.userName;
+              value.userName = incomingMessage.value.userName;
             }
             return [key, value];
           })
         );
       }
+      */
     });
 
     const sendImageMessage = () => {
@@ -132,7 +136,7 @@ export default {
         value: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       });
       if (buffer.some((color) => color !== 0)) {
-        socket.send(JSON.stringify(outgoingMessage));
+        socket.send(outgoingMessage);
       }
     };
 
@@ -143,7 +147,7 @@ export default {
         userId: userId.value,
         userName: userName.value,
       });
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
     };
 
     const sendStopMessage = () => {
@@ -153,7 +157,7 @@ export default {
         userId: userId.value,
         userName: userName.value,
       });
-      socket.send(JSON.stringify(outgoingMessage));
+      socket.send(outgoingMessage);
     };
 
     useSetInterval(
@@ -213,7 +217,7 @@ export default {
             :src="image.value" 
             style="display: block; width: 100%;"
           />
-          <div class="user-image-name" style="
+          <!--div class="user-image-name" style="
             font-size: 0.8em;
             position: absolute;
             top: 0;
@@ -226,7 +230,7 @@ export default {
             cursor: default;
           ">
             {{ image.userName }}
-          </div>
+          </div-->
         </div>
       </video-grid2>
     </video-confirmation>

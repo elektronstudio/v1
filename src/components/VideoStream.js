@@ -1,9 +1,6 @@
 import { ref, watch } from "../deps/vue.js";
 
-import Spinner from "../components/Spinner.js";
-
 export default {
-  components: { Spinner },
   props: ["stream"],
   setup(props) {
     const videoEl = ref(null);

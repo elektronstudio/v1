@@ -113,14 +113,13 @@ export const useClientsCount = (channel, userId, userName) => {
 
   socket.addEventListener("message", ({ data }) => {
     const message = safeJsonParse(data);
-    if (
-      message &&
-      message.type === "CHANNEL_INFO" &&
-      message.value &&
-      message.value[channel] &&
-      message.value[channel].users
-    ) {
-      clientsCount.value = message.value[channel].users.length;
+    if (message && message.type === "CHANNELS_UPDATE" && message.value) {
+      const currentChannel = message.value.find((m) => m.channel === channel);
+      if (currentChannel) {
+        // The userIds type is object so we neet to cast it to array
+        // TODO: fix the count 0 properly
+        clientsCount.value = Math.max(1, [...currentChannel.userIds].length);
+      }
     }
   });
 
@@ -131,7 +130,7 @@ export const useClientsCount = (channel, userId, userName) => {
       userId: userId.value,
       userName: userName.value,
     });
-    socket.send(JSON.stringify(outgoingMessage));
+    socket.send(outgoingMessage);
   };
 
   const onLeaveChannel = () => {
@@ -141,7 +140,7 @@ export const useClientsCount = (channel, userId, userName) => {
       userId: userId.value,
       userName: userName.value,
     });
-    socket.send(JSON.stringify(outgoingMessage));
+    socket.send(outgoingMessage);
   };
 
   onMounted(() => {
