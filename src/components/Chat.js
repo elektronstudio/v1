@@ -2,10 +2,7 @@ import { ref, onMounted } from "../deps/vue.js";
 
 import { useUser, useChat } from "../lib/index.js";
 
-import ChatMessage from "./ChatMessage.js";
-
 export default {
-  components: { ChatMessage },
   props: {
     channel: {
       default: "test",

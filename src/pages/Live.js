@@ -1,31 +1,16 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import {
-  fetchEvents,
-  randomId,
-  any,
-  adjectives,
-  animals,
-  useState,
-  useClientsCount,
-  useLocalstorage,
-} from "../lib/index.js";
+import { useChannel, fetchEvents } from "../lib/index.js";
 
 import { eventsUrl } from "../../config.js";
 
 export default {
   setup() {
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
-
     const { params } = useRoute();
     const channel = params.channel;
 
-    const clientsCount = useClientsCount(channel, userId, userName);
+    const { count } = useChannel(channel);
 
     const experimental = ref(false);
 
@@ -68,7 +53,7 @@ export default {
     return {
       channel,
       event,
-      clientsCount,
+      count,
       onToggleChat,
       chatVisible,
       experimental,
@@ -88,7 +73,7 @@ export default {
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>Live audience</h4>
-        <div style="opacity: 0.5">{{ clientsCount }} online</div>
+        <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <component :is="experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
     </div>
@@ -113,7 +98,7 @@ export default {
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
-      <chat-audience-messages :channel="channel" v-if="chatVisible" />
+      <chat :channel="channel" v-if="chatVisible" />
     </div>
     <div style="padding: 32px; grid-area: about">
       <event-details :event="event" />
