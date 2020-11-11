@@ -2,7 +2,6 @@ import { ref, onMounted, onUnmounted, computed, isRef } from "../deps/vue.js";
 import { postscribe } from "../deps/postscribe.js";
 import { TurndownService } from "../deps/turndown.js";
 import { marked } from "../deps/marked.js";
-import { ReconnectingWebsocket } from "../deps/reconnecting-websocket.js";
 
 import {
   compareDesc,
@@ -16,7 +15,6 @@ import {
   openviduUrl,
   openviduUsername,
   openviduPassword,
-  chatUrl,
 } from "../../config.js";
 
 // Fit
@@ -354,25 +352,6 @@ function Events() {
 }
 
 export const events = mitt();
-
-// Websockets
-
-export const socket = new ReconnectingWebsocket(chatUrl);
-
-// Create message
-
-export const createMessage = (message) => {
-  return JSON.stringify({
-    id: randomId(),
-    datetime: new Date().toISOString(),
-    type: "",
-    channel: "",
-    userId: "",
-    userName: "",
-    value: "",
-    ...message,
-  });
-};
 
 // Sample data
 

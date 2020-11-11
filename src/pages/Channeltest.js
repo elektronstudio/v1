@@ -1,18 +1,20 @@
 // import { ref, onMounted } from "../deps/vue.js";
 
-import { useChannels, useUser } from "../lib/index.js";
+import { useChannel, useUser, useSettings } from "../lib/index.js";
 
 export default {
   setup() {
     const { userName } = useUser();
-    const { channels, channel, count } = useChannels("foyer2");
-    return { userName, channels, channel, count };
+    const settings = useSettings();
+    const { channels, count } = useChannel("foyer2");
+    return { userName, channels, count, settings };
   },
   template: `
   <div class="layout-videotest">
     <div>
       {{ userName  }}
       <div><input v-model="userName" /></div>
+      <div>{{ settings.positionX }} <p /><input v-model="settings.positionX" type="range" /></div>
       <pre>{{ channels }}</pre>
     </div>
     <pre>{{ channel }}</pre>

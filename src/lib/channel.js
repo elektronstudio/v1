@@ -1,4 +1,11 @@
-import { ref, onMounted, onUnmounted, watch, computed } from "../deps/vue.js";
+import {
+  ref,
+  reactive,
+  onMounted,
+  onUnmounted,
+  watch,
+  computed,
+} from "../deps/vue.js";
 import {
   socket,
   randomId,
@@ -8,30 +15,10 @@ import {
   useLocalstorage,
   createMessage,
   safeJsonParse,
+  useUser,
 } from "./index.js";
 
-export const useUser = () => {
-  const initialUserId = randomId();
-  const initialUserName = `${any(adjectives)} ${any(animals)}`;
-
-  const userId = useLocalstorage("elektron_user_id", initialUserId);
-  const userName = useLocalstorage("elektron_user_name", initialUserName);
-
-  watch(
-    () => userName.value,
-    () => {
-      const outgoingMessage = createMessage({
-        type: "USER_UPDATE",
-        userId: userId.value,
-        value: { userName: userName.value },
-      });
-      socket.send(outgoingMessage);
-    }
-  );
-  return { userId, userName };
-};
-
-export const useChannels = (channel) => {
+export const useChannel = (channel) => {
   const channels = ref({});
   const { userId, userName } = useUser();
 
