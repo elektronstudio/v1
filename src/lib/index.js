@@ -1,3 +1,4 @@
+export * from "./chat.js";
 export * from "./hooks.js";
 export * from "./utils.js";
 export * from "./user.js";

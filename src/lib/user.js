@@ -17,6 +17,13 @@ export const useUser = () => {
   const userId = useLocalstorage("elektron_user_id", initialUserId);
   const userName = useLocalstorage("elektron_user_name", initialUserName);
 
+  const onUserNameChange = () => {
+    const newName = window.prompt("Enter your name", userName.value);
+    if (newName) {
+      userName.value = newName;
+    }
+  };
+
   watch(
     () => userName.value,
     () => {
@@ -28,5 +35,5 @@ export const useUser = () => {
       socket.send(outgoingMessage);
     }
   );
-  return { userId, userName };
+  return { userId, userName, onUserNameChange };
 };
