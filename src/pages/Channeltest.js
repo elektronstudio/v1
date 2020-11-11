@@ -14,10 +14,12 @@ export default {
     } = useChat("foyer2");
     const settings = useSettings();
     const { channels, count } = useChannel("foyer2");
+    const { channels3 } = useChannel("foyer3");
 
     return {
       userName,
       channels,
+      channels3,
       count,
       settings,
       onUserNameChange,
@@ -36,6 +38,7 @@ export default {
       <div><input v-model="userName" /></div>
       <div>{{ settings.positionX }} <p /><input v-model="settings.positionX" type="range" /></div>
       <pre>{{ channels }}</pre>
+      <pre>{{ channels3 }}</pre>
     </div>
     <div>
       <textarea ref="textareaEl" v-model="newMessage" />

@@ -17,21 +17,33 @@ export const useChat = (channel) => {
   socket.addEventListener("message", ({ data }) => {
     const m = safeJsonParse(data);
 
-    // if (
-    //   incomingMessage &&
-    //   incomingMessage.type === "USERS_UPDATE" &&
-    //   incomingMessage.value
-    // ) {
-    //   messages.value = messages.value.map((m) => {
-    //     const updatedUser = incomingMessage.value.find(
-    //       ({ userId }) => userId === m.userId
-    //     );
-    //     if (m.userId === updatedUser.userId) {
-    //       m.userName = updatedUser.userName;
-    //     }
-    //     return m;
-    //   });
-    // }
+    if (m && m.type === "RESET" && m.value) {
+      messages.value = [];
+    }
+
+    if (m && m.type === "CHANNELS_UPDATED" && m.value) {
+      // Find all the unique userIds with their usernames from the channel update
+
+      const updatedUsers = Object.fromEntries(
+        Object.values(m.value || {})
+          .map(({ users }) =>
+            Object.entries(users).map(([userId, { userName }]) => [
+              userId,
+              userName,
+            ])
+          )
+          .flat()
+      );
+
+      // Update messages history with new usernames
+
+      messages.value = messages.value.map((message) => {
+        if (updatedUsers[message.userId]) {
+          message.userName = updatedUsers[message.userId];
+        }
+        return message;
+      });
+    }
 
     if (m && m.channel === channel) {
       if (m.type === "CHAT") {
