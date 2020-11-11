@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted } from "../deps/vue.js";
+import { ref, onMounted, onUnmounted, watch, computed } from "../deps/vue.js";
 import {
   socket,
   randomId,
@@ -17,6 +17,17 @@ export const useUser = () => {
   const userId = useLocalstorage("elektron_user_id", initialUserId);
   const userName = useLocalstorage("elektron_user_name", initialUserName);
 
+  watch(
+    () => userName.value,
+    () => {
+      const outgoingMessage = createMessage({
+        type: "USER_UPDATE",
+        userId: userId.value,
+        value: { userName: userName.value },
+      });
+      socket.send(outgoingMessage);
+    }
+  );
   return { userId, userName };
 };
 
@@ -29,10 +40,12 @@ export const useChannels = (channel) => {
     if (message && message.type === "CHANNELS_UPDATED" && message.value) {
       channels.value = message.value;
     }
+    if (message && message.type === "RESET") {
+      channels.value = {};
+    }
   });
 
   const joinChannel = () => {
-    console.log(userId.value, userName.value);
     const outgoingMessage = createMessage({
       type: "CHANNEL_JOIN",
       channel: channel,
@@ -47,6 +60,7 @@ export const useChannels = (channel) => {
       type: "CHANNEL_LEAVE",
       channel: channel,
       userId: userId.value,
+      userName: userName.value,
     });
     socket.send(outgoingMessage);
   };
@@ -58,5 +72,14 @@ export const useChannels = (channel) => {
 
   onUnmounted(() => window.removeEventListener("beforeunload", leaveChannel));
 
-  return channels;
+  const count = computed(() =>
+    Math.max(
+      1,
+      channels.value[channel] && channels.value[channel].users
+        ? Object.entries(channels.value[channel].users).length
+        : 1
+    )
+  );
+
+  return { channels, count };
 };
