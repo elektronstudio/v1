@@ -12,8 +12,6 @@ export default {
 
     const { count } = useChannel(channel);
 
-    const experimental = ref(false);
-
     // Fetch and parse event
 
     const event = ref(null);
@@ -26,8 +24,12 @@ export default {
       if (event.value && event.value.color) {
         document.body.style.setProperty("background", event.value.color);
       }
-      if (event.value && event.value.experimental) {
-        experimental.value = true;
+      if (!event.value) {
+        event.value = {
+          experimental: true,
+          id: channel,
+          summary: channel,
+        };
       }
     });
 
@@ -56,13 +58,12 @@ export default {
       count,
       onToggleChat,
       chatVisible,
-      experimental,
     };
   },
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <performer-video v-if="event" :channel="channel" :experimental="experimental" />
+      <performer-video v-if="event" :channel="channel" :experimental="event.experimental" />
     </div>
     <div
       class="panel-audience"
@@ -75,7 +76,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ count }} online</div>
       </div>
-      <component :is="experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
+      <component v-if="event" :is="event.experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"

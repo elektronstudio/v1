@@ -108,6 +108,7 @@ export const useScrollToBottom = () => {
   return el;
 };
 
+/*
 export const useClientsCount = (channel, userId, userName) => {
   const clientsCount = ref(0);
 
@@ -161,3 +162,4 @@ export const useState = () => {
   );
   return { userId, userName };
 };
+*/

@@ -6,10 +6,11 @@ import {
   watch,
   computed,
 } from "../deps/vue.js";
-import { socket, createMessage, safeJsonParse } from "./index.js";
+import { socket, createMessage, safeJsonParse, useUser } from "./index.js";
 
 export const useChannel = (channel) => {
   const channels = ref({});
+  const { userName } = useUser();
 
   socket.addEventListener("message", ({ data }) => {
     const message = safeJsonParse(data);
@@ -25,6 +26,7 @@ export const useChannel = (channel) => {
     const outgoingMessage = createMessage({
       type: "CHANNEL_JOIN",
       channel: channel,
+      value: { userName: userName.value },
     });
     socket.send(outgoingMessage);
   };

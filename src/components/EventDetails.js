@@ -10,7 +10,7 @@ export default {
     return { isSummary };
   },
   template: `
-  <datetime-live v-if="event" :event="event"></datetime-live>
+  <datetime-live v-if="event && event.start" :event="event"></datetime-live>
   <br />
   <h3>{{ event ? event.summary : '' }}</h3>
   <img v-if="event && event.image" style="width: 100%; margin: 16px 0;" :src="event.image" />

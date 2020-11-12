@@ -67,7 +67,7 @@ export const useChat = (channel) => {
 
   const onNewMessage = () => {
     const outgoingMessage = createMessage({
-      type: "CHAT",
+      type: newMessage.value === "/reset" ? "RESET" : "CHAT",
       channel: channel,
       value: newMessage.value,
     });
@@ -78,7 +78,7 @@ export const useChat = (channel) => {
   events.on("heart", () => {
     const outgoingMessage = {
       type: "HEART",
-      channel: props.channel,
+      channel: channel,
     };
     socket.send(outgoingMessage);
   });
