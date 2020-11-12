@@ -1,33 +1,16 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import {
-  fetchEvents,
-  randomId,
-  any,
-  adjectives,
-  animals,
-  useState,
-  useClientsCount,
-  useLocalstorage,
-} from "../lib/index.js";
+import { useChannel, fetchEvents } from "../lib/index.js";
 
 import { eventsUrl } from "../../config.js";
 
 export default {
   setup() {
-    const userId = useLocalstorage("elektron_user_id", randomId());
-    const userName = useLocalstorage(
-      "elektron_user_name",
-      `${any(adjectives)} ${any(animals)}`
-    );
-
     const { params } = useRoute();
     const channel = params.channel;
 
-    const clientsCount = useClientsCount(channel, userId, userName);
-
-    const experimental = ref(false);
+    const { count } = useChannel(channel);
 
     // Fetch and parse event
 
@@ -41,8 +24,12 @@ export default {
       if (event.value && event.value.color) {
         document.body.style.setProperty("background", event.value.color);
       }
-      if (event.value && event.value.experimental) {
-        experimental.value = true;
+      if (!event.value) {
+        event.value = {
+          experimental: true,
+          id: channel,
+          summary: channel,
+        };
       }
     });
 
@@ -68,16 +55,15 @@ export default {
     return {
       channel,
       event,
-      clientsCount,
+      count,
       onToggleChat,
       chatVisible,
-      experimental,
     };
   },
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <performer-video v-if="event" :channel="channel" :experimental="experimental" />
+      <performer-video v-if="event" :channel="channel" :experimental="event.experimental" />
     </div>
     <div
       class="panel-audience"
@@ -88,9 +74,9 @@ export default {
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>Live audience</h4>
-        <div style="opacity: 0.5">{{ clientsCount }} online</div>
+        <div style="opacity: 0.5">{{ count }} online</div>
       </div>
-      <component :is="experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
+      <component v-if="event" :is="event.experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"
@@ -113,7 +99,7 @@ export default {
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
-      <chat-audience-messages :channel="channel" v-if="chatVisible" />
+      <chat :channel="channel" v-if="chatVisible" />
     </div>
     <div style="padding: 32px; grid-area: about">
       <event-details :event="event" />

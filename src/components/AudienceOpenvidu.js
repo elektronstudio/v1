@@ -2,7 +2,7 @@ import { ref, computed } from "../deps/vue.js";
 import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
 const { OpenVidu } = OpenviduBrowser.default;
 
-import { getToken, useState } from "../lib/index.js";
+import { getToken, useUser } from "../lib/index.js";
 
 import { openviduWidth, openviduHeight, openviduFps } from "../../config.js";
 
@@ -16,7 +16,7 @@ export default {
     const session = ref(null);
     const publisher = ref(null);
     const subscribers = ref([]);
-    const { userId, userName } = useState();
+    const { userId, userName } = useUser();
 
     const joinSession = () => {
       const OV = new OpenVidu();

@@ -3,11 +3,13 @@ import { createRouter, createWebHistory } from "./src/deps/router.js";
 
 import * as components from "./src/components/index.js";
 
+import Channeltest from "./src/pages/Channeltest.js";
+import Videotest from "./src/pages/Videotest.js";
 import Live from "./src/pages/Live.js";
 import Index from "./src/pages/Index.js";
-import Videotest from "./src/pages/Videotest.js";
 
 const routes = [
+  { path: "/channeltest", component: Channeltest },
   { path: "/videotest", component: Videotest },
   { path: "/:channel", component: Live },
   { path: "/", component: Index },
