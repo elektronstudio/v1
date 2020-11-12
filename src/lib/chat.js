@@ -1,4 +1,4 @@
-import { ref } from "../deps/vue.js";
+import { ref, computed } from "../deps/vue.js";
 import {
   useLocalstorage,
   safeJsonParse,
@@ -11,14 +11,17 @@ import {
 } from "./index.js";
 
 export const useChat = (channel) => {
-  const messages = useLocalstorage("elektron_messages", []);
+  const allMessages = useLocalstorage("elektron_messages", []);
+  const messages = computed(() =>
+    allMessages.value.filter((message) => message.channel === channel)
+  );
   const newMessage = ref("");
 
   socket.addEventListener("message", ({ data }) => {
     const m = safeJsonParse(data);
 
     if (m && m.type === "RESET" && m.value) {
-      messages.value = [];
+      allMessages.value = [];
     }
 
     if (m && m.type === "CHANNELS_UPDATED" && m.value) {
@@ -37,7 +40,7 @@ export const useChat = (channel) => {
 
       // Update messages history with new usernames
 
-      messages.value = messages.value.map((message) => {
+      allMessages.value = allMessages.value.map((message) => {
         if (updatedUsers[message.userId]) {
           message.userName = updatedUsers[message.userId];
         }
@@ -47,20 +50,20 @@ export const useChat = (channel) => {
 
     if (m && m.channel === channel) {
       if (m.type === "CHAT") {
-        messages.value = [...messages.value, m];
+        allMessages.value = [...allMessages.value, m];
       }
       if (m.type === "HEART") {
-        messages.value = [...messages.value, { ...m, value: "❤️" }];
+        allMessages.value = [...allMessages.value, { ...m, value: "❤️" }];
       }
 
       // Sync the archive
 
       if (m.type === "CHAT_SYNCED") {
         const syncedMessages = uniqueCollection(
-          [...messages.value, ...m.value],
+          [...allMessages.value, ...m.value],
           "id"
         );
-        messages.value = syncedMessages;
+        allMessages.value = syncedMessages;
       }
     }
   });
@@ -87,6 +90,7 @@ export const useChat = (channel) => {
   const scrollEl = useScrollToBottom();
 
   return {
+    allMessages,
     messages,
     newMessage,
     onNewMessage,
