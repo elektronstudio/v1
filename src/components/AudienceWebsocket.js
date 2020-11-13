@@ -217,7 +217,7 @@ export default {
             :src="image.value" 
             style="display: block; width: 100%;"
           />
-          <!--div class="user-image-name" style="
+          <div class="user-image-name" style="
             font-size: 0.8em;
             position: absolute;
             top: 0;
@@ -229,8 +229,8 @@ export default {
             align-items: flex-end;
             cursor: default;
           ">
-            {{ image.userName }}
-          </div-->
+            userId: {{ image.userId }}
+          </div>
         </div>
       </video-grid2>
     </video-confirmation>

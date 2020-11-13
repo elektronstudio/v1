@@ -9,7 +9,7 @@ export default {
     },
   },
   setup(props) {
-    const { userName, onUserNameChange } = useUser();
+    const { userId, userName, onUserNameChange } = useUser();
 
     const {
       messages,
@@ -20,6 +20,7 @@ export default {
     } = useChat(props.channel);
 
     return {
+      userId,
       userName,
       onUserNameChange,
       messages,
@@ -44,8 +45,8 @@ export default {
     <div style="margin-top: 8px; transform: translateY(-10px);">
       <textarea style="width: 100%" ref="textareaEl" v-model="newMessage" ></textarea>
     </div>
-    <div style="display: flex; align-items: space-between; margin-top: 24px; transform: translateY(-24px);">
-      <div style="font-size: 13px; opacity: 0.7">My userName is currently {{ userName }}. <a href="" @click.prevent="onUserNameChange">Change</a></div>
+    <div style="display: flex; align-tems: top: justify-content: space-between; margin-top: 24px; transform: translateY(-24px);">
+      <div style="font-size: 13px; opacity: 0.7">My userId: {{ userId }}<br />My userName: {{ userName }}<br /><a href="" @click.prevent="onUserNameChange">Change username</a></div>
       &nbsp;
       <button @click="onNewMessage">Send</button>
     </div>
