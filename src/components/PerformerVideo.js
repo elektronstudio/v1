@@ -149,7 +149,7 @@ export default {
     >
      
       <router-link to="/" style="cursor: w-resize"><logo /></router-link>
-      <icon-heart style="stroke: red" @click="onSendHeart" />
+      <!-- <icon-heart style="stroke: red" @click="onSendHeart" /> -->
     </div>
   </transition> 
   <transition name="fade">
