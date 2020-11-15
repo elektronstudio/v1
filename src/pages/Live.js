@@ -26,7 +26,7 @@ export default {
       }
       if (!event.value) {
         event.value = {
-          experimental: true,
+          experimental: false,
           id: channel,
           summary: channel,
         };
