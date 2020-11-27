@@ -63,7 +63,7 @@ export default {
   template: `
   <div class="layout-test">
     <div style="grid-area: performer">
-      <performer-video v-if="event" :channel="channel" :experimental="event.experimental" />
+      <performer-video v-if="event" :channel="channel" :experimental="false" />
     </div>
     <div
       class="panel-audience"
@@ -76,7 +76,7 @@ export default {
         <h4>Live audience</h4>
         <div style="opacity: 0.5">{{ count }} online</div>
       </div>
-      <component v-if="event" :is="event.experimental ? 'audience-websocket' : 'audience-fetch'" :channel="channel" :ratio="1 / 2" />
+      <audience-websocket v-if="event" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
       class="panel-chat"

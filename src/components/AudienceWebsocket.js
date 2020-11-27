@@ -11,6 +11,7 @@ import {
   createMessage,
   fit,
   useLocalstorage,
+  uuidv4,
 } from "../lib/index.js";
 
 import {
@@ -108,6 +109,8 @@ export default {
       */
     });
 
+    const uuid = uuidv4();
+
     const sendImageMessage = () => {
       //const isPortrait = videoEl.value.videoHeight > videoEl.value.videoWidth;
       const { x, y, width, height } = fit(
@@ -138,6 +141,17 @@ export default {
       if (buffer.some((color) => color !== 0)) {
         socket.send(outgoingMessage);
       }
+
+      const payload = {
+        uuid,
+        feed: props.channel,
+        imgScaled: canvasEl.value.toDataURL("image/jpeg", imageQuality),
+      };
+
+      fetch("https://elektron.live/area51/upload.php", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
     };
 
     const sendStartMessage = () => {
