@@ -18,8 +18,8 @@ export const openviduUrl = "https://elektron.studio";
 export const openviduUsername = "OPENVIDUAPP";
 export const openviduPassword = "secret";
 
-export const openviduWidth = 80;
-export const openviduHeight = 60;
+export const openviduWidth = 640;
+export const openviduHeight = 480;
 export const openviduFps = 12;
 
 export const imageScale = 1 / 4;

@@ -10,7 +10,7 @@ const OpenviduVideoElement = {
     return { video };
   },
   template: `
-    <video ref="video" muted autoplay />
+    <video ref="video" autoplay />
   `,
 };
 

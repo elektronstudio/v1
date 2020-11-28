@@ -11,6 +11,9 @@ export default {
     channel: {
       default: "test",
     },
+    ratio: {
+      default: 1,
+    },
   },
   setup(props) {
     const session = ref(null);
@@ -74,7 +77,7 @@ export default {
     };
   },
   template: `
-    <aspect-ratio :ratio="1">
+    <aspect-ratio :ratio="ratio">
       <video-confirmation
         :started="session"
         @start="joinSession"
