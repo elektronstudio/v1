@@ -6,47 +6,54 @@ import { getToken, useUser } from "./index.js";
 
 import { openviduWidth, openviduHeight, openviduFps } from "../../config.js";
 
-export const useOpenvidu = (channel) => {
+export const useOpenvidu = (channel, autostart = false) => {
   const session = ref(null);
   const publisher = ref(null);
   const subscribers = ref([]);
   const { userId, userName } = useUser();
 
+  const OV = new OpenVidu();
+
+  session.value = OV.initSession();
+
+  session.value.on("streamCreated", ({ stream }) => {
+    const subscriber = session.value.subscribe(stream);
+    subscribers.value.push(subscriber);
+  });
+
+  session.value.on("streamDestroyed", ({ stream }) => {
+    const index = subscribers.value.indexOf(stream.streamManager);
+    if (index >= 0) {
+      subscribers.value.splice(index, 1);
+    }
+  });
+
+  const startSession = () => {
+    getToken(channel)
+      .then(({ token }) => {
+        session.value.connect(token, { userId, userName });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  if (autostart) {
+    startSession();
+  }
+
   const joinSession = () => {
-    const OV = new OpenVidu();
-
-    session.value = OV.initSession();
-
-    session.value.on("streamCreated", ({ stream }) => {
-      const subscriber = session.value.subscribe(stream);
-      subscribers.value.push(subscriber);
+    if (!autostart) {
+      startSession();
+    }
+    let newPublisher = OV.initPublisher(null, {
+      publishVideo: true,
+      publishAudio: true,
+      resolution: `${openviduWidth}x${openviduHeight}`,
+      frameRate: openviduFps,
+      insertMode: "APPEND",
+      mirror: false,
     });
-
-    session.value.on("streamDestroyed", ({ stream }) => {
-      const index = subscribers.value.indexOf(stream.streamManager);
-      if (index >= 0) {
-        subscribers.value.splice(index, 1);
-      }
-    });
-
-    getToken(channel).then(({ token }) => {
-      session.value
-        .connect(token, { userName })
-        .then(() => {
-          let newPublisher = OV.initPublisher(null, {
-            publishVideo: true,
-            publishAudio: true,
-            resolution: `${openviduWidth}x${openviduHeight}`,
-            frameRate: openviduFps,
-            insertMode: "APPEND",
-            mirror: false,
-          });
-
-          publisher.value = newPublisher;
-          session.value.publish(newPublisher);
-        })
-        .catch((e) => console.log(e));
-    });
+    publisher.value = newPublisher;
+    session.value.publish(newPublisher);
   };
 
   const leaveSession = () => {
@@ -59,7 +66,7 @@ export const useOpenvidu = (channel) => {
 
   window.addEventListener("beforeunload", leaveSession);
 
-  const sessionStarted = computed(() => !!session.value);
+  const sessionStarted = computed(() => publisher.value);
 
   return {
     sessionStarted,
