@@ -39,7 +39,6 @@ export default {
       text-align: center;
       padding: 0 32px;
     "
-    :style="{background: 'rgba(0,0,0,' + opacity + ')'}"
   >
     <div>
       <p>
