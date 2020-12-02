@@ -68,8 +68,10 @@ export default {
 
     window.addEventListener("beforeunload", leaveSession);
 
+    const sessionStarted = computed(() => !!session.value);
+
     return {
-      session,
+      sessionStarted,
       publisher,
       subscribers,
       joinSession,
@@ -79,7 +81,7 @@ export default {
   template: `
     <aspect-ratio :ratio="ratio">
       <video-confirmation
-        :started="session"
+        :started="sessionStarted"
         @start="joinSession"
         @stop="leaveSession"
       >
