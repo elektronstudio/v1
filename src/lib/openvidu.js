@@ -28,32 +28,50 @@ export const useOpenvidu = (channel, autostart = false) => {
     }
   });
 
-  const startSession = () => {
-    getToken(channel)
-      .then(({ token }) => {
-        session.value.connect(token, { userId, userName });
-      })
-      .catch((e) => console.log(e));
-  };
+  // const startSession = () => {
+  //   getToken(channel)
+  //     .then(({ token }) => {
+  //       session.value.connect(token, { userId, userName });
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
 
-  if (autostart) {
-    startSession();
-  }
+  // if (autostart) {
+  //   startSession();
+  // }
 
   const joinSession = () => {
-    if (!autostart) {
-      startSession();
-    }
-    let newPublisher = OV.initPublisher(null, {
-      publishVideo: true,
-      publishAudio: true,
-      resolution: `${openviduWidth}x${openviduHeight}`,
-      frameRate: openviduFps,
-      insertMode: "APPEND",
-      mirror: false,
+    // if (!autostart) {
+    //   startSession();
+    // }
+    // let newPublisher = OV.initPublisher(null, {
+    //   publishVideo: true,
+    //   publishAudio: true,
+    //   resolution: `${openviduWidth}x${openviduHeight}`,
+    //   frameRate: openviduFps,
+    //   insertMode: "APPEND",
+    //   mirror: false,
+    // });
+    // publisher.value = newPublisher;
+    // session.value.publish(newPublisher);
+    getToken(channel).then(({ token }) => {
+      session.value
+        .connect(token, { userId, userName })
+        .then(() => {
+          let newPublisher = OV.initPublisher(null, {
+            publishVideo: true,
+            publishAudio: true,
+            resolution: `${openviduWidth}x${openviduHeight}`,
+            frameRate: openviduFps,
+            insertMode: "APPEND",
+            mirror: false,
+          });
+
+          publisher.value = newPublisher;
+          session.value.publish(newPublisher);
+        })
+        .catch((e) => console.log(e));
     });
-    publisher.value = newPublisher;
-    session.value.publish(newPublisher);
   };
 
   const leaveSession = () => {
