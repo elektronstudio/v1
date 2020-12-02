@@ -61,7 +61,7 @@ export default {
     };
   },
   template: `
-  <div class="layout-test">
+  <div class="layout-live">
     <div style="grid-area: performer">
       <performer-video v-if="event" :channel="channel" :experimental="false" />
     </div>

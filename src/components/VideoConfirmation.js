@@ -2,7 +2,14 @@ import { ref, Transition } from "../deps/vue.js";
 
 export default {
   components: { Transition },
-  props: { started: { default: false } },
+  props: {
+    started: { default: false },
+    opacity: { default: 1 },
+    message: {
+      default: `Please allow access to your camera to be a
+  public audience member in our venue`,
+    },
+  },
   setup(props, { emit }) {
     const hasStarted = ref(props.started);
     const onStart = () => {
@@ -35,8 +42,7 @@ export default {
   >
     <div>
       <p>
-        Please allow access to your camera to be a
-        public audience member in our venue.
+        {{ message }}
       </p>
       <button @click="onStart">Start camera</button>
     </div>

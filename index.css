@@ -254,40 +254,12 @@ button:hover {
   }
 }
 
-.layout-live {
-  padding: 32px;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto auto auto 1fr;
-  gap: 1.5vw;
-  grid-template-areas:
-    "logo   logo  count"
-    "main   main  spec"
-    "main   main  chat"
-    "title  title  chat";
-}
-@media (max-width: 800px) {
-  .layout-live {
-    height: inherit;
-    grid-template-columns: 1fr;
-    gap: 2vw 1.5vw;
-    grid-template-areas:
-      "logo"
-      "title"
-      "main"
-      "chat"
-      "count"
-      "spec";
-  }
-}
-
 .layout-videotest {
   padding: 32px;
   height: 100vh;
   display: grid;
   gap: 1.5vw;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0.4fr 1fr 0.4fr;
 }
 @media (max-width: 800px) {
   .layout-videotest {
@@ -297,7 +269,7 @@ button:hover {
   }
 }
 
-.layout-test {
+.layout-live {
   min-height: 100vh;
   display: grid;
   grid-template-columns: var(--cols, 1fr 350px 300px);
@@ -307,7 +279,7 @@ button:hover {
     "about     audience  chat";
 }
 @media (max-width: 800px) {
-  .layout-test {
+  .layout-live {
     height: inherit;
     grid-template-columns: 1fr;
     gap: 16px;
