@@ -1,6 +1,5 @@
 import { ref, computed } from "../deps/vue.js";
-import * as OpenviduBrowser from "https://cdn.skypack.dev/pin/openvidu-browser@v2.15.0-CFGUVrPQ7O8Ei4FETXw6/min/openvidu-browser.js";
-const { OpenVidu } = OpenviduBrowser.default;
+import { OpenVidu } from "../deps/openvidu-browser.js";
 
 import { getToken, useUser } from "./index.js";
 
@@ -28,32 +27,7 @@ export const useOpenvidu = (channel, autostart = false) => {
     }
   });
 
-  // const startSession = () => {
-  //   getToken(channel)
-  //     .then(({ token }) => {
-  //       session.value.connect(token, { userId, userName });
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
-
-  // if (autostart) {
-  //   startSession();
-  // }
-
   const joinSession = () => {
-    // if (!autostart) {
-    //   startSession();
-    // }
-    // let newPublisher = OV.initPublisher(null, {
-    //   publishVideo: true,
-    //   publishAudio: true,
-    //   resolution: `${openviduWidth}x${openviduHeight}`,
-    //   frameRate: openviduFps,
-    //   insertMode: "APPEND",
-    //   mirror: false,
-    // });
-    // publisher.value = newPublisher;
-    // session.value.publish(newPublisher);
     getToken(channel).then(({ token }) => {
       session.value
         .connect(token, { userId, userName })
