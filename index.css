@@ -348,3 +348,12 @@ button:hover {
 .user-image-name:hover {
   opacity: 0.8;
 }
+
+img {
+  display: block;
+  width: 100%;
+}
+
+.about a {
+  color: red;
+}
