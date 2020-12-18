@@ -196,6 +196,10 @@ export const parseEvent = (event) => {
   const youtube = findMetadata(metadataDescription, "youtube");
   const image = findMetadata(metadataDescription, "image");
   const color = findMetadata(metadataDescription, "color");
+  const audience = findMetadata(metadataDescription, "audience");
+  const chat = findMetadata(metadataDescription, "chat");
+
+  // TODO: Remove
   const experimental = !!findMetadata(metadataDescription, "experimental");
 
   const diff = getDifference(start, end);
@@ -205,6 +209,8 @@ export const parseEvent = (event) => {
     youtube,
     image,
     color,
+    audience,
+    chat,
     experimental,
     description,
     summary,
