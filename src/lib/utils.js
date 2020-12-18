@@ -198,6 +198,7 @@ export const parseEvent = (event) => {
   const color = findMetadata(metadataDescription, "color");
   const audience = findMetadata(metadataDescription, "audience");
   const chat = findMetadata(metadataDescription, "chat");
+  const hidden = findMetadata(metadataDescription, "hidden");
 
   // TODO: Remove
   const experimental = !!findMetadata(metadataDescription, "experimental");
@@ -211,6 +212,7 @@ export const parseEvent = (event) => {
     color,
     audience,
     chat,
+    hidden,
     experimental,
     description,
     summary,

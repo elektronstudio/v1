@@ -125,7 +125,9 @@ export default {
       </div>
       <chat :channel="channel" v-if="chatVisible" />
     </div>
-    <div style="padding: 32px; grid-area: about">
+    <div
+      v-if="event && event.hidden !== 'true'" 
+      style="padding: 32px; grid-area: about">
       <event-details :event="event" />
     </div>
   </div>
