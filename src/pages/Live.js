@@ -29,6 +29,9 @@ export default {
           experimental: true,
           id: channel,
           summary: channel,
+          audience: "enabled",
+          chat: "disabled",
+          hidden: false,
         };
       }
     });
@@ -37,20 +40,35 @@ export default {
 
     const chatVisible = ref(true);
 
-    watch(
-      chatVisible,
-      (visible) => {
-        document.body.style.setProperty(
-          "--cols",
-          visible ? "1fr 350px 300px" : "1fr 350px 40px"
-        );
-      },
-      { immediate: true }
-    );
+    // watch(
+    //   chatVisible,
+    //   (visible) => {
+    //     document.body.style.setProperty(
+    //       "--cols",
+    //       visible ? "1fr 350px 300px" : "1fr 350px 40px"
+    //     );
+    //   },
+    //   { immediate: true }
+    // );
 
     const onToggleChat = () => {
       chatVisible.value = !chatVisible.value;
     };
+
+    const performerWidth = "1fr";
+    const audienceWidth = "350px";
+    const chatWidth = "300px";
+
+    const cols = computed(() => {
+      const cols = [
+        "1fr",
+        event.value && event.value.audience !== "disabled" ? "auto" : "0",
+        event.value && event.value.chat !== "disabled" ? "auto" : "0",
+      ]
+        .map((c) => c)
+        .join(" ");
+      return cols;
+    });
 
     return {
       channel,
@@ -58,17 +76,20 @@ export default {
       count,
       onToggleChat,
       chatVisible,
+      cols,
     };
   },
   template: `
-  <div class="layout-live">
+  <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
       <performer-video v-if="event" :channel="channel" :experimental="false" />
     </div>
     <div
+      v-if="event && event.audience !== 'disabled'"
       class="panel-audience"
       style="
         grid-area: audience;
+        width: 350px;
         background: rgba(255,255,255,0.075);
       "
     >
@@ -79,12 +100,16 @@ export default {
       <audience-websocket v-if="event" :channel="channel" :ratio="1 / 2" />
     </div>
     <div
+      v-if="event && event.chat !== 'disabled'"
       class="panel-chat"
       style="
         grid-area: chat;
         background: rgba(255,255,255,0.15);
       "
-      :style="{padding: chatVisible ? '24px' : '24px 10px'}"
+      :style="{
+        padding: chatVisible ? '24px' : '24px 10px',
+        width: chatVisible ? '300px' : '40px'
+      }"
     >
       <div @click="onToggleChat"
         style="
@@ -101,7 +126,9 @@ export default {
       </div>
       <chat :channel="channel" v-if="chatVisible" />
     </div>
-    <div style="padding: 32px; grid-area: about">
+    <div
+      v-if="event && event.hidden !== 'true'" 
+      style="padding: 32px; grid-area: about">
       <event-details :event="event" />
     </div>
   </div>
