@@ -197,6 +197,8 @@ export const parseEvent = (event) => {
   const image = findMetadata(metadataDescription, "image");
   const color = findMetadata(metadataDescription, "color");
   const hidden = findMetadata(metadataDescription, "hidden");
+  const audience = findMetadata(metadataDescription, "audience");
+  const chat = findMetadata(metadataDescription, "chat");
   const experimental = !!findMetadata(metadataDescription, "experimental");
 
   const diff = getDifference(start, end);
@@ -213,6 +215,8 @@ export const parseEvent = (event) => {
     description,
     start,
     end,
+    audience,
+    chat,
     ...diff,
   };
 };
