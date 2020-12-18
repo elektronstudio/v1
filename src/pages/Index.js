@@ -11,8 +11,8 @@ export default {
     onMounted(() =>
       fetchEvents(eventsUrl).then((events) => {
         currentEvents.value = events
-          .filter((event) => {
-            return event.diff !== "past" && event.hidden !== "true";
+          .filter(({ diff }) => {
+            return diff !== "past";
           })
           .reverse();
 
