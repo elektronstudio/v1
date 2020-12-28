@@ -30,7 +30,7 @@ export default {
           id: channel,
           summary: channel,
           audience: "enabled",
-          chat: "disabled",
+          chat: "enabled",
           hidden: false,
         };
       }
