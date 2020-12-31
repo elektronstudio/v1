@@ -16,7 +16,9 @@ export default {
           })
           .reverse();
 
-        pastEvents.value = events.filter(({ diff }) => diff == "past");
+        pastEvents.value = events.filter((event) => {
+          return event.diff == "past" && event.hidden !== "true";
+        });
       })
     );
     return { currentEvents, pastEvents };
