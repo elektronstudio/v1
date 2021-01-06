@@ -30,7 +30,7 @@ export const useOpenvidu = (channel, autostart = false) => {
   const joinSession = () => {
     getToken(channel).then(({ token }) => {
       session.value
-        .connect(token, { userId, userName })
+        .connect(token, { userId: userId.value, userName: userName.value })
         .then(() => {
           let newPublisher = OV.initPublisher(null, {
             publishVideo: true,
