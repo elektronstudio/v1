@@ -28,6 +28,7 @@ export default {
     }"
   >
     <div v-html="message.value"></div>
+    <div style="cursor: pointer" @click="$emit('onLike')">💛 {{message.likes}}</div>
   </div>
   `,
 };

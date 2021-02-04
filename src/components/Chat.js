@@ -1,4 +1,4 @@
-import { ref, onMounted } from "../deps/vue.js";
+import { ref, onMounted, computed } from "../deps/vue.js";
 
 import { useUser, useChat } from "../lib/index.js";
 
@@ -15,17 +15,32 @@ export default {
       messages,
       newMessage,
       onNewMessage,
+      likes,
+      onLike,
       scrollEl,
       textareaEl,
     } = useChat(props.channel);
 
+    const messagesWithLikes = computed(() =>
+      messages.value.map((m) => {
+        const l = likes.value
+          .map(({ value }) => value)
+          .filter((value) => value === m.id);
+        if (l.length) {
+          m.likes = l.length;
+        }
+        return m;
+      })
+    );
     return {
       userId,
       userName,
       onUserNameChange,
-      messages,
+      messagesWithLikes,
+      likes,
       newMessage,
       onNewMessage,
+      onLike,
       scrollEl,
       textareaEl,
     };
@@ -38,8 +53,8 @@ export default {
         height: 70vh;
         overflow: auto;
       ">
-      <div v-for="message in messages" style="margin-bottom: 24px" >
-        <chat-message :message="message" :userId="userId">
+      <div v-for="message in messagesWithLikes" style="margin-bottom: 24px" >
+        <chat-message :message="message" :userId="userId" @onLike="onLike(message.id)">
       </div>
     </div>
     <div style="margin-top: 8px; transform: translateY(-10px);">

@@ -12,6 +12,7 @@ import {
 
 export const useChat = (channel) => {
   const allMessages = useLocalstorage("elektron_messages", []);
+  const likes = useLocalstorage("elektron_likes", []);
   const messages = computed(() =>
     allMessages.value.filter((message) => message.channel === channel)
   );
@@ -52,6 +53,10 @@ export const useChat = (channel) => {
       if (m.type === "CHAT") {
         allMessages.value = [...allMessages.value, m];
       }
+      if (m.type === "LIKE") {
+        likes.value = [...likes.value, m];
+        console.log(m);
+      }
       if (m.type === "HEART") {
         allMessages.value = [...allMessages.value, { ...m, value: "❤️" }];
       }
@@ -78,6 +83,15 @@ export const useChat = (channel) => {
     newMessage.value = "";
   };
 
+  const onLike = (id) => {
+    const outgoingMessage = createMessage({
+      type: "LIKE",
+      channel: channel,
+      value: id,
+    });
+    socket.send(outgoingMessage);
+  };
+
   events.on("heart", () => {
     const outgoingMessage = {
       type: "HEART",
@@ -90,10 +104,12 @@ export const useChat = (channel) => {
   const scrollEl = useScrollToBottom();
 
   return {
+    likes,
     allMessages,
     messages,
     newMessage,
     onNewMessage,
+    onLike,
     scrollEl,
     textareaEl,
   };

@@ -34,11 +34,6 @@ export default {
       <event-row v-for="event in pastEvents" :event="event"></event-row>
     </div>
     <div style="grid-area: about; padding: 24px; background: rgba(255,255,255,0.075);">
-      <h3 style="opacity: 0.7">News</h3>
-      <br />
-      <img src="https://scontent-ber1-1.xx.fbcdn.net/v/t1.0-9/129761329_10157240772812142_1694358546196493422_o.jpg?_nc_cat=104&ccb=2&_nc_sid=0debeb&_nc_ohc=IIPCQkBOQ5QAX8A9m6o&_nc_ht=scontent-ber1-1.xx&oh=85a0f13de75e6bf477478042655d20b1&oe=5FF2F78C" />
-      <p />
-      <p class="about">elektron.live just got into the finals of <a href="https://garage48.org/events/48forthefuture">48 for the Future</a> hackaton by Garage48 and will be incubated in Wiseguys accelerator program. We built a prototype for the new homepage that <a href="https://elektron-hackaton.netlify.app">you can check out here</a>.</p>
       <h3 style="opacity: 0.7">About</h3>
       <br />
       <p>
