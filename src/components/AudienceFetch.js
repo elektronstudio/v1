@@ -72,7 +72,7 @@ export default {
         imgScaled: imageData,
       };
 
-      fetch("https://elektron.live/area51/upload.php", {
+      fetch("https://elektron.live/area51/_upload.php", {
         method: "POST",
         body: JSON.stringify(payload),
       })
