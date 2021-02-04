@@ -85,19 +85,18 @@ export default {
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
-      <div style="display: flex; gap: 8px">
-        {{ activeChannel }}
+      <performer-video v-show="activeChannel === 0 && event" :channel="channel" />
+      <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event.id2" />
+      <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px;">
         <button
-          v-for="c in 4"
-          @click="activeChannel = c - 1"
+          v-for="c in [0,1]"
+          @click="activeChannel = c"
+          :style="{opacity: c === activeChannel ? 1 : 0.5}"
         >
-          {{ 'Camera ' + c}}
+          {{ 'Camera ' + (c + 1)}}
         </button>
       </div>
-      <performer-video v-if="event" :channel="channel" />
-      <performer-video v-if="event && event.id2" :channel="channel" />
-      <performer-video v-if="event && event.id3" :channel="channel" />
-      <performer-video v-if="event && event.id4" :channel="channel" />
+      
     </div>
     <div
       v-if="event && event.audience !== 'disabled'"
