@@ -12,6 +12,7 @@ import {
 
 export const useChat = (channel) => {
   const allMessages = useLocalstorage("elektron_messages", []);
+  const likes = useLocalstorage("elektron_likes", []);
   const messages = computed(() =>
     allMessages.value.filter((message) => message.channel === channel)
   );
@@ -22,6 +23,7 @@ export const useChat = (channel) => {
 
     if (m && m.type === "RESET" && m.value) {
       allMessages.value = [];
+      likes.value = [];
     }
 
     if (m && m.type === "CHANNELS_UPDATED" && m.value) {
@@ -52,18 +54,30 @@ export const useChat = (channel) => {
       if (m.type === "CHAT") {
         allMessages.value = [...allMessages.value, m];
       }
+      if (m.type === "LIKE") {
+        likes.value = [...likes.value, m];
+        console.log(m);
+      }
       if (m.type === "HEART") {
         allMessages.value = [...allMessages.value, { ...m, value: "❤️" }];
       }
 
       // Sync the archive
 
-      if (m.type === "CHAT_SYNCED") {
+      if (m.type === "CHAT_SYNC") {
         const syncedMessages = uniqueCollection(
           [...allMessages.value, ...m.value],
           "id"
         );
         allMessages.value = syncedMessages;
+      }
+
+      if (m.type === "LIKE_SYNC") {
+        const syncedLikes = uniqueCollection(
+          [...likes.value, ...m.value],
+          "id"
+        );
+        likes.value = syncedLikes;
       }
     }
   });
@@ -78,6 +92,21 @@ export const useChat = (channel) => {
     newMessage.value = "";
   };
 
+  const onLike = (id, userId) => {
+    const i = likes.value.findIndex((l) => {
+      return l.value === id && l.userId === userId;
+    });
+
+    if (i === -1) {
+      const outgoingMessage = createMessage({
+        type: "LIKE",
+        channel: channel,
+        value: id,
+      });
+      socket.send(outgoingMessage);
+    }
+  };
+
   events.on("heart", () => {
     const outgoingMessage = {
       type: "HEART",
@@ -90,10 +119,12 @@ export const useChat = (channel) => {
   const scrollEl = useScrollToBottom();
 
   return {
+    likes,
     allMessages,
     messages,
     newMessage,
     onNewMessage,
+    onLike,
     scrollEl,
     textareaEl,
   };
