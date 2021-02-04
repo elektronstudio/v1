@@ -148,7 +148,7 @@ export default {
         imgScaled: canvasEl.value.toDataURL("image/jpeg", imageQuality),
       };
 
-      fetch("https://elektron.live/area51/upload.php", {
+      fetch("https://elektron.live/area51/_upload.php", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -176,7 +176,7 @@ export default {
 
     useSetInterval(
       sendImageMessage,
-      ref(1), // imagesLength,
+      imagesLength,
       videoStarted,
       imageUpdateFrequency
     );

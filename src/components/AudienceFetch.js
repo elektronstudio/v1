@@ -72,7 +72,7 @@ export default {
         imgScaled: imageData,
       };
 
-      fetch("https://elektron.live/area51/upload.php", {
+      fetch("https://elektron.live/area51/_upload.php", {
         method: "POST",
         body: JSON.stringify(payload),
       })
@@ -82,12 +82,7 @@ export default {
         });
     };
 
-    useSetInterval(
-      sendImage,
-      ref(1), // TODO: Clean this up
-      videoStarted,
-      imageUpdateFrequency
-    );
+    useSetInterval(sendImage, imagesLength, videoStarted, imageUpdateFrequency);
 
     const onStart = () => {
       startVideo();
