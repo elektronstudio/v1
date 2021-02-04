@@ -82,7 +82,10 @@ export default {
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
-      <performer-video v-if="event" :channel="channel" :experimental="false" />
+      <performer-video v-if="event" :channel="channel" />
+      <performer-video v-if="event && event.channel2" :channel="channel2" />
+      <performer-video v-if="event && event.channel3" :channel="channel3" />
+      <performer-video v-if="event && event.channel4" :channel="channel4" />
     </div>
     <div
       v-if="event && event.audience !== 'disabled'"
