@@ -70,7 +70,10 @@ export default {
       return cols;
     });
 
+    const activeChannel = ref(0);
+
     return {
+      activeChannel,
       channel,
       event,
       count,
@@ -82,10 +85,19 @@ export default {
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
+      <div style="display: flex; gap: 8px">
+        {{ activeChannel }}
+        <button
+          v-for="c in 4"
+          @click="activeChannel = c - 1"
+        >
+          {{ 'Camera ' + c}}
+        </button>
+      </div>
       <performer-video v-if="event" :channel="channel" />
-      <performer-video v-if="event && event.channel2" :channel="channel2" />
-      <performer-video v-if="event && event.channel3" :channel="channel3" />
-      <performer-video v-if="event && event.channel4" :channel="channel4" />
+      <performer-video v-if="event && event.id2" :channel="channel" />
+      <performer-video v-if="event && event.id3" :channel="channel" />
+      <performer-video v-if="event && event.id4" :channel="channel" />
     </div>
     <div
       v-if="event && event.audience !== 'disabled'"
