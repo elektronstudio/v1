@@ -176,7 +176,7 @@ export default {
 
     useSetInterval(
       sendImageMessage,
-      ref(1), // imagesLength,
+      imagesLength,
       videoStarted,
       imageUpdateFrequency
     );

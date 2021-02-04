@@ -82,12 +82,7 @@ export default {
         });
     };
 
-    useSetInterval(
-      sendImage,
-      ref(1), // TODO: Clean this up
-      videoStarted,
-      imageUpdateFrequency
-    );
+    useSetInterval(sendImage, imagesLength, videoStarted, imageUpdateFrequency);
 
     const onStart = () => {
       startVideo();
