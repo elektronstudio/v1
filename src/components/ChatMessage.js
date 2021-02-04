@@ -11,6 +11,7 @@ export default {
   template: `
   <div style="display: flex; font-size: 13px; margin-bottom: 8px;">
       <div :style="{opacity: isMyMessage ? 0.5 : 0.75}">{{ message.userName }}</div>&emsp;
+      <div style="cursor: pointer; color: #888" @click="$emit('onLike')"><span style="">❤</span> <span style="opacity: 0.8">{{message.likes}}</span></div>
       <!-- <div style="opacity: 0.25">{{formatAgo(message.datetime) }}</div> -->
     </div>
   <div
@@ -28,7 +29,6 @@ export default {
     }"
   >
     <div v-html="message.value"></div>
-    <div style="cursor: pointer" @click="$emit('onLike')">💛 {{message.likes}}</div>
   </div>
   `,
 };
