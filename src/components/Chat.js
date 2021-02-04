@@ -54,7 +54,7 @@ export default {
         overflow: auto;
       ">
       <div v-for="message in messagesWithLikes" style="margin-bottom: 24px" >
-        <chat-message :message="message" :userId="userId" @onLike="onLike(message.id)">
+        <chat-message :message="message" :userId="userId" @onLike="onLike(message.id, userId)">
       </div>
     </div>
     <div style="margin-top: 8px; transform: translateY(-10px);">

@@ -83,13 +83,19 @@ export const useChat = (channel) => {
     newMessage.value = "";
   };
 
-  const onLike = (id) => {
-    const outgoingMessage = createMessage({
-      type: "LIKE",
-      channel: channel,
-      value: id,
+  const onLike = (id, userId) => {
+    const i = likes.value.findIndex((l) => {
+      return l.value === id && l.userId === userId;
     });
-    socket.send(outgoingMessage);
+
+    if (i === -1) {
+      const outgoingMessage = createMessage({
+        type: "LIKE",
+        channel: channel,
+        value: id,
+      });
+      socket.send(outgoingMessage);
+    }
   };
 
   events.on("heart", () => {
