@@ -153,7 +153,7 @@ export default {
         <button
           v-for="c in [0,1]"
           @click="activeChannel = c"
-          :style="{background: 'rgba(0,0,0,0.3)', opacity: c === activeChannel ? 1 : 0.5}"
+          :style="{background: 'rgba(0,0,0,0.)', opacity: c === activeChannel ? 1 : 0.5}"
         >
           {{ 'Camera ' + (c + 1)}}
         </button>
