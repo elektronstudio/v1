@@ -369,7 +369,8 @@ export const objectMap = (obj, callback) =>
   Object.fromEntries(Object.entries(obj).map(callback));
 
 const parseSheet = (data) => {
-  return data.feed.entry.map((entry) => {
+  const title = data.feed.title.$t;
+  const rows = data.feed.entry.map((entry) => {
     return Object.keys(entry)
       .map((field) => {
         if (field.startsWith("gsx$")) {
@@ -382,6 +383,7 @@ const parseSheet = (data) => {
         return field;
       }, {});
   });
+  return { title, rows };
 };
 
 export const getSheet = (id) => {

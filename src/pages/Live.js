@@ -21,12 +21,16 @@ export default {
 
     const event = ref(null);
 
-    const sheet = ref([]);
+    const sheetRows = ref([]);
+    const sheetTitle = ref("");
 
     useSetInterval(
       () => {
         if (event.value.sheetid) {
-          getSheet(event.value.sheetid).then((s) => (sheet.value = s));
+          getSheet(event.value.sheetid).then(({ rows, title }) => {
+            sheetRows.value = rows;
+            sheetTitle.value = title;
+          });
         }
       },
       1,
@@ -97,7 +101,8 @@ export default {
       onToggleChat,
       chatVisible,
       cols,
-      sheet,
+      sheetRows,
+      sheetTitle,
     };
   },
   template: `
@@ -141,7 +146,7 @@ export default {
       "
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
-        <h4>Sheet</h4>
+        <h4>{{ sheetTitle }}</h4>
         <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <div
@@ -149,7 +154,7 @@ export default {
         height: 70vh;
         overflow: auto;
       ">
-        <div v-for="row in sheet" style="margin-bottom: 24px" >
+        <div v-for="row in sheetRows" style="margin-bottom: 24px" >
           <div>
             <div v-for="(value, key) in row">{{ key }} / {{ value }}</div>
           </div>
