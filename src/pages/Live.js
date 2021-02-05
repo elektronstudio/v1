@@ -92,6 +92,16 @@ export default {
       return cols;
     });
 
+    const titleCase = (str) => {
+      return str
+        .toLowerCase()
+        .split(" ")
+        .map(function (word) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(" ");
+    };
+
     const activeChannel = ref(0);
     return {
       activeChannel,
@@ -103,13 +113,14 @@ export default {
       cols,
       sheetRows,
       sheetTitle,
+      titleCase,
     };
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
       <performer-video v-show="activeChannel === 0 && event" :channel="channel" />
-      <!-- <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event.id2" /> -->
+      <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event.id2" />
       <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px;">
         <button
           v-for="c in [0,1]"
@@ -132,7 +143,6 @@ export default {
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>Live audience</h4>
-        <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <audience-websocket v-if="event" :channel="channel" :ratio="1 / 2" />
     </div>
@@ -147,16 +157,22 @@ export default {
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>{{ sheetTitle }}</h4>
-        <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <div
       style="
-        height: 70vh;
+        height: 85vh;
         overflow: auto;
       ">
-        <div v-for="row in sheetRows" style="margin-bottom: 24px" >
-          <div>
-            <div v-for="(value, key) in row">{{ key }} / {{ value }}</div>
+        <div v-for="row in sheetRows" style="margin-bottom: 16px" >
+          <div style="
+            borderRadius: 8px;
+            padding: 8px 10px;
+            gap: 7px;
+            font-size: 15px;
+            line-height: 1.5em;
+            border: 2px solid rgba(255,255,255,0.1);
+          ">
+            <div v-for="(value, key, i) in row" :style="{marginTop: i === 0 ? 0: '6px'}"><span style="opacity: 0.5;">{{ titleCase(key) }}</span>&ensp;<span style="color: hsl(50, 58%, 78%)">{{ value }}</span></div>
           </div>
         </div>
       </div>
@@ -182,7 +198,11 @@ export default {
           cursor: pointer;
           min-height: 32px;
         ">
-        <h4 v-if="chatVisible">Chat</h4>
+        <div style="display: flex; align-items: baseline;">
+          <h4 v-if="chatVisible">Chat</h4>
+          &nbsp;&nbsp;
+          <div style="opacity: 0.5; font-size: 0.9em">{{ count }} online</div>
+        </div>
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
