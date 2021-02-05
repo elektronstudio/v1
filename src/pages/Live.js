@@ -1,7 +1,12 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useChannel, fetchEvents } from "../lib/index.js";
+import {
+  useChannel,
+  fetchEvents,
+  getSheet,
+  useSetInterval,
+} from "../lib/index.js";
 
 import { eventsUrl } from "../../config.js";
 
@@ -15,6 +20,19 @@ export default {
     // Fetch and parse event
 
     const event = ref(null);
+
+    const sheet = ref([]);
+
+    useSetInterval(
+      () => {
+        if (event.value.sheetid) {
+          getSheet(event.value.sheetid).then((s) => (sheet.value = s));
+        }
+      },
+      1,
+      event,
+      1000
+    );
 
     fetchEvents(eventsUrl).then((events) => {
       const e = events.filter(({ id }) => {
@@ -71,7 +89,6 @@ export default {
     });
 
     const activeChannel = ref(0);
-
     return {
       activeChannel,
       channel,
@@ -80,6 +97,7 @@ export default {
       onToggleChat,
       chatVisible,
       cols,
+      sheet,
     };
   },
   template: `
@@ -99,7 +117,7 @@ export default {
       
     </div>
     <div
-      v-if="event && event.audience !== 'disabled'"
+      v-if="event && event.audience !== 'disabled' && !event.sheetid"
       class="panel-audience"
       style="
         grid-area: audience;
@@ -112,6 +130,31 @@ export default {
         <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <audience-websocket v-if="event" :channel="channel" :ratio="1 / 2" />
+    </div>
+    <div
+      v-if="event && event.sheetid"
+      class="panel-audience"
+      style="
+        grid-area: audience;
+        width: 350px;
+        background: rgba(255,255,255,0.075);
+      "
+    >
+      <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
+        <h4>Sheet</h4>
+        <div style="opacity: 0.5">{{ count }} online</div>
+      </div>
+      <div
+      style="
+        height: 70vh;
+        overflow: auto;
+      ">
+        <div v-for="row in sheet" style="margin-bottom: 24px" >
+          <div>
+            <div v-for="(value, key) in row">{{ key }} / {{ value }}</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       v-if="event && event.chat !== 'disabled'"
