@@ -144,16 +144,10 @@ export default {
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
-    <div style="grid-area: performer" style="border: 3px solid red;">
-      <div style="position: relative">
-        <div>
-          <performer-video :style="{opacity: activeChannel === 0 ? 1 : 0}" :channel="channel" />
+    <div style="grid-area: performer" style="">
+          <performer-video v-show="activeChannel === 0"  :channel="channel" />
+          <performer-video v-show="activeChannel === 1" :channel="event.id2" />
         </div>
-        <div>
-          <performer-video :style="{opacity: activeChannel === 1 ? 1 : 0}" :channel="'youspace2'" />
-        </div>
-      </div>
-    </div>
     <div
       v-if="event && event.audience !== 'disabled' && !event.sheetid"
       class="panel-audience"
