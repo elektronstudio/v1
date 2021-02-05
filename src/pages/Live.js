@@ -144,19 +144,20 @@ export default {
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
-    <div style="grid-area: performer">
-      <performer-video v-show="activeChannel === 0 && event" :channel="channel" />
-      <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event && event.id2 ? event.id2 : ''" />
-      <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px;">
+    <div style="grid-area: performer" style="position: relative">
+      <div>
+        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 0 ? 1 : 0}"  :channel="channel" />
+        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 1 ? 1 : 0}" v-if="event && event.id2" :channel="event && event.id2 ? event.id2 : ''" />
+      </div>
+      <div v-if="event && event.id2" style="position: absolute; top: 0px; right: 0px; display: flex; gap: 8px; padding: 24px;">
         <button
           v-for="c in [0,1]"
           @click="activeChannel = c"
-          :style="{opacity: c === activeChannel ? 1 : 0.5}"
+          :style="{background: 'rgba(0,0,0,0.3)', opacity: c === activeChannel ? 1 : 0.5}"
         >
           {{ 'Camera ' + (c + 1)}}
         </button>
-      </div>
-      
+    </div>
     </div>
     <div
       v-if="event && event.audience !== 'disabled' && !event.sheetid"
