@@ -56,7 +56,6 @@ export const useChat = (channel) => {
       }
       if (m.type === "LIKE") {
         likes.value = [...likes.value, m];
-        console.log(m);
       }
       if (m.type === "HEART") {
         allMessages.value = [...allMessages.value, { ...m, value: "❤️" }];

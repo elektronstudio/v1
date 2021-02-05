@@ -6,6 +6,8 @@ import {
   fetchEvents,
   getSheet,
   useSetInterval,
+  useUser,
+  useChat,
 } from "../lib/index.js";
 
 import { eventsUrl } from "../../config.js";
@@ -101,7 +103,31 @@ export default {
         .join(" ");
     };
 
+    const { likes, onLike } = useChat(channel);
+
+    const sheetRowsWithLikes = computed(() =>
+      sheetRows.value.map((row) => {
+        const l = likes.value
+          .map(({ value }) => value)
+          .filter((value) => value === `${channel}-sheet-${row["id..."]}`);
+        if (l.length) {
+          row["likes..."] = l.length;
+        }
+        return row;
+      })
+    );
+
+    const { userId } = useUser();
+
+    const onSheetRowLike = (row) => {
+      if (row["id..."]) {
+        const id = `${channel}-sheet-${row["id..."]}`;
+        onLike(id, userId.value);
+      }
+    };
+
     const activeChannel = ref(0);
+
     return {
       activeChannel,
       channel,
@@ -110,9 +136,10 @@ export default {
       onToggleChat,
       chatVisible,
       cols,
-      sheetRows,
+      sheetRowsWithLikes,
       sheetTitle,
       titleCase,
+      onSheetRowLike,
     };
   },
   template: `
@@ -162,16 +189,25 @@ export default {
         height: 85vh;
         overflow: auto;
       ">
-        <div v-for="row in sheetRows" style="margin-bottom: 24px" >
+        <div v-for="row in sheetRowsWithLikes" style="margin-bottom: 24px" >
           <div style="
-            bborderRadius: 8px;
             padding: 0 0 0 16px;
             gap: 7px;
             font-size: 15px;
             line-height: 1.5em;
             borderLeft: 4px solid rgba(255,255,255,0.1);
           ">
-            <div v-for="(value, key, i) in row" v-show="value" :style="{marginTop: i === 0 ? 0: '6px'}"><span v-if="value" style="opacity: 0.5;">{{ titleCase(key) }}</span>&ensp;<span v-if="value" style="">{{ value }}</span></div>
+            <div
+              v-for="(value, key, i) in row"
+              v-show="value && !key.endsWith('...')"
+              :style="{marginTop: i === 0 ? 0: '6px'}">
+                <span v-if="value" style="opacity: 0.5;">{{ titleCase(key) }}</span>
+                &ensp;
+                <span v-if="value" style="">{{ value }}</span>
+            </div>
+            <div v-if="row['id...']" style="display: flex; font-size: 13px; margin-top: 4px;">
+              <div style="cursor: pointer; color: #888" @click="onSheetRowLike(row)"><span style="">❤</span> <span style="opacity: 0.8">{{row['likes...']}}</span></div>
+            </div>
           </div>
         </div>
       </div>

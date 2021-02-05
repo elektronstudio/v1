@@ -29,8 +29,8 @@ export default {
   >
     <div v-html="message.value"></div>
   </div>
-  <div style="display: flex; font-size: 13px; margin-top: 4px;">
+  <!-- <div style="display: flex; font-size: 13px; margin-top: 4px;">
     <div style="cursor: pointer; color: #888" @click="$emit('onLike')"><span style="">❤</span> <span style="opacity: 0.8">{{message.likes}}</span></div>
-  </div>
+  </div> -->
   `,
 };
