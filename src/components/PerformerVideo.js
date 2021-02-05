@@ -27,8 +27,8 @@ export default {
     const isFullscreen = ref(false);
 
     const controlsTimeout = ref(null);
-    const controlsShortDelay = 1000;
-    const controlsLongDelay = 4000;
+    const controlsShortDelay = 1000 * 1000; //1000;
+    const controlsLongDelay = 4000 * 1000; //4000;
 
     const hideControls = () => {
       if (controlsTimeout.value) {
@@ -40,7 +40,7 @@ export default {
       );
     };
 
-    hideControls();
+    //hideControls();
 
     const play = () => {
       videoEl.value.play();
@@ -166,8 +166,9 @@ export default {
         background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.3))
       "
     >
-      <icon-play v-if="!isPlaying" @click="play" />
-      <icon-pause v-if="isPlaying" @click="pause" />
+      <!-- <icon-play v-if="!isPlaying" @click="play" /> -->
+      <!-- <icon-pause v-if="isPlaying" @click="pause" /> -->
+      <div />
       <div>
         <icon-unmute v-if="!isMuted" @click="mute" />
         <icon-mute v-if="isMuted" @click="unmute" />
