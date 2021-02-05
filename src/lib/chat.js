@@ -26,6 +26,10 @@ export const useChat = (channel) => {
       likes.value = [];
     }
 
+    if (m && m.type === "UPDATE" && m.value) {
+      location.reload();
+    }
+
     if (m && m.type === "CHANNELS_UPDATED" && m.value) {
       // Find all the unique userIds with their usernames from the channel update
 
@@ -87,7 +91,12 @@ export const useChat = (channel) => {
 
   const onNewMessage = () => {
     const outgoingMessage = createMessage({
-      type: newMessage.value === "/reset" ? "RESET" : "CHAT",
+      type:
+        newMessage.value === "/update"
+          ? "UPDATE"
+          : newMessage.value === "/reset"
+          ? "RESET"
+          : "CHAT",
       channel: channel,
       value: newMessage.value,
     });
