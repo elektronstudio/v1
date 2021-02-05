@@ -194,8 +194,6 @@ export const parseEvent = (event) => {
 
   const id = findMetadata(metadataDescription, "id");
   const id2 = findMetadata(metadataDescription, "id2");
-  const id3 = findMetadata(metadataDescription, "id3");
-  const id4 = findMetadata(metadataDescription, "id4");
   const youtube = findMetadata(metadataDescription, "youtube");
   const image = findMetadata(metadataDescription, "image");
   const color = findMetadata(metadataDescription, "color");
@@ -203,14 +201,13 @@ export const parseEvent = (event) => {
   const audience = findMetadata(metadataDescription, "audience");
   const chat = findMetadata(metadataDescription, "chat");
   const experimental = !!findMetadata(metadataDescription, "experimental");
+  const sheetid = findMetadata(metadataDescription, "sheetid");
 
   const diff = getDifference(start, end);
 
   return {
     id,
     id2,
-    id3,
-    id4,
     youtube,
     image,
     color,
@@ -223,6 +220,7 @@ export const parseEvent = (event) => {
     end,
     audience,
     chat,
+    sheetid,
     ...diff,
   };
 };
@@ -331,8 +329,10 @@ export const useSetInterval = (callback, nth, condition, timeout) => {
   const interval = ref(null);
   onMounted(() => {
     interval.value = setInterval(() => {
-      a = a >= nth.value - 1 ? 0 : a + 1;
-      if (a === 0 && condition.value) {
+      const n = isRef(nth) ? nth.value : nth;
+      a = a >= n - 1 ? 0 : a + 1;
+      const cond = isRef(condition) ? condition.value : condition;
+      if (a === 0 && cond) {
         callback();
       }
     }, timeout);
@@ -367,3 +367,29 @@ export const events = mitt();
 
 export const objectMap = (obj, callback) =>
   Object.fromEntries(Object.entries(obj).map(callback));
+
+const parseSheet = (data) => {
+  const title = data.feed.title.$t;
+  const rows = data.feed.entry.map((entry) => {
+    return Object.keys(entry)
+      .map((field) => {
+        if (field.startsWith("gsx$")) {
+          return [field.split("$")[1], entry[field].$t];
+        }
+      })
+      .filter((field) => field)
+      .reduce((field, item) => {
+        field[item[0]] = item[1];
+        return field;
+      }, {});
+  });
+  return { title, rows };
+};
+
+export const getSheet = (id) => {
+  return fetch(
+    `https://spreadsheets.google.com/feeds/list/${id}/od6/public/values?alt=json`
+  )
+    .then((res) => res.json())
+    .then((res) => parseSheet(res));
+};

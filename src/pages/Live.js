@@ -1,7 +1,14 @@
 import { ref, computed, watch } from "../deps/vue.js";
 import { useRoute } from "../deps/router.js";
 
-import { useChannel, fetchEvents } from "../lib/index.js";
+import {
+  useChannel,
+  fetchEvents,
+  getSheet,
+  useSetInterval,
+  useUser,
+  useChat,
+} from "../lib/index.js";
 
 import { eventsUrl } from "../../config.js";
 
@@ -15,6 +22,22 @@ export default {
     // Fetch and parse event
 
     const event = ref(null);
+
+    const sheetRows = ref([]);
+    const sheetTitle = ref("");
+
+    const get = () => {
+      if (event.value && event.value.sheetid) {
+        getSheet(event.value.sheetid).then(({ rows, title }) => {
+          sheetRows.value = rows;
+          sheetTitle.value = title;
+        });
+      }
+    };
+
+    get();
+
+    useSetInterval(get, 1, event, 3000);
 
     fetchEvents(eventsUrl).then((events) => {
       const e = events.filter(({ id }) => {
@@ -70,6 +93,39 @@ export default {
       return cols;
     });
 
+    const titleCase = (str) => {
+      return str
+        .toLowerCase()
+        .split(" ")
+        .map(function (word) {
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(" ");
+    };
+
+    const { likes, onLike } = useChat(channel);
+
+    const sheetRowsWithLikes = computed(() =>
+      sheetRows.value.map((row) => {
+        const l = likes.value
+          .map(({ value }) => value)
+          .filter((value) => value === `${channel}-sheet-${row["id..."]}`);
+        if (l.length) {
+          row["likes..."] = l.length;
+        }
+        return row;
+      })
+    );
+
+    const { userId } = useUser();
+
+    const onSheetRowLike = (row) => {
+      if (row["id..."]) {
+        const id = `${channel}-sheet-${row["id..."]}`;
+        onLike(id, userId.value);
+      }
+    };
+
     const activeChannel = ref(0);
 
     return {
@@ -80,26 +136,31 @@ export default {
       onToggleChat,
       chatVisible,
       cols,
+      sheetRowsWithLikes,
+      sheetTitle,
+      titleCase,
+      onSheetRowLike,
     };
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
-    <div style="grid-area: performer">
-      <performer-video v-show="activeChannel === 0 && event" :channel="channel" />
-      <!-- <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event.id2" /> -->
-      <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px;">
+    <div style="grid-area: performer" style="position: relative">
+      <div>
+        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 0 ? 1 : 0}"  :channel="channel" />
+        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 1 ? 1 : 0}" v-if="event && event.id2" :channel="event && event.id2 ? event.id2 : ''" />
+      </div>
+      <div v-if="event && event.id2" style="position: absolute; top: 0px; right: 0px; display: flex; gap: 8px; padding: 24px;">
         <button
           v-for="c in [0,1]"
           @click="activeChannel = c"
-          :style="{opacity: c === activeChannel ? 1 : 0.5}"
+          :style="{background: 'rgba(0,0,0,0.)', opacity: c === activeChannel ? 1 : 0.5}"
         >
           {{ 'Camera ' + (c + 1)}}
         </button>
-      </div>
-      
+    </div>
     </div>
     <div
-      v-if="event && event.audience !== 'disabled'"
+      v-if="event && event.audience !== 'disabled' && !event.sheetid"
       class="panel-audience"
       style="
         grid-area: audience;
@@ -109,9 +170,48 @@ export default {
     >
       <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
         <h4>Live audience</h4>
-        <div style="opacity: 0.5">{{ count }} online</div>
       </div>
       <audience-websocket v-if="event" :channel="channel" :ratio="1 / 2" />
+    </div>
+    <div
+      v-if="event && event.sheetid"
+      class="panel-audience"
+      style="
+        grid-area: audience;
+        width: 350px;
+        background: rgba(255,255,255,0.075);
+      "
+    >
+      <div class="flex-justified" style="margin-bottom: 16px; min-height: 32px;">
+        <h4>{{ sheetTitle }}</h4>
+      </div>
+      <div
+      style="
+        height: 85vh;
+        overflow: auto;
+      ">
+        <div v-for="row in sheetRowsWithLikes" style="margin-bottom: 24px" >
+          <div style="
+            padding: 0 0 0 16px;
+            gap: 7px;
+            font-size: 15px;
+            line-height: 1.5em;
+            borderLeft: 4px solid rgba(255,255,255,0.1);
+          ">{{ likes }}
+            <div
+              v-for="(value, key, i) in row"
+              v-show="value && !key.endsWith('...')"
+              :style="{marginTop: i === 0 ? 0: '6px'}">
+                <span v-if="value" style="opacity: 0.5;">{{ titleCase(key) }}</span>
+                &ensp;
+                <span v-if="value" style="">{{ value }}</span>
+            </div>
+            <div v-if="row['id...']" style="display: flex; font-size: 13px; margin-top: 4px;">
+              <div style="cursor: pointer; color: #aaa" @click.prevent="onSheetRowLike(row)"><span :style="{opacity: row['likes...'] ? 1 : 0.3}">❤</span> <span style="opacity: 0.8">{{row['likes...']}}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       v-if="event && event.chat !== 'disabled'"
@@ -134,7 +234,11 @@ export default {
           cursor: pointer;
           min-height: 32px;
         ">
-        <h4 v-if="chatVisible">Chat</h4>
+        <div style="display: flex; align-items: baseline;">
+          <h4 v-if="chatVisible">Chat</h4>
+          &nbsp;&nbsp;
+          <div style="opacity: 0.5; font-size: 0.9em">{{ count }} online</div>
+        </div>
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
