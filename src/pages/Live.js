@@ -24,19 +24,18 @@ export default {
     const sheetRows = ref([]);
     const sheetTitle = ref("");
 
-    useSetInterval(
-      () => {
-        if (event.value.sheetid) {
-          getSheet(event.value.sheetid).then(({ rows, title }) => {
-            sheetRows.value = rows;
-            sheetTitle.value = title;
-          });
-        }
-      },
-      1,
-      event,
-      1000
-    );
+    const get = () => {
+      if (event.value && event.value.sheetid) {
+        getSheet(event.value.sheetid).then(({ rows, title }) => {
+          sheetRows.value = rows;
+          sheetTitle.value = title;
+        });
+      }
+    };
+
+    get();
+
+    useSetInterval(get, 1, event, 3000);
 
     fetchEvents(eventsUrl).then((events) => {
       const e = events.filter(({ id }) => {
@@ -120,7 +119,7 @@ export default {
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer">
       <performer-video v-show="activeChannel === 0 && event" :channel="channel" />
-      <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event.id2" />
+      <performer-video v-show="activeChannel === 1 && event && event.id2" :channel="event && event.id2 ? event.id2 : ''" />
       <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px;">
         <button
           v-for="c in [0,1]"
@@ -163,16 +162,16 @@ export default {
         height: 85vh;
         overflow: auto;
       ">
-        <div v-for="row in sheetRows" style="margin-bottom: 16px" >
+        <div v-for="row in sheetRows" style="margin-bottom: 24px" >
           <div style="
-            borderRadius: 8px;
-            padding: 8px 10px;
+            bborderRadius: 8px;
+            padding: 0 0 0 16px;
             gap: 7px;
             font-size: 15px;
             line-height: 1.5em;
-            border: 2px solid rgba(255,255,255,0.1);
+            borderLeft: 4px solid rgba(255,255,255,0.1);
           ">
-            <div v-for="(value, key, i) in row" :style="{marginTop: i === 0 ? 0: '6px'}"><span style="opacity: 0.5;">{{ titleCase(key) }}</span>&ensp;<span style="color: hsl(50, 58%, 78%)">{{ value }}</span></div>
+            <div v-for="(value, key, i) in row" v-show="value" :style="{marginTop: i === 0 ? 0: '6px'}"><span v-if="value" style="opacity: 0.5;">{{ titleCase(key) }}</span>&ensp;<span v-if="value" style="">{{ value }}</span></div>
           </div>
         </div>
       </div>
