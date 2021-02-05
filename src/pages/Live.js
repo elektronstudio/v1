@@ -196,7 +196,7 @@ export default {
             font-size: 15px;
             line-height: 1.5em;
             borderLeft: 4px solid rgba(255,255,255,0.1);
-          ">
+          ">{{ likes }}
             <div
               v-for="(value, key, i) in row"
               v-show="value && !key.endsWith('...')"
@@ -206,7 +206,7 @@ export default {
                 <span v-if="value" style="">{{ value }}</span>
             </div>
             <div v-if="row['id...']" style="display: flex; font-size: 13px; margin-top: 4px;">
-              <div style="cursor: pointer; color: #888" @click="onSheetRowLike(row)"><span style="">❤</span> <span style="opacity: 0.8">{{row['likes...']}}</span></div>
+              <div style="cursor: pointer; color: #aaa" @click.prevent="onSheetRowLike(row)"><span :style="{opacity: row['likes...'] ? 1 : 0.3}">❤</span> <span style="opacity: 0.8">{{row['likes...']}}</span></div>
             </div>
           </div>
         </div>

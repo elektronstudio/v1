@@ -55,7 +55,11 @@ export const useChat = (channel) => {
         allMessages.value = [...allMessages.value, m];
       }
       if (m.type === "LIKE") {
-        likes.value = [...likes.value, m];
+        // TODO: Remove this duplicates control
+        const existing = likes.value.map((l) => l.id);
+        if (!existing.includes(m.id)) {
+          likes.value = [...likes.value, m];
+        }
       }
       if (m.type === "HEART") {
         allMessages.value = [...allMessages.value, { ...m, value: "❤️" }];
