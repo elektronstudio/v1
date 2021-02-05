@@ -144,20 +144,15 @@ export default {
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
-    <div style="grid-area: performer" style="position: relative">
-      <div>
-        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 0 ? 1 : 0}"  :channel="channel" />
-        <performer-video :style="{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: activeChannel === 1 ? 1 : 0}" v-if="event && event.id2" :channel="event && event.id2 ? event.id2 : ''" />
+    <div style="grid-area: performer" style="border: 3px solid red;">
+      <div style="position: relative">
+        <div>
+          <performer-video :style="{opacity: activeChannel === 0 ? 1 : 0}" :channel="channel" />
+        </div>
+        <div>
+          <performer-video :style="{opacity: activeChannel === 1 ? 1 : 0}" :channel="'youspace2'" />
+        </div>
       </div>
-      <div v-if="event && event.id2" style="position: absolute; top: 0px; right: 0px; display: flex; gap: 8px; padding: 24px;">
-        <button
-          v-for="c in [0,1]"
-          @click="activeChannel = c"
-          :style="{background: 'rgba(0,0,0,0.)', opacity: c === activeChannel ? 1 : 0.5}"
-        >
-          {{ 'Camera ' + (c + 1)}}
-        </button>
-    </div>
     </div>
     <div
       v-if="event && event.audience !== 'disabled' && !event.sheetid"
@@ -247,6 +242,17 @@ export default {
     <div
       v-if="event && event.hidden !== 'true'" 
       style="padding: 32px; grid-area: about">
+
+      <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px 0;">
+        <button
+          v-for="c in [0,1]"
+          @click="activeChannel = c"
+          :style="{background: 'rgba(0,0,0,0.)', opacity: c === activeChannel ? 1 : 0.5}"
+        >
+          {{ 'Camera ' + (c + 1)}}
+        </button>
+      </div>
+
       <event-details :event="event" />
     </div>
   </div>

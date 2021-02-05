@@ -27,8 +27,8 @@ export default {
     const isFullscreen = ref(false);
 
     const controlsTimeout = ref(null);
-    const controlsShortDelay = 1000;
-    const controlsLongDelay = 4000;
+    const controlsShortDelay = 1000 * 1000; //1000;
+    const controlsLongDelay = 4000 * 1000; //4000;
 
     const hideControls = () => {
       if (controlsTimeout.value) {
