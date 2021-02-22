@@ -194,6 +194,8 @@ export const parseEvent = (event) => {
 
   const id = findMetadata(metadataDescription, "id");
   const id2 = findMetadata(metadataDescription, "id2");
+  const id3 = findMetadata(metadataDescription, "id3");
+  const id4 = findMetadata(metadataDescription, "id4");
   const youtube = findMetadata(metadataDescription, "youtube");
   const image = findMetadata(metadataDescription, "image");
   const color = findMetadata(metadataDescription, "color");
@@ -208,6 +210,8 @@ export const parseEvent = (event) => {
   return {
     id,
     id2,
+    id3,
+    id4,
     youtube,
     image,
     color,
