@@ -128,6 +128,20 @@ export default {
 
     const activeChannel = ref(0);
 
+    const channels = computed(() => {
+      let c = [channel];
+      if (event.value && event.value.id2) {
+        c.push(event.value.id2);
+      }
+      if (event.value && event.value.id3) {
+        c.push(event.value.id3);
+      }
+      if (event.value && event.value.id4) {
+        c.push(event.value.id4);
+      }
+      return c;
+    });
+
     return {
       activeChannel,
       channel,
@@ -140,14 +154,16 @@ export default {
       sheetTitle,
       titleCase,
       onSheetRowLike,
+      channels,
     };
   },
   template: `
   <div class="layout-live" :style="{'--cols': cols}">
     <div style="grid-area: performer" style="">
-          <performer-video v-show="activeChannel === 0"  :channel="channel" />
-          <performer-video v-show="activeChannel === 1" :channel="event.id2" />
-        </div>
+      <template v-for="(ch, i) in channels">
+        <performer-video v-show="activeChannel === i"  :channel="ch" />
+      </template>
+    </div>
     <div
       v-if="event && event.audience !== 'disabled' && !event.sheetid"
       class="panel-audience"
@@ -237,16 +253,15 @@ export default {
       v-if="event && event.hidden !== 'true'" 
       style="padding: 32px; grid-area: about">
 
-      <div v-if="event && event.id2" style="display: flex; gap: 8px; padding: 24px 0;">
+      <div v-if="channels.length > 1" style="display: flex; gap: 8px; padding: 24px 0;">
         <button
-          v-for="c in [0,1]"
-          @click="activeChannel = c"
-          :style="{background: 'rgba(0,0,0,0.)', opacity: c === activeChannel ? 1 : 0.5}"
+          v-for="ch,i in channels"
+          @click="activeChannel = i"
+          :style="{background: 'rgba(0,0,0,0.)', opacity: i === activeChannel ? 1 : 0.5}"
         >
-          {{ 'Camera ' + (c + 1)}}
+          {{ 'Camera ' + (i + 1)}}
         </button>
       </div>
-
       <event-details :event="event" />
     </div>
   </div>
