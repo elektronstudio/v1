@@ -139,9 +139,6 @@ export default {
       if (event.value && event.value.id4) {
         c.push(event.value.id4);
       }
-      if (event.value && event.value.chattype) {
-        console.log(event.value.chattype);
-      }
       return c;
     });
 
