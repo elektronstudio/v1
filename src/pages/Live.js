@@ -139,6 +139,9 @@ export default {
       if (event.value && event.value.id4) {
         c.push(event.value.id4);
       }
+      if (event.value && event.value.chattype) {
+        console.log(event.value.chattype);
+      }
       return c;
     });
 
@@ -247,7 +250,7 @@ export default {
         <icon-to-left v-if="!chatVisible" />
         <icon-to-right v-if="chatVisible" />
       </div>
-      <chat :channel="channel" v-if="chatVisible" />
+      <chat :event="event" :channel="channel" v-if="chatVisible" />
     </div>
     <div
       v-if="event && event.hidden !== 'true'" 
