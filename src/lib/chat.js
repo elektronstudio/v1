@@ -10,8 +10,7 @@ import {
   createMessage,
 } from "./index.js";
 
-export const useChat = (channel, customOptions = {}) => {
-  const options = { chattype: "CHAT", ...customOptions };
+export const useChat = (channel) => {
   const allMessages = useLocalstorage("elektron_messages", []);
   const likes = useLocalstorage("elektron_likes", []);
   const messages = computed(() =>
@@ -56,7 +55,7 @@ export const useChat = (channel, customOptions = {}) => {
     }
 
     if (m && m.channel === channel) {
-      if (m.type === options.chattype) {
+      if (m.type === "CHAT") {
         allMessages.value = [...allMessages.value, m];
       }
       if (m.type === "LIKE") {
