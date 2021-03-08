@@ -7,7 +7,7 @@ export const experimentalInputUrl = (id) =>
 export const specOutputUrl =
   "https://elektron-live.babahhcdn.com/bb1150-le/spectators/index.m3u8";
 
-export const chatUrl = "wss://ws-fggq5.ondigitalocean.app";
+export const chatUrl = "wss://ws-old-scgsa.ondigitalocean.app";
 
 //export const chatUrl = "ws://localhost:8080";
 
