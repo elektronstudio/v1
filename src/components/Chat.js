@@ -7,6 +7,9 @@ export default {
     channel: {
       default: "test",
     },
+    event: {
+      default: null,
+    },
   },
   setup(props) {
     const { userId, userName, onUserNameChange } = useUser();
@@ -19,8 +22,12 @@ export default {
       onLike,
       scrollEl,
       textareaEl,
-    } = useChat(props.channel);
+    } = useChat(props.channel, {
+      chattype:
+        props.event && props.event.chattype ? props.event.chattype : "CHAT",
+    });
 
+    console.log(props.event);
     const messagesWithLikes = computed(() =>
       messages.value.map((m) => {
         const l = likes.value

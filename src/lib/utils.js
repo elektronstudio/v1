@@ -204,6 +204,7 @@ export const parseEvent = (event) => {
   const chat = findMetadata(metadataDescription, "chat");
   const experimental = !!findMetadata(metadataDescription, "experimental");
   const sheetid = findMetadata(metadataDescription, "sheetid");
+  const chattype = findMetadata(metadataDescription, "chattype");
 
   const diff = getDifference(start, end);
 
@@ -225,6 +226,7 @@ export const parseEvent = (event) => {
     audience,
     chat,
     sheetid,
+    chattype,
     ...diff,
   };
 };
